@@ -1,0 +1,60 @@
+<!-- ---------------------------------------------------------
+MEANING: Document Type Declaration.
+WORDS: '!DOCTYPE html' = HTML5 standard.
+EXPLAIN: "Tells the browser this is a modern HTML5 webpage."
+--------------------------------------------------------- -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marutha Support</title>
+
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Marutha Support</h1>
+        <nav>
+            <a href="login.html" class="btn">Login</a>
+            <a href="register.html">Register</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="card" style="text-align: center; padding: 3rem;">
+            <h2>Welcome to Marutha Healthcare Support</h2>
+            <p>Providing care and connectivity for patients, doctors, and volunteers.</p>
+            <br>
+            <a href="register.html" class="btn">Get Started</a>
+        </div>
+
+        <div class="card">
+            <h3>Our Mission</h3>
+            <p>To support patients through their journey with dedicated medical professionals and caring volunteers.</p>
+        </div>
+    </div>
+
+    
+    <script src="js/app.js"></script>
+    <script>
+        // ---------------------------------------------------------
+        // MEANING: Auto-redirect logic.
+        // EXPLAIN: "If the user is already logged in, send them straight to their dashboard."
+        // ---------------------------------------------------------
+        checkAuth().then(user => {
+            if (user) {
+                redirectToDashboard(user.role);
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Volunteer Dashboard - Marutha Support</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Volunteer Dashboard</h1>
+        <nav>
+            <span id="userName" style="font-weight: bold; margin-right: 1rem;"></span>
+            <button onclick="logout()" class="btn" style="background: #e74c3c;">Logout</button>
+        </nav>
+    </header>
+    <div class="container">
+        <h2>Assigned Patients</h2>
+        <div id="pList">Loading...</div>
+
+        
+        <div class="card" style="margin-top: 2rem;">
+            <h2>Support Chat</h2>
+            <div class="form-group">
+                <label>Chat with Patient:</label>
+                <select id="chatRecipient" onchange="changeChatPartner()" style="padding: 0.5rem;">
+                    <option value="">Select Patient...</option>
+                </select>
+            </div>
+            <div class="chat-box" id="chatBox"></div>
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="chatMsg" placeholder="Type a message..." style="flex:1; padding: 0.5rem;">
+                <button onclick="sendChat()" class="btn">Send</button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/app.js"></script>
+    <script>
+        let ws = null;
+        let userId = null;
+        let volunteerId = null;
+
+        async function init() {
+            const user = await checkAuth();
+            if (!user || user.role !== 'volunteer') { window.location.href = "../login.html"; return; }
+            userId = user.id;
+
+            // My Profile
+            const res = await apiFetch("/volunteers/");
+            const vols = await res.json();
+            const me = vols.find(v => v.user_id === user.id);
+
+            if (me) {
+                volunteerId = me.id;
+                document.getElementById('userName').textContent = "Volunteer: " + me.name;
+
+                loadPatients(me.id);
+                setupWebSocket();
+            } else {
+                document.getElementById('userName').textContent = user.email;
+            }
+        }
+
+        async function loadPatients(vid) {
+            const pRes = await apiFetch(`/volunteers/${vid}/patients`);
+            const patients = await pRes.json();
+            const div = document.getElementById('pList');
+            const sel = document.getElementById('chatRecipient');
+
+            div.innerHTML = "";
+            sel.innerHTML = '<option value="">Select Patient...</option>';
+
+            if (patients.length === 0) {
+                div.textContent = "No patients assigned.";
+                return;
+            }
+
+            patients.forEach(p => {
+                // List
+                const d = document.createElement('div');
+                d.className = "card";
+                d.style.marginBottom = "0.5rem";
+                d.innerHTML = `<strong>${p.name}</strong> (Age: ${p.age}, Stage: ${p.stage})`;
+                div.appendChild(d);
+
+                // Chat Select
+                const opt = document.createElement('option');
+                opt.value = p.user_id; // Using user_id for chat target
+                opt.textContent = `${p.name} (ID: ${p.id})`;
+                sel.appendChild(opt);
+            });
+        }
+
+        let currentChatPartnerId = null;
+
+        async function changeChatPartner() {
+            const val = document.getElementById('chatRecipient').value;
+            currentChatPartnerId = val ? parseInt(val) : null;
+            document.getElementById('chatBox').innerHTML = "";
+            if (currentChatPartnerId) loadChatHistory();
+        }
+
+        async function loadChatHistory() {
+            if (!currentChatPartnerId) return;
+            const res = await apiFetch(`/chats/history/${currentChatPartnerId}`);
+            if (res.ok) {
+                const msgs = await res.json();
+                const box = document.getElementById('chatBox');
+                box.innerHTML = "";
+                msgs.forEach(m => {
+                    const div = document.createElement('div');
+                    const isMe = m.sender_id === userId;
+                    div.className = isMe ? 'msg me' : 'msg other';
+                    div.textContent = (isMe ? "Me: " : "Them: ") + m.message;
+                    box.appendChild(div);
+                });
+                box.scrollTop = box.scrollHeight;
+            }
+        }
+
+        function setupWebSocket() {
+            ws = new WebSocket(`ws://127.0.0.1:8000/chats/ws/${userId}`);
+            ws.onmessage = function (event) {
+                const text = event.data;
+                const box = document.getElementById('chatBox');
+                const div = document.createElement('div');
+                div.className = 'msg other';
+                div.textContent = text;
+                box.appendChild(div);
+                box.scrollTop = box.scrollHeight;
+            };
+        }
+
+        async function sendChat() {
+            if (!currentChatPartnerId) {
+                alert("Select a patient to chat with.");
+                return;
+            }
+            const input = document.getElementById('chatMsg');
+            const txt = input.value;
+            if (!txt) return;
+
+            await apiFetch("/chats/", {
+                method: "POST",
+                body: JSON.stringify({ recipient_id: currentChatPartnerId, message: txt })
+            });
+
+            // Local display
+            const box = document.getElementById('chatBox');
+            const div = document.createElement('div');
+            div.className = 'msg me';
+            div.textContent = "Me: " + txt;
+            box.appendChild(div);
+            input.value = "";
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
