@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Appointment - Marutha Support</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Patient Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span
+            class="badge badge-active"
+            style="padding: 0.5rem; border-radius: 8px; margin-right: 0.5rem"
+            >M</span
+          >
+          Marutha<span style="color: var(--text-muted)">Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">Dashboard</a>
+          <a href="doctors.html" class="sidebar-link active">Find Doctor</a>
+          <a href="logs.html" class="sidebar-link">Health Logs</a>
+          <a href="chat.html" class="sidebar-link">Messages</a>
+          <div style="flex-grow: 1"></div>
+          <a href="setup_profile.html" class="sidebar-link">My Profile</a>
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            >Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header">
+          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
+            Book Appointment
+          </h2>
+          <div class="profile-snippet">
+            <div
+              style="text-align: right; display: flex; flex-direction: column"
+            >
+              <span style="font-weight: 700; font-size: 0.95rem">John Doe</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted)"
+                >Early Recovery</span
+              >
+            </div>
+            <div
+              class="profile-pic"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  var(--accent-green),
+                  var(--accent-blue)
+                );
+              "
+            >
+              JD
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="max-width: 800px; padding: 2rem">
+          <!-- Doctor Info Summary -->
+          <div class="glass fade-in p-4 mb-4">
+            <div style="display: flex; gap: 1.5rem; align-items: center">
+              <div
+                class="profile-pic"
+                style="
+                  width: 60px;
+                  height: 60px;
+                  font-size: 1.5rem;
+                  background: var(--blue-gradient);
+                "
+              >
+                ES
+              </div>
+              <div>
+                <h3 style="margin: 0 0 0.25rem 0; color: var(--text-primary)">
+                  Dr. Emily Smith
+                </h3>
+                <p style="margin: 0; color: var(--text-muted)">
+                  Cardiologist • 15 years experience
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Appointment Booking Form -->
+          <div class="glass fade-in p-4">
+            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary)">
+              Schedule Your Appointment
+            </h3>
+
+            <form id="appointmentForm">
+              <div class="form-group">
+                <label for="appointment_type">Appointment Type</label>
+                <select id="appointment_type" name="appointment_type" required>
+                  <option value="">Select type</option>
+                  <option value="consultation">General Consultation</option>
+                  <option value="followup">Follow-up Visit</option>
+                  <option value="checkup">Regular Check-up</option>
+                  <option value="emergency">Urgent Care</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="appointment_date">Preferred Date</label>
+                <input
+                  type="date"
+                  id="appointment_date"
+                  name="appointment_date"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="appointment_time">Preferred Time</label>
+                <select id="appointment_time" name="appointment_time" required>
+                  <option value="">Select time slot</option>
+                  <option value="09:00">9:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="14:00">2:00 PM</option>
+                  <option value="15:00">3:00 PM</option>
+                  <option value="16:00">4:00 PM</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="reason">Reason for Visit</label>
+                <textarea
+                  id="reason"
+                  name="reason"
+                  rows="4"
+                  required
+                  placeholder="Please describe your symptoms or reason for the appointment..."
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="contact_phone">Contact Phone Number</label>
+                <input
+                  type="tel"
+                  id="contact_phone"
+                  name="contact_phone"
+                  required
+                  placeholder="+1 234 567 8900"
+                />
+              </div>
+
+              <div class="form-group">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    cursor: pointer;
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    required
+                    style="width: auto; cursor: pointer"
+                  />
+                  <span
+                    >I confirm that the information provided is accurate</span
+                  >
+                </label>
+              </div>
+
+              <div
+                style="
+                  background: var(--bg-tertiary);
+                  padding: 1.5rem;
+                  border-radius: 12px;
+                  margin: 1.5rem 0;
+                "
+              >
+                <h4 style="margin: 0 0 1rem 0; color: var(--text-primary)">
+                  Appointment Summary
+                </h4>
+                <div
+                  style="display: grid; gap: 0.5rem; color: var(--text-muted)"
+                >
+                  <p style="margin: 0">
+                    <strong>Doctor:</strong> Dr. Emily Smith
+                  </p>
+                  <p style="margin: 0">
+                    <strong>Specialty:</strong> Cardiology
+                  </p>
+                  <p style="margin: 0">
+                    <strong>Consultation Fee:</strong> $150
+                  </p>
+                  <p style="margin: 0"><strong>Duration:</strong> 30 minutes</p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 1rem; margin-top: 2rem">
+                <button type="submit" class="btn" style="flex: 1">
+                  Confirm Appointment
+                </button>
+                <a
+                  href="doctors.html"
+                  class="btn btn-secondary"
+                  style="flex: 1; text-align: center"
+                  >Cancel</a
+                >
+              </div>
+            </form>
+          </div>
+
+          <!-- Important Notes -->
+          <div class="glass fade-in p-4" style="margin-top: 2rem">
+            <h4 style="margin: 0 0 1rem 0; color: var(--text-primary)">
+              Important Information
+            </h4>
+            <ul
+              style="
+                margin: 0;
+                padding-left: 1.5rem;
+                color: var(--text-muted);
+                line-height: 1.8;
+              "
+            >
+              <li>Please arrive 10 minutes before your scheduled time</li>
+              <li>Bring your medical records and current medications list</li>
+              <li>You will receive a confirmation email and SMS</li>
+              <li>Cancellations must be made 24 hours in advance</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Set minimum date to today
+      const dateInput = document.getElementById("appointment_date");
+      const today = new Date().toISOString().split("T")[0];
+      dateInput.setAttribute("min", today);
+
+      // Handle form submission
+      document
+        .getElementById("appointmentForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // In a real app, this would send to backend
+          alert(
+            "Appointment request submitted! You will receive a confirmation email shortly.",
+          );
+          window.location.href = "dashboard.html";
+        });
+    </script>
+  </body>
+</html>

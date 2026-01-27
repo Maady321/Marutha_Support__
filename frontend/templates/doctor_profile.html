@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Profile - Marutha Support</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Patient Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span
+            class="badge badge-active"
+            style="padding: 0.5rem; border-radius: 8px; margin-right: 0.5rem"
+            >M</span
+          >
+          Marutha<span style="color: var(--text-muted)">Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">Dashboard</a>
+          <a href="doctors.html" class="sidebar-link active">Find Doctor</a>
+          <a href="logs.html" class="sidebar-link">Health Logs</a>
+          <a href="chat.html" class="sidebar-link">Messages</a>
+          <div style="flex-grow: 1"></div>
+          <a href="setup_profile.html" class="sidebar-link">My Profile</a>
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            >Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header">
+          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
+            Doctor Profile
+          </h2>
+          <div class="profile-snippet">
+            <div
+              style="text-align: right; display: flex; flex-direction: column"
+            >
+              <span style="font-weight: 700; font-size: 0.95rem">John Doe</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted)"
+                >Early Recovery</span
+              >
+            </div>
+            <div
+              class="profile-pic"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  var(--accent-green),
+                  var(--accent-blue)
+                );
+              "
+            >
+              JD
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="max-width: 1200px; padding: 2rem">
+          <!-- Doctor Header Card -->
+          <div class="glass fade-in p-4 mb-4">
+            <div style="display: flex; gap: 2rem; align-items: start">
+              <div
+                class="profile-pic"
+                style="
+                  width: 120px;
+                  height: 120px;
+                  font-size: 3rem;
+                  background: var(--blue-gradient);
+                "
+              >
+                ES
+              </div>
+              <div style="flex: 1">
+                <h1 style="margin: 0 0 0.5rem 0; color: var(--text-primary)">
+                  Dr. Emily Smith
+                </h1>
+                <p
+                  style="
+                    margin: 0.25rem 0;
+                    color: var(--text-muted);
+                    font-size: 1.1rem;
+                  "
+                >
+                  <strong>Cardiologist</strong>
+                </p>
+                <p style="margin: 0.5rem 0; color: var(--text-muted)">
+                  15 years of experience in cardiovascular health and
+                  rehabilitation
+                </p>
+
+                <div
+                  style="
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 1rem;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <span class="badge badge-active">Available Today</span>
+                  <span class="badge badge-mid">15+ Years Experience</span>
+                  <span
+                    class="badge"
+                    style="
+                      background: rgba(59, 130, 246, 0.15);
+                      color: var(--accent-blue);
+                    "
+                    >500+ Patients</span
+                  >
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem">
+                  <a href="book_appointment.html" class="btn"
+                    >Book Appointment</a
+                  >
+                  <a href="chat.html" class="btn btn-secondary">Send Message</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Grid -->
+          <div class="grid" style="margin-bottom: 2rem">
+            <!-- Specializations -->
+            <div class="card glass delay-1">
+              <h3>Specializations</h3>
+              <ul style="list-style: none; padding: 0; margin-top: 1rem">
+                <li
+                  style="
+                    padding: 0.75rem 0;
+                    border-bottom: 1px solid var(--divider);
+                  "
+                >
+                  <strong style="color: var(--primary)">Cardiology</strong>
+                  <p
+                    style="
+                      margin: 0.25rem 0 0 0;
+                      color: var(--text-muted);
+                      font-size: 0.9rem;
+                    "
+                  >
+                    Heart health and cardiovascular diseases
+                  </p>
+                </li>
+                <li
+                  style="
+                    padding: 0.75rem 0;
+                    border-bottom: 1px solid var(--divider);
+                  "
+                >
+                  <strong style="color: var(--primary)"
+                    >Cardiac Rehabilitation</strong
+                  >
+                  <p
+                    style="
+                      margin: 0.25rem 0 0 0;
+                      color: var(--text-muted);
+                      font-size: 0.9rem;
+                    "
+                  >
+                    Post-surgery recovery programs
+                  </p>
+                </li>
+                <li style="padding: 0.75rem 0">
+                  <strong style="color: var(--primary)">Preventive Care</strong>
+                  <p
+                    style="
+                      margin: 0.25rem 0 0 0;
+                      color: var(--text-muted);
+                      font-size: 0.9rem;
+                    "
+                  >
+                    Heart disease prevention and wellness
+                  </p>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Availability -->
+            <div class="card glass delay-2">
+              <h3>Availability</h3>
+              <div style="margin-top: 1rem">
+                <div
+                  style="
+                    margin-bottom: 1rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid var(--divider);
+                  "
+                >
+                  <p
+                    style="
+                      margin: 0;
+                      font-weight: 600;
+                      color: var(--text-primary);
+                    "
+                  >
+                    Monday - Friday
+                  </p>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-muted)">
+                    9:00 AM - 5:00 PM
+                  </p>
+                </div>
+                <div
+                  style="
+                    margin-bottom: 1rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid var(--divider);
+                  "
+                >
+                  <p
+                    style="
+                      margin: 0;
+                      font-weight: 600;
+                      color: var(--text-primary);
+                    "
+                  >
+                    Saturday
+                  </p>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-muted)">
+                    10:00 AM - 2:00 PM
+                  </p>
+                </div>
+                <div>
+                  <p
+                    style="
+                      margin: 0;
+                      font-weight: 600;
+                      color: var(--text-primary);
+                    "
+                  >
+                    Sunday
+                  </p>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-muted)">
+                    Closed
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Education & Certifications -->
+          <div class="glass fade-in p-4 mb-4">
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary)">
+              Education & Certifications
+            </h3>
+            <div style="display: grid; gap: 1rem">
+              <div
+                style="
+                  padding: 1rem;
+                  background: var(--bg-tertiary);
+                  border-radius: 12px;
+                "
+              >
+                <p
+                  style="
+                    margin: 0;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                  "
+                >
+                  MD, Cardiology
+                </p>
+                <p style="margin: 0.25rem 0 0 0; color: var(--text-muted)">
+                  Harvard Medical School, 2008
+                </p>
+              </div>
+              <div
+                style="
+                  padding: 1rem;
+                  background: var(--bg-tertiary);
+                  border-radius: 12px;
+                "
+              >
+                <p
+                  style="
+                    margin: 0;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                  "
+                >
+                  Board Certified Cardiologist
+                </p>
+                <p style="margin: 0.25rem 0 0 0; color: var(--text-muted)">
+                  American Board of Internal Medicine, 2010
+                </p>
+              </div>
+              <div
+                style="
+                  padding: 1rem;
+                  background: var(--bg-tertiary);
+                  border-radius: 12px;
+                "
+              >
+                <p
+                  style="
+                    margin: 0;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                  "
+                >
+                  Advanced Cardiac Life Support (ACLS)
+                </p>
+                <p style="margin: 0.25rem 0 0 0; color: var(--text-muted)">
+                  American Heart Association, 2023
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patient Reviews -->
+          <div class="glass fade-in p-4">
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary)">
+              Patient Reviews
+            </h3>
+            <div style="display: grid; gap: 1rem">
+              <div
+                style="
+                  padding: 1.5rem;
+                  background: var(--bg-tertiary);
+                  border-radius: 12px;
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  <strong style="color: var(--text-primary)">Sarah M.</strong>
+                  <span style="color: var(--warning)">⭐⭐⭐⭐⭐</span>
+                </div>
+                <p style="margin: 0; color: var(--text-muted)">
+                  "Dr. Smith is incredibly knowledgeable and caring. She took
+                  the time to explain everything and made me feel comfortable
+                  throughout my treatment."
+                </p>
+              </div>
+              <div
+                style="
+                  padding: 1.5rem;
+                  background: var(--bg-tertiary);
+                  border-radius: 12px;
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  <strong style="color: var(--text-primary)">Michael R.</strong>
+                  <span style="color: var(--warning)">⭐⭐⭐⭐⭐</span>
+                </div>
+                <p style="margin: 0; color: var(--text-muted)">
+                  "Excellent doctor! Very professional and thorough. Highly
+                  recommend for anyone with heart concerns."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

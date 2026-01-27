@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Details - Marutha Support</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar (Dynamic based on user role) -->
+      <aside class="sidebar">
+        <a href="dashboard_doctor.html" class="sidebar-brand">
+          <span
+            class="badge badge-active"
+            style="padding: 0.5rem; border-radius: 8px; margin-right: 0.5rem"
+            >M</span
+          >
+          Marutha<span style="color: var(--text-muted)">Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_doctor.html" class="sidebar-link">Dashboard</a>
+          <a href="patients.html" class="sidebar-link active">Patients</a>
+          <a href="requests.html" class="sidebar-link">Appointments</a>
+          <a href="#" class="sidebar-link">Consultations</a>
+          <div style="flex-grow: 1"></div>
+          <a href="setup_profile_doctor.html" class="sidebar-link"
+            >My Profile</a
+          >
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            >Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header">
+          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
+            Patient Details
+          </h2>
+          <div class="profile-snippet">
+            <div
+              style="text-align: right; display: flex; flex-direction: column"
+            >
+              <span style="font-weight: 700; font-size: 0.95rem"
+                >Dr. John Smith</span
+              >
+              <span style="font-size: 0.8rem; color: var(--text-muted)"
+                >Cardiologist</span
+              >
+            </div>
+            <div class="profile-pic">JS</div>
+          </div>
+        </header>
+
+        <div class="container" style="max-width: 1400px; padding: 2rem">
+          <!-- Patient Info Card -->
+          <div class="glass fade-in p-4 mb-4">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: start;
+              "
+            >
+              <div style="display: flex; gap: 2rem; align-items: center">
+                <div
+                  class="profile-pic"
+                  style="
+                    width: 80px;
+                    height: 80px;
+                    font-size: 2rem;
+                    background: var(--green-gradient);
+                  "
+                >
+                  JD
+                </div>
+                <div>
+                  <h2 style="margin: 0 0 0.5rem 0; color: var(--text-primary)">
+                    John Doe
+                  </h2>
+                  <p style="margin: 0.25rem 0; color: var(--text-muted)">
+                    <strong>Age:</strong> 65 years
+                  </p>
+                  <p style="margin: 0.25rem 0; color: var(--text-muted)">
+                    <strong>Condition:</strong> Stage 2 Recovery
+                  </p>
+                  <p style="margin: 0.25rem 0; color: var(--text-muted)">
+                    <strong>Last Visit:</strong> Today, 10:00 AM
+                  </p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 1rem">
+                <button class="btn">Send Message</button>
+                <button class="btn btn-secondary">Schedule Appointment</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="stats-grid" style="margin-bottom: 2rem">
+            <div class="stat-card">
+              <div class="stat-title">Total Visits</div>
+              <div class="stat-value" style="color: var(--primary)">24</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Last Pain Level</div>
+              <div class="stat-value" style="color: var(--accent-green)">
+                3/10
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Medications</div>
+              <div class="stat-value" style="color: var(--accent-blue)">5</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Next Appointment</div>
+              <div
+                class="stat-value"
+                style="color: var(--warning); font-size: 1.5rem"
+              >
+                Jan 30
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs Section -->
+          <div class="glass fade-in p-4 mb-4">
+            <div
+              style="
+                display: flex;
+                gap: 2rem;
+                border-bottom: 1px solid var(--divider);
+                margin-bottom: 2rem;
+              "
+            >
+              <button
+                class="tab-btn active"
+                style="
+                  padding: 1rem;
+                  border: none;
+                  background: none;
+                  color: var(--primary);
+                  border-bottom: 2px solid var(--primary);
+                  cursor: pointer;
+                  font-weight: 600;
+                "
+              >
+                Health Logs
+              </button>
+              <button
+                class="tab-btn"
+                style="
+                  padding: 1rem;
+                  border: none;
+                  background: none;
+                  color: var(--text-muted);
+                  cursor: pointer;
+                  font-weight: 600;
+                "
+              >
+                Vitals
+              </button>
+              <button
+                class="tab-btn"
+                style="
+                  padding: 1rem;
+                  border: none;
+                  background: none;
+                  color: var(--text-muted);
+                  cursor: pointer;
+                  font-weight: 600;
+                "
+              >
+                Medications
+              </button>
+              <button
+                class="tab-btn"
+                style="
+                  padding: 1rem;
+                  border: none;
+                  background: none;
+                  color: var(--text-muted);
+                  cursor: pointer;
+                  font-weight: 600;
+                "
+              >
+                Appointments
+              </button>
+            </div>
+
+            <!-- Health Logs Tab Content -->
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Mood</th>
+                    <th>Pain Level</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Today</td>
+                    <td>10:00 AM</td>
+                    <td><span class="badge badge-active">Happy</span></td>
+                    <td>3/10</td>
+                    <td style="color: var(--text-muted)">
+                      Feeling lighter today, pain reduced significantly.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Yesterday</td>
+                    <td>9:30 AM</td>
+                    <td><span class="badge badge-mid">Neutral</span></td>
+                    <td>5/10</td>
+                    <td style="color: var(--text-muted)">
+                      Moderate pain, took prescribed medication.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Jan 25</td>
+                    <td>8:00 AM</td>
+                    <td><span class="badge badge-high">Anxious</span></td>
+                    <td>7/10</td>
+                    <td style="color: var(--text-muted)">
+                      High pain level, difficulty sleeping.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Notes Section -->
+          <div class="glass fade-in p-4">
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary)">
+              Doctor's Notes
+            </h3>
+            <textarea
+              placeholder="Add notes about this patient..."
+              style="
+                width: 100%;
+                min-height: 120px;
+                padding: 1rem;
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                background: var(--bg-tertiary);
+                color: var(--text-primary);
+                font-family: inherit;
+              "
+            ></textarea>
+            <div
+              style="margin-top: 1rem; display: flex; justify-content: flex-end"
+            >
+              <button class="btn">Save Notes</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

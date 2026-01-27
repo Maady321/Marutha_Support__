@@ -1,56 +1,66 @@
+# Pydantic's BaseModel for data validation and settings management
 from pydantic import BaseModel
+# Standard Python libraries for type hinting and time
 from typing import Optional, List
 from datetime import datetime
 
 
+# Schema for returning an authentication token to the user
 class Token(BaseModel):
-    access_token: str
-    token_type: str
+    access_token: str                                         # The actual JWT string
+    token_type: str                                           # Typically 'bearer'
 
 
+# Schema for internal token data (extracted from the JWT)
 class TokenData(BaseModel):
-    username: Optional[str] = None
+    username: Optional[str] = None                             # Usually the user's email
 
 
-class UserCreate(BaseModel):
+# Schema for creating a new user (Data coming from the frontend during signup)
+class UserRegistration(BaseModel):
     email: str
     password: str
-    role: str
+    role: str                                                  # patient, doctor, or volunteer
 
 
-class UserResponse(BaseModel):
+# Schema for sending a quick overview of a user back to the frontend
+class UserSummary(BaseModel):
     id: int
     email: str
     role: str
     is_active: bool
 
     class Config:
-        from_attributes = True
+        from_attributes = True                                # Allows reading data from SQLAlchemy models
 
 
-class PatientCreate(BaseModel):
+# Schema for setting up a new patient profile
+class PatientProfileSetup(BaseModel):
     name: str
     age: int
     stage: str
 
 
-class PatientResponse(PatientCreate):
+# Schema for sending full patient details back
+class PatientDetails(PatientProfileSetup):
     id: int
     user_id: int
     doctor_id: Optional[int]
     volunteer_id: Optional[int]
-    user: Optional[UserResponse] = None
+    user: Optional[UserSummary] = None                        # Nested user account info
 
     class Config:
         from_attributes = True
 
 
-class DoctorCreate(BaseModel):
+# Schema for setting up a new doctor profile
+class DoctorProfileSetup(BaseModel):
     name: str
     specialty: str
 
 
-class DoctorResponse(DoctorCreate):
+# Schema for sending full doctor details back
+class DoctorDetails(DoctorProfileSetup):
     id: int
     user_id: int
     is_online: bool
@@ -59,7 +69,8 @@ class DoctorResponse(DoctorCreate):
         from_attributes = True
 
 
-class VolunteerResponse(BaseModel):
+# Schema for sending volunteer profile details back
+class VolunteerDetails(BaseModel):
     id: int
     user_id: int
     name: str
@@ -68,12 +79,14 @@ class VolunteerResponse(BaseModel):
         from_attributes = True
 
 
-class ChatMessageCreate(BaseModel):
+# Schema for when a user sends a new chat message
+class MessageSent(BaseModel):
     recipient_id: int
     message: str
 
 
-class ChatMessageResponse(BaseModel):
+# Schema for when the system sends back a received chat message
+class MessageReceived(BaseModel):
     id: int
     sender_id: int
     recipient_id: int
@@ -84,27 +97,31 @@ class ChatMessageResponse(BaseModel):
         from_attributes = True
 
 
-class ConsultationCreate(BaseModel):
+# Schema for a patient to request a consultation with a doctor
+class DoctorRequestSetup(BaseModel):
     doctor_id: int
     notes: Optional[str] = None
     appointment_time: Optional[datetime] = None
 
 
-class ConsultationResponse(ConsultationCreate):
+# Schema for sending details about a doctor request back
+class DoctorRequestDetails(DoctorRequestSetup):
     id: int
     patient_id: int
-    status: str
+    status: str                                               # pending, accepted, rejected
     created_at: datetime
 
     class Config:
         from_attributes = True
 
 
-class ConsultationUpdate(BaseModel):
+# Schema for updating the status of a request (e.g., doctor accepting it)
+class DoctorRequestUpdate(BaseModel):
     status: str
 
 
-class ReportResponse(BaseModel):
+# Schema for sending details of an uploaded medical report
+class MedicalReportDetails(BaseModel):
     id: int
     title: str
     file_path: str
@@ -115,13 +132,15 @@ class ReportResponse(BaseModel):
         from_attributes = True
 
 
-class VitalLogCreate(BaseModel):
+# Schema for creating a new health log entry (like a daily check-in)
+class HealthLogEntry(BaseModel):
     pain_level: int
     mood: str
     notes: Optional[str] = None
 
 
-class VitalLogResponse(VitalLogCreate):
+# Schema for sending health log details back (includes ID and time)
+class HealthLogDetails(HealthLogEntry):
     id: int
     patient_id: int
     timestamp: datetime

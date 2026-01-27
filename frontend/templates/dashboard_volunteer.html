@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volunteer Dashboard - Marutha Support</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Volunteer Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <span
+            class="badge badge-active"
+            style="padding: 0.5rem; border-radius: 8px; margin-right: 0.5rem"
+            >M</span
+          >
+          Marutha<span style="color: var(--text-muted)">Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_volunteer.html" class="sidebar-link active"
+            >Dashboard</a
+          >
+          <a href="assigned_patients.html" class="sidebar-link"
+            >Assigned Patients</a
+          >
+          <a href="volunteer_tasks.html" class="sidebar-link">My Tasks</a>
+          <a href="volunteer_reports.html" class="sidebar-link">Reports</a>
+          <div style="flex-grow: 1"></div>
+          <a href="setup_profile_volunteer.html" class="sidebar-link"
+            >My Profile</a
+          >
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            >Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <header class="top-header">
+          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
+            Volunteer Dashboard
+          </h2>
+          <div class="profile-snippet">
+            <div
+              style="text-align: right; display: flex; flex-direction: column"
+            >
+              <span style="font-weight: 700; font-size: 0.95rem"
+                >Jane Smith</span
+              >
+              <span style="font-size: 0.8rem; color: var(--text-muted)"
+                >Volunteer</span
+              >
+            </div>
+            <div class="profile-pic" style="background: var(--green-gradient)">
+              JS
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="max-width: 1400px; padding: 2rem">
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-title">Assigned Patients</div>
+              <div class="stat-value" style="color: var(--primary)">5</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Tasks Completed</div>
+              <div class="stat-value" style="color: var(--accent-green)">
+                23
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Pending Tasks</div>
+              <div class="stat-value" style="color: var(--warning)">3</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Hours This Month</div>
+              <div class="stat-value" style="color: var(--accent-blue)">42</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Recent Activity -->
+          <div class="grid" style="margin-top: 1rem">
+            <div class="card glass delay-1">
+              <h3>Quick Actions</h3>
+              <div
+                style="
+                  display: flex;
+                  gap: 1rem;
+                  flex-wrap: wrap;
+                  margin-top: 1rem;
+                "
+              >
+                <a href="assigned_patients.html" class="btn">View Patients</a>
+                <a href="volunteer_tasks.html" class="btn btn-secondary"
+                  >Check Tasks</a
+                >
+                <a href="volunteer_reports.html" class="btn btn-secondary"
+                  >Submit Report</a
+                >
+              </div>
+            </div>
+
+            <div class="card glass delay-2">
+              <h3>Today's Schedule</h3>
+              <div style="margin-top: 1rem">
+                <div
+                  style="
+                    margin-bottom: 1rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid var(--divider);
+                  "
+                >
+                  <p style="margin-bottom: 0.5rem">
+                    <strong>Visit John Doe</strong>
+                  </p>
+                  <span
+                    class="timestamp"
+                    style="color: var(--text-muted); font-size: 0.8rem"
+                    >10:00 AM - Check vitals</span
+                  >
+                </div>
+                <div>
+                  <p style="margin-bottom: 0.5rem">
+                    <strong>Call Sarah Lee</strong>
+                  </p>
+                  <span
+                    class="timestamp"
+                    style="color: var(--text-muted); font-size: 0.8rem"
+                    >2:00 PM - Follow-up</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Reports -->
+          <div style="margin-top: 2rem">
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary)">
+              Recent Activity
+            </h3>
+
+            <div class="table-container fade-in">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Activity</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Today</td>
+                    <td><span style="font-weight: 600">John Doe</span></td>
+                    <td>Vitals Check</td>
+                    <td><span class="badge badge-active">Completed</span></td>
+                  </tr>
+                  <tr>
+                    <td>Yesterday</td>
+                    <td><span style="font-weight: 600">Sarah Lee</span></td>
+                    <td>Medication Reminder</td>
+                    <td><span class="badge badge-active">Completed</span></td>
+                  </tr>
+                  <tr>
+                    <td>Jan 25</td>
+                    <td><span style="font-weight: 600">David Wilson</span></td>
+                    <td>Home Visit</td>
+                    <td><span class="badge badge-mid">Pending</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

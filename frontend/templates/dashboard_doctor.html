@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Dashboard - Marutha Support</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      /* Specific page override to ensure full screen */
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <a href="dashboard_doctor.html" class="sidebar-brand">
+          <span
+            class="badge badge-active"
+            style="padding: 0.5rem; border-radius: 8px; margin-right: 0.5rem"
+            >M</span
+          >
+          Marutha<span style="color: var(--text-muted)">Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_doctor.html" class="sidebar-link active"
+            >Dashboard</a
+          >
+          <a href="patients.html" class="sidebar-link">Patients</a>
+          <a href="requests.html" class="sidebar-link">Appointments</a>
+          <a href="#" class="sidebar-link">Consultations</a>
+          <a href="#" class="sidebar-link">Medical Records</a>
+          <a href="#" class="sidebar-link">Prescriptions</a>
+          <a href="#" class="sidebar-link">Reports</a>
+          <div style="flex-grow: 1"></div>
+          <a href="#" class="sidebar-link">Settings</a>
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            >Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
+            Doctor Dashboard
+          </h2>
+          <div class="profile-snippet">
+            <div
+              style="text-align: right; display: flex; flex-direction: column"
+            >
+              <span style="font-weight: 700; font-size: 0.95rem"
+                >Dr. John Smith</span
+              >
+              <span style="font-size: 0.8rem; color: var(--text-muted)"
+                >Cardiologist</span
+              >
+            </div>
+            <div class="profile-pic">JS</div>
+          </div>
+        </header>
+
+        <div class="container" style="max-width: 1400px; padding: 2rem">
+          <!-- Stats Cards Row -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-title">Today's Appointments</div>
+              <div class="stat-value" style="color: var(--primary)">8</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Active Patients</div>
+              <div class="stat-value" style="color: var(--accent-green)">
+                152
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Pending Reports</div>
+              <div class="stat-value" style="color: var(--warning)">5</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Online Consults</div>
+              <div class="stat-value" style="color: var(--accent-blue)">3</div>
+            </div>
+          </div>
+
+          <!-- Appointments Table Section -->
+          <div style="margin-top: 2.5rem">
+            <h3 style="margin-bottom: 1rem; color: var(--text-main)">
+              Appointments
+            </h3>
+
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Patient Name</th>
+                    <th>Age / Gender</th>
+                    <th>Appointment Type</th>
+                    <th>Time Slot</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span style="font-weight: 600">Sarah Lee</span></td>
+                    <td>35 / Female</td>
+                    <td>Follow-up</td>
+                    <td>10:00 AM - 10:30 AM</td>
+                    <td><span class="badge badge-active">Confirmed</span></td>
+                    <td>
+                      <a href="#" class="action-btn">View</a>
+                      <a href="#" class="action-btn">Edit</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600">Michael Brown</span></td>
+                    <td>58 / Male</td>
+                    <td>Consultation</td>
+                    <td>11:00 AM - 11:30 AM</td>
+                    <td><span class="badge badge-mid">Pending</span></td>
+                    <td>
+                      <a href="#" class="action-btn">View</a>
+                      <a href="#" class="action-btn">Edit</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600">Linda Carter</span></td>
+                    <td>42 / Female</td>
+                    <td>Physical Exam</td>
+                    <td>01:00 PM - 01:30 PM</td>
+                    <td>
+                      <span
+                        class="badge badge-online"
+                        style="background: #dbeafe; color: #1e40af"
+                        >Completed</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" class="action-btn">View</a>
+                      <a href="#" class="action-btn">Edit</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600">David Wilson</span></td>
+                    <td>67 / Male</td>
+                    <td>Check-up</td>
+                    <td>02:00 PM - 02:30 PM</td>
+                    <td><span class="badge badge-active">Confirmed</span></td>
+                    <td>
+                      <a href="#" class="action-btn">View</a>
+                      <a href="#" class="action-btn">Edit</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600">Emily Ross</span></td>
+                    <td>29 / Female</td>
+                    <td>Teleconsultation</td>
+                    <td>03:30 PM - 04:00 PM</td>
+                    <td><span class="badge badge-mid">Pending</span></td>
+                    <td>
+                      <a href="#" class="action-btn">View</a>
+                      <a href="#" class="action-btn">Edit</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600">James Carter</span></td>
+                    <td>50 / Male</td>
+                    <td>New Patient</td>
+                    <td>04:30 PM - 05:00 PM</td>
+                    <td><span class="badge badge-active">Confirmed</span></td>
+                    <td>
+                      <a href="#" class="action-btn">View</a>
+                      <a href="#" class="action-btn">Edit</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

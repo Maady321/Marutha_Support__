@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volunteer Profile Setup - Marutha Support</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Volunteer Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <span
+            class="badge badge-active"
+            style="padding: 0.5rem; border-radius: 8px; margin-right: 0.5rem"
+            >M</span
+          >
+          Marutha<span style="color: var(--text-muted)">Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_volunteer.html" class="sidebar-link">Dashboard</a>
+          <a href="assigned_patients.html" class="sidebar-link"
+            >Assigned Patients</a
+          >
+          <a href="volunteer_tasks.html" class="sidebar-link">My Tasks</a>
+          <a href="volunteer_reports.html" class="sidebar-link">Reports</a>
+          <div style="flex-grow: 1"></div>
+          <a href="setup_profile_volunteer.html" class="sidebar-link active"
+            >My Profile</a
+          >
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            >Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <div class="container" style="max-width: 600px; margin: 4rem auto">
+          <div class="auth-box glass fade-in">
+            <h1 class="text-center" style="margin-bottom: 0.5rem">
+              Volunteer Profile
+            </h1>
+            <p
+              class="text-center"
+              style="color: var(--text-muted); margin-bottom: 2rem"
+            >
+              Set up your volunteer details
+            </p>
+
+            <form action="dashboard_volunteer.html">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="Jane Smith"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  placeholder="+1 234 567 8900"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="availability">Availability</label>
+                <select id="availability" name="availability" required>
+                  <option value="full-time">Full Time</option>
+                  <option value="part-time">Part Time</option>
+                  <option value="weekends">Weekends Only</option>
+                  <option value="flexible">Flexible</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="skills">Skills / Experience</label>
+                <textarea
+                  id="skills"
+                  name="skills"
+                  placeholder="e.g., Patient care, Communication, First aid..."
+                ></textarea>
+              </div>
+
+              <div style="display: flex; gap: 1rem; margin-top: 2rem">
+                <button type="submit" class="btn" style="flex: 1">
+                  Save Profile
+                </button>
+                <a
+                  href="dashboard_volunteer.html"
+                  class="btn btn-secondary"
+                  style="flex: 1; text-align: center"
+                  >Cancel</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Ensure volunteer role is stored
+      localStorage.setItem("userRole", "volunteer");
+    </script>
+  </body>
+</html>

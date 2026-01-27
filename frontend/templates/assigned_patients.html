@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assigned Patients - Marutha Support</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Volunteer Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <span
+            class="badge badge-active"
+            style="padding: 0.5rem; border-radius: 8px; margin-right: 0.5rem"
+            >M</span
+          >
+          Marutha<span style="color: var(--text-muted)">Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_volunteer.html" class="sidebar-link">Dashboard</a>
+          <a href="assigned_patients.html" class="sidebar-link active"
+            >Assigned Patients</a
+          >
+          <a href="volunteer_tasks.html" class="sidebar-link">My Tasks</a>
+          <a href="volunteer_reports.html" class="sidebar-link">Reports</a>
+          <div style="flex-grow: 1"></div>
+          <a href="setup_profile_volunteer.html" class="sidebar-link"
+            >My Profile</a
+          >
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            >Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <header class="top-header">
+          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
+            Assigned Patients
+          </h2>
+          <div class="profile-snippet">
+            <div
+              style="text-align: right; display: flex; flex-direction: column"
+            >
+              <span style="font-weight: 700; font-size: 0.95rem"
+                >Jane Smith</span
+              >
+              <span style="font-size: 0.8rem; color: var(--text-muted)"
+                >Volunteer</span
+              >
+            </div>
+            <div class="profile-pic" style="background: var(--green-gradient)">
+              JS
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="max-width: 1400px; padding: 2rem">
+          <div class="glass fade-in p-4 mb-4">
+            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary)">
+              My Assigned Patients
+            </h3>
+            <p style="color: var(--text-muted)">
+              Patients under your care and supervision.
+            </p>
+          </div>
+
+          <div class="table-container fade-in">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Patient Name</th>
+                  <th>Age</th>
+                  <th>Condition</th>
+                  <th>Last Contact</th>
+                  <th>Priority</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span style="font-weight: 600">John Doe</span></td>
+                  <td>65</td>
+                  <td>Stage 2 Recovery</td>
+                  <td>Today, 10:00 AM</td>
+                  <td><span class="badge badge-active">Normal</span></td>
+                  <td>
+                    <a href="#" class="action-btn">View Details</a>
+                    <a href="#" class="action-btn">Contact</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight: 600">Sarah Lee</span></td>
+                  <td>58</td>
+                  <td>Early Stage</td>
+                  <td>Yesterday</td>
+                  <td><span class="badge badge-mid">Monitor</span></td>
+                  <td>
+                    <a href="#" class="action-btn">View Details</a>
+                    <a href="#" class="action-btn">Contact</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight: 600">David Wilson</span></td>
+                  <td>72</td>
+                  <td>Stage 3</td>
+                  <td>2 days ago</td>
+                  <td><span class="badge badge-high">Urgent</span></td>
+                  <td>
+                    <a href="#" class="action-btn">View Details</a>
+                    <a href="#" class="action-btn">Contact</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight: 600">Linda Carter</span></td>
+                  <td>45</td>
+                  <td>Post-Treatment</td>
+                  <td>Today, 2:00 PM</td>
+                  <td><span class="badge badge-active">Normal</span></td>
+                  <td>
+                    <a href="#" class="action-btn">View Details</a>
+                    <a href="#" class="action-btn">Contact</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight: 600">Michael Brown</span></td>
+                  <td>61</td>
+                  <td>Stage 1</td>
+                  <td>3 days ago</td>
+                  <td><span class="badge badge-mid">Monitor</span></td>
+                  <td>
+                    <a href="#" class="action-btn">View Details</a>
+                    <a href="#" class="action-btn">Contact</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
