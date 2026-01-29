@@ -1,2 +1,159 @@
-﻿backend/.env
+﻿# ============================================
+# SECRETS & ENVIRONMENT VARIABLES (CRITICAL!)
+# ============================================
+*.env
 .env
+.env.*
+backend/.env
+backend/.env.*
+.env.backup
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ============================================
+# PYTHON & DEPENDENCIES
+# ============================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+backend/venv/
+backend/env/
+.venv
+*.egg-info/
+dist/
+build/
+
+# pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================
+# DATABASES & DATA
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+*.bak
+postgres_data/
+mysql_data/
+uploaded_reports/
+backend/uploaded_reports/*
+!backend/uploaded_reports/.gitkeep
+
+# ============================================
+# IDE & EDITORS
+# ============================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================
+# OPERATING SYSTEM FILES
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ============================================
+# TESTING & COVERAGE
+# ============================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.cache
+nosetests.xml
+coverage.xml
+
+# ============================================
+# LOGS & TEMPORARY FILES
+# ============================================
+*.log
+*.tmp
+*.temp
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================
+# PROJECT-SPECIFIC
+# ============================================
+# FastAPI / Uvicorn
+.uvicorn/
+
+# Alembic migrations (keep migration files, ignore versions sometimes)
+# Uncomment if you want to ignore migration versions:
+# alembic/versions/*.py
+
+# Jupyter Notebooks (if you use them)
+.ipynb_checkpoints/
+*.ipynb
+
+# Node modules (if you add frontend build tools later)
+node_modules/
+package-lock.json
+yarn.lock
+
+# ============================================
+# DOCKER & CONTAINERS
+# ============================================
+docker-compose.override.yml
+.dockerignore
+
+# ============================================
+# MISCELLANEOUS
+# ============================================
+.git
+.agent/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
