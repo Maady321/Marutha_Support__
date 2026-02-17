@@ -3,139 +3,491 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Volunteer Profile Setup - Marutha Support</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <style>
-      body {
-        overflow-x: hidden;
-      }
-    </style>
+    <title>Volunteer Profile - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
   </head>
   <body>
     <div class="dashboard-container">
       <!-- Volunteer Sidebar -->
       <aside class="sidebar">
-        <a
-          href="dashboard_volunteer.html"
-          class="sidebar-brand"
-          style="display: flex; align-items: center; gap: 0.75rem"
-        >
-          <img
-            src="../static/images/logo.png"
-            alt="Marutha Support Logo"
-            style="width: 40px; height: 40px; object-fit: contain"
-          />
-          <span
-            style="
-              background: linear-gradient(
-                135deg,
-                #7ed957 0%,
-                #34d399 35%,
-                #22d3ee 65%,
-                #00a6e8 100%
-              );
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              font-weight: 700;
-            "
-            >Marutha Support</span
-          >
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
         </a>
 
         <nav class="sidebar-nav">
-          <a href="dashboard_volunteer.html" class="sidebar-link">Dashboard</a>
-          <a href="assigned_patients.html" class="sidebar-link"
-            >Assigned Patients</a
-          >
-          <a href="volunteer_tasks.html" class="sidebar-link">My Tasks</a>
-          <a href="volunteer_reports.html" class="sidebar-link">Reports</a>
+          <a href="dashboard_volunteer.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="assigned_patients.html" class="sidebar-link">
+            <i class="fas fa-hands-helping"></i>
+            Assigned Patients
+          </a>
+          <a href="volunteer_activities.html#tasks" class="sidebar-link">
+            <i class="fas fa-tasks"></i>
+            My Tasks
+          </a>
+          <a href="volunteer_activities.html#reports" class="sidebar-link">
+            <i class="fas fa-file-alt"></i>
+            Reports
+          </a>
+          <a href="chat_volunteer.html" class="sidebar-link">
+            <i class="fas fa-comments"></i>
+            Messages
+          </a>
           <div style="flex-grow: 1"></div>
-          <a href="setup_profile_volunteer.html" class="sidebar-link active"
-            >My Profile</a
+          <a href="manage_profile_volunteer.html#view" class="sidebar-link active">
+            <i class="fas fa-user-circle"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
           >
-          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
-            >Logout</a
-          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
         </nav>
       </aside>
 
       <!-- Main Content Area -->
       <main class="main-content">
-        <div class="container" style="max-width: 600px; margin: 4rem auto">
-          <div class="auth-box glass fade-in">
-            <h1 class="text-center" style="margin-bottom: 0.5rem">
-              Volunteer Profile
-            </h1>
-            <p
-              class="text-center"
-              style="color: var(--text-muted); margin-bottom: 2rem"
+        <header class="top-header">
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
             >
-              Set up your volunteer details
+              <i
+                class="fas fa-user-edit"
+                style="color: var(--hope-green); font-size: 1.8rem"
+              ></i>
+              My Profile
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Manage your volunteer profile and availability.
             </p>
-
-            <form action="dashboard_volunteer.html">
-              <div class="form-group">
-                <label for="name">Full Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  placeholder="Jane Smith"
-                />
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                Jane Smith
               </div>
-
-              <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  required
-                  placeholder="+1 234 567 8900"
-                />
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Senior Volunteer
               </div>
+            </div>
+            <div
+              class="profile-pic"
+              style="background: var(--hope-green); color: white"
+            >
+              JS
+            </div>
+          </div>
+        </header>
 
-              <div class="form-group">
-                <label for="availability">Availability</label>
-                <select id="availability" name="availability" required>
-                  <option value="full-time">Full Time</option>
-                  <option value="part-time">Part Time</option>
-                  <option value="weekends">Weekends Only</option>
-                  <option value="flexible">Flexible</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="skills">Skills / Experience</label>
-                <textarea
-                  id="skills"
-                  name="skills"
-                  placeholder="e.g., Patient care, Communication, First aid..."
-                ></textarea>
-              </div>
-
-              <div style="display: flex; gap: 1rem; margin-top: 2rem">
-                <button type="submit" class="btn" style="flex: 1">
-                  Save Profile
-                </button>
-                <a
-                  href="dashboard_volunteer.html"
-                  class="btn btn-secondary"
-                  style="flex: 1; text-align: center"
-                  >Cancel</a
+        <div class="container" style="padding: 0 64px 64px; max-width: 1000px">
+          <!-- Profile Edit Card -->
+          <div
+            class="card fade-in"
+            style="padding: 40px; border-top: 4px solid var(--hope-green)"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: start;
+                gap: 32px;
+                margin-bottom: 32px;
+              "
+            >
+              <!-- Avatar Upload -->
+              <div style="text-align: center">
+                <div
+                  class="profile-pic"
+                  style="
+                    width: 120px;
+                    height: 120px;
+                    font-size: 2.5rem;
+                    background: var(--hope-green);
+                    color: white;
+                    margin-bottom: 16px;
+                    box-shadow: var(--shadow-md);
+                  "
                 >
+                  JS
+                </div>
+                <button
+                  class="btn btn-sm btn-outline-lavender"
+                  style="width: 100%"
+                >
+                  <i class="fas fa-camera" style="margin-right: 8px"></i> Change
+                </button>
               </div>
-            </form>
+
+              <div style="flex: 1">
+                <h3
+                  style="
+                    margin-bottom: 24px;
+                    color: var(--medical-blue);
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                    padding-bottom: 16px;
+                  "
+                >
+                  Personal Details
+                </h3>
+
+                <form onsubmit="saveProfile(event)">
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 24px;
+                      margin-bottom: 24px;
+                    "
+                  >
+                    <div class="form-group">
+                      <label
+                        style="
+                          display: block;
+                          margin-bottom: 8px;
+                          color: var(--text-main);
+                          font-weight: 500;
+                        "
+                        >Full Name</label
+                      >
+                      <div style="position: relative">
+                        <i
+                          class="fas fa-user"
+                          style="
+                            position: absolute;
+                            left: 14px;
+                            top: 14px;
+                            color: var(--text-light);
+                          "
+                        ></i>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value="Jane Smith"
+                          required
+                          style="
+                            width: 100%;
+                            padding: 12px 12px 12px 40px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            outline: none;
+                          "
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label
+                        style="
+                          display: block;
+                          margin-bottom: 8px;
+                          color: var(--text-main);
+                          font-weight: 500;
+                        "
+                        >Phone Number</label
+                      >
+                      <div style="position: relative">
+                        <i
+                          class="fas fa-phone"
+                          style="
+                            position: absolute;
+                            left: 14px;
+                            top: 14px;
+                            color: var(--text-light);
+                          "
+                        ></i>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          value="+1 234 567 8900"
+                          required
+                          style="
+                            width: 100%;
+                            padding: 12px 12px 12px 40px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            outline: none;
+                          "
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label
+                        style="
+                          display: block;
+                          margin-bottom: 8px;
+                          color: var(--text-main);
+                          font-weight: 500;
+                        "
+                        >Email</label
+                      >
+                      <div style="position: relative">
+                        <i
+                          class="fas fa-envelope"
+                          style="
+                            position: absolute;
+                            left: 14px;
+                            top: 14px;
+                            color: var(--text-light);
+                          "
+                        ></i>
+                        <input
+                          type="email"
+                          value="jane.smith@volunteer.org"
+                          readonly
+                          style="
+                            width: 100%;
+                            padding: 12px 12px 12px 40px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            background: #f9fafb;
+                            outline: none;
+                          "
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label
+                        style="
+                          display: block;
+                          margin-bottom: 8px;
+                          color: var(--text-main);
+                          font-weight: 500;
+                        "
+                        >Designation</label
+                      >
+                      <div style="position: relative">
+                        <i
+                          class="fas fa-id-badge"
+                          style="
+                            position: absolute;
+                            left: 14px;
+                            top: 14px;
+                            color: var(--text-light);
+                          "
+                        ></i>
+                        <input
+                          type="text"
+                          value="Senior Volunteer"
+                          readonly
+                          style="
+                            width: 100%;
+                            padding: 12px 12px 12px 40px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            background: #f9fafb;
+                            outline: none;
+                          "
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <h3
+                    style="
+                      margin-bottom: 24px;
+                      margin-top: 32px;
+                      color: var(--medical-blue);
+                      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                      padding-bottom: 16px;
+                    "
+                  >
+                    Volunteer Preferences
+                  </h3>
+
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 24px;
+                      margin-bottom: 24px;
+                    "
+                  >
+                    <div class="form-group">
+                      <label
+                        style="
+                          display: block;
+                          margin-bottom: 8px;
+                          color: var(--text-main);
+                          font-weight: 500;
+                        "
+                        >Availability</label
+                      >
+                      <div style="position: relative">
+                        <i
+                          class="fas fa-clock"
+                          style="
+                            position: absolute;
+                            left: 14px;
+                            top: 14px;
+                            color: var(--text-light);
+                          "
+                        ></i>
+                        <select
+                          id="availability"
+                          name="availability"
+                          required
+                          style="
+                            width: 100%;
+                            padding: 12px 12px 12px 40px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            outline: none;
+                            background: white;
+                          "
+                        >
+                          <option value="full-time">Full Time</option>
+                          <option value="part-time">Part Time</option>
+                          <option value="weekends" selected>
+                            Weekends Only
+                          </option>
+                          <option value="flexible">Flexible</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label
+                        style="
+                          display: block;
+                          margin-bottom: 8px;
+                          color: var(--text-main);
+                          font-weight: 500;
+                        "
+                        >Preferred Areas</label
+                      >
+                      <div style="position: relative">
+                        <i
+                          class="fas fa-map-marker-alt"
+                          style="
+                            position: absolute;
+                            left: 14px;
+                            top: 14px;
+                            color: var(--text-light);
+                          "
+                        ></i>
+                        <select
+                          style="
+                            width: 100%;
+                            padding: 12px 12px 12px 40px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            outline: none;
+                            background: white;
+                          "
+                        >
+                          <option value="north">North District</option>
+                          <option value="south" selected>South District</option>
+                          <option value="any">Anywhere</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label
+                      style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                      "
+                      >Skills & Certifications</label
+                    >
+                    <textarea
+                      id="skills"
+                      name="skills"
+                      rows="3"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid var(--border-color);
+                        border-radius: 8px;
+                        outline: none;
+                        resize: vertical;
+                      "
+                    >
+Patient care, Communication, First aid certified, CPR</textarea
+                    >
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      gap: 1rem;
+                      margin-top: 32px;
+                      justify-content: flex-end;
+                    "
+                  >
+                    <a
+                      href="dashboard_volunteer.html"
+                      class="btn btn-outline-lavender"
+                      style="width: 120px; justify-content: center"
+                      >Cancel</a
+                    >
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      style="
+                        width: 160px;
+                        background: var(--hope-green);
+                        border-color: var(--hope-green);
+                      "
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </main>
     </div>
 
+    <script src="../static/js/app.js"></script>
     <script>
-      // Ensure volunteer role is stored
-      localStorage.setItem("userRole", "volunteer");
+      function saveProfile(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerText;
+        btn.innerText = "Saving...";
+        btn.disabled = true;
+
+        setTimeout(() => {
+          alert("Profile updated successfully!");
+          btn.innerText = originalText;
+          btn.disabled = false;
+        }, 1000);
+      }
     </script>
   </body>
 </html>

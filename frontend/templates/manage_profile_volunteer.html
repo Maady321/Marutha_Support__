@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volunteer Profile - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <style>
+      .tab-nav {
+        display: flex;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 32px;
+      }
+      .tab-btn {
+        padding: 16px 24px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+        font-size: 1rem;
+      }
+      .tab-btn:hover {
+        color: var(--hope-green);
+      }
+      .tab-btn.active {
+        color: var(--hope-green);
+        border-bottom-color: var(--hope-green);
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Volunteer Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_volunteer.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="assigned_patients.html" class="sidebar-link">
+            <i class="fas fa-hands-helping"></i>
+            Assigned Patients
+          </a>
+          <a href="volunteer_activities.html#tasks" class="sidebar-link">
+            <i class="fas fa-tasks"></i>
+            My Tasks
+          </a>
+          <a href="volunteer_activities.html#reports" class="sidebar-link">
+            <i class="fas fa-file-alt"></i>
+            Reports
+          </a>
+          <a href="chat_volunteer.html" class="sidebar-link">
+            <i class="fas fa-comments"></i>
+            Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a
+            href="#"
+            onclick="switchTab('view')"
+            class="sidebar-link active"
+            id="nav-profile"
+          >
+            <i class="fas fa-user-circle"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <header class="top-header">
+          <div>
+            <h2 style="font-size: 2rem; margin-bottom: 8px">
+              My Volunteer Profile
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Manage your volunteer profile and availability.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                Jane Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Senior Volunteer
+              </div>
+            </div>
+            <div
+              class="profile-pic"
+              style="background: var(--hope-green); color: white"
+            >
+              JS
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 64px 64px; max-width: 1200px">
+          <!-- Tab Navigation -->
+          <div class="tab-nav">
+            <button
+              class="tab-btn active"
+              onclick="switchTab('view')"
+              id="tab-view"
+            >
+              <i class="fas fa-user" style="margin-right: 8px"></i> View Profile
+            </button>
+            <button class="tab-btn" onclick="switchTab('edit')" id="tab-edit">
+              <i class="fas fa-edit" style="margin-right: 8px"></i> Edit Profile
+            </button>
+          </div>
+
+          <!-- TAB 1: VIEW PROFILE -->
+          <div id="content-view" class="tab-content active">
+            <!-- Profile Overview Card -->
+            <div
+              class="card fade-in"
+              style="
+                padding: 48px;
+                border-top: 6px solid var(--hope-green);
+                background: linear-gradient(to bottom, #fff, #f8fafc);
+                margin-bottom: 32px;
+              "
+            >
+              <div style="display: flex; gap: 48px; align-items: flex-start">
+                <div style="position: relative">
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 150px;
+                      height: 150px;
+                      font-size: 3.5rem;
+                      background: var(--hope-green);
+                      color: white;
+                      border: 4px solid white;
+                      box-shadow: 0 10px 25px rgba(66, 191, 157, 0.15);
+                    "
+                  >
+                    JS
+                  </div>
+                  <div
+                    style="
+                      position: absolute;
+                      bottom: 10px;
+                      right: 10px;
+                      width: 32px;
+                      height: 32px;
+                      background: #10b981;
+                      border: 3px solid white;
+                      border-radius: 50%;
+                    "
+                    title="Active"
+                  ></div>
+                </div>
+                <div style="flex: 1">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: start;
+                    "
+                  >
+                    <div>
+                      <h1
+                        style="
+                          font-size: 2.2rem;
+                          color: var(--hope-green);
+                          margin-bottom: 8px;
+                        "
+                      >
+                        Jane Smith
+                      </h1>
+                      <div
+                        style="
+                          font-size: 1.1rem;
+                          color: var(--text-muted);
+                          font-weight: 500;
+                          margin-bottom: 16px;
+                        "
+                      >
+                        Senior Volunteer • Palliative Care
+                      </div>
+                      <div
+                        style="display: flex; gap: 12px; margin-bottom: 24px"
+                      >
+                        <span
+                          class="badge"
+                          style="background: #f0fdf4; color: #15803d"
+                          >150+ Hours</span
+                        >
+                        <span
+                          class="badge"
+                          style="background: #eff6ff; color: #0284c7"
+                          >Weekends Only</span
+                        >
+                        <span
+                          class="badge"
+                          style="background: #fef3c7; color: #b45309"
+                          >Certified</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: repeat(3, 1fr);
+                      gap: 24px;
+                      margin-top: 16px;
+                      padding-top: 24px;
+                      border-top: 1px solid rgba(0, 0, 0, 0.05);
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Phone
+                      </div>
+                      <div style="font-weight: 600; color: var(--text-main)">
+                        +1 234 567 8900
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Email
+                      </div>
+                      <div style="font-weight: 600; color: var(--text-main)">
+                        jane.smith@volunteer.org
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Joined
+                      </div>
+                      <div style="font-weight: 600; color: var(--text-main)">
+                        January 2024
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="dashboard-grid"
+              style="padding: 0; gap: 32px; grid-template-columns: 2fr 1fr"
+            >
+              <div style="display: flex; flex-direction: column; gap: 32px">
+                <div class="card" style="padding: 32px">
+                  <h3 style="margin-bottom: 16px; color: var(--hope-green)">
+                    Skills & Certifications
+                  </h3>
+                  <p style="color: var(--text-secondary); line-height: 1.7">
+                    Patient care, Communication, First aid certified, CPR
+                    trained. Experienced in providing compassionate support to
+                    patients in palliative care settings.
+                  </p>
+                </div>
+                <div class="card" style="padding: 32px">
+                  <h3 style="margin-bottom: 24px; color: var(--hope-green)">
+                    Volunteer Stats
+                  </h3>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: repeat(3, 1fr);
+                      gap: 24px;
+                    "
+                  >
+                    <div
+                      style="
+                        text-align: center;
+                        padding: 16px;
+                        background: #f0fdf4;
+                        border-radius: 12px;
+                        border: 1px solid #bbf7d0;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 2rem;
+                          font-weight: 700;
+                          color: #15803d;
+                        "
+                      >
+                        42
+                      </div>
+                      <div style="font-size: 0.9rem; color: #14532d">
+                        Total Tasks
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        text-align: center;
+                        padding: 16px;
+                        background: #eff6ff;
+                        border-radius: 12px;
+                        border: 1px solid #bfdbfe;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 2rem;
+                          font-weight: 700;
+                          color: #1e40af;
+                        "
+                      >
+                        12
+                      </div>
+                      <div style="font-size: 0.9rem; color: #1e3a8a">
+                        Patients Supported
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        text-align: center;
+                        padding: 16px;
+                        background: #fffbeb;
+                        border-radius: 12px;
+                        border: 1px solid #fcd34d;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 2rem;
+                          font-weight: 700;
+                          color: #b45309;
+                        "
+                      >
+                        5.0
+                      </div>
+                      <div style="font-size: 0.9rem; color: #92400e">
+                        Avg. Rating
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 32px">
+                <div class="card" style="padding: 32px">
+                  <h3 style="margin-bottom: 16px; color: var(--hope-green)">
+                    Availability
+                  </h3>
+                  <p
+                    style="
+                      font-size: 0.9rem;
+                      color: var(--text-muted);
+                      margin-bottom: 24px;
+                    "
+                  >
+                    Current schedule preference
+                  </p>
+                  <div style="display: flex; flex-direction: column; gap: 12px">
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.95rem;
+                      "
+                    >
+                      <span style="color: var(--text-muted)">Mon - Fri</span>
+                      <span style="color: var(--text-muted)"
+                        >Not Available</span
+                      >
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.95rem;
+                      "
+                    >
+                      <span style="color: var(--text-main)">Saturday</span>
+                      <span style="font-weight: 600; color: var(--hope-green)"
+                        >10 AM - 4 PM</span
+                      >
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.95rem;
+                      "
+                    >
+                      <span style="color: var(--text-main)">Sunday</span>
+                      <span style="font-weight: 600; color: var(--hope-green)"
+                        >12 PM - 6 PM</span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="card" style="padding: 32px; background: #fafafa">
+                  <h3 style="margin-bottom: 16px; color: var(--hope-green)">
+                    Preferred Area
+                  </h3>
+                  <div style="display: flex; align-items: center; gap: 12px">
+                    <i
+                      class="fas fa-map-marker-alt"
+                      style="font-size: 1.5rem; color: var(--hope-green)"
+                    ></i>
+                    <div>
+                      <div style="font-weight: 600; color: var(--text-main)">
+                        South District
+                      </div>
+                      <div style="font-size: 0.85rem; color: var(--text-muted)">
+                        Primary service area
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: EDIT PROFILE -->
+          <div id="content-edit" class="tab-content">
+            <div
+              class="card fade-in"
+              style="padding: 40px; border-top: 4px solid var(--hope-green)"
+            >
+              <div
+                style="
+                  display: flex;
+                  align-items: start;
+                  gap: 32px;
+                  margin-bottom: 32px;
+                "
+              >
+                <div style="text-align: center">
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 120px;
+                      height: 120px;
+                      font-size: 2.5rem;
+                      background: var(--hope-green);
+                      color: white;
+                      margin-bottom: 16px;
+                      box-shadow: var(--shadow-md);
+                    "
+                  >
+                    JS
+                  </div>
+                  <button
+                    class="btn btn-sm btn-outline-lavender"
+                    style="width: 100%"
+                  >
+                    <i class="fas fa-camera" style="margin-right: 8px"></i>
+                    Change
+                  </button>
+                </div>
+
+                <div style="flex: 1">
+                  <h3
+                    style="
+                      margin-bottom: 24px;
+                      color: var(--medical-blue);
+                      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                      padding-bottom: 16px;
+                    "
+                  >
+                    Personal Details
+                  </h3>
+                  <form onsubmit="saveProfile(event)">
+                    <div
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 24px;
+                        margin-bottom: 24px;
+                      "
+                    >
+                      <div class="form-group">
+                        <label
+                          style="
+                            display: block;
+                            margin-bottom: 8px;
+                            color: var(--text-main);
+                            font-weight: 500;
+                          "
+                          >Full Name</label
+                        >
+                        <input
+                          type="text"
+                          value="Jane Smith"
+                          required
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                          "
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label
+                          style="
+                            display: block;
+                            margin-bottom: 8px;
+                            color: var(--text-main);
+                            font-weight: 500;
+                          "
+                          >Phone Number</label
+                        >
+                        <input
+                          type="tel"
+                          value="+1 234 567 8900"
+                          required
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                          "
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label
+                          style="
+                            display: block;
+                            margin-bottom: 8px;
+                            color: var(--text-main);
+                            font-weight: 500;
+                          "
+                          >Email</label
+                        >
+                        <input
+                          type="email"
+                          value="jane.smith@volunteer.org"
+                          readonly
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            background: #f9fafb;
+                          "
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label
+                          style="
+                            display: block;
+                            margin-bottom: 8px;
+                            color: var(--text-main);
+                            font-weight: 500;
+                          "
+                          >Designation</label
+                        >
+                        <input
+                          type="text"
+                          value="Senior Volunteer"
+                          readonly
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            background: #f9fafb;
+                          "
+                        />
+                      </div>
+                    </div>
+
+                    <h3
+                      style="
+                        margin-bottom: 24px;
+                        margin-top: 32px;
+                        color: var(--medical-blue);
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                        padding-bottom: 16px;
+                      "
+                    >
+                      Volunteer Preferences
+                    </h3>
+                    <div
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 24px;
+                        margin-bottom: 24px;
+                      "
+                    >
+                      <div class="form-group">
+                        <label
+                          style="
+                            display: block;
+                            margin-bottom: 8px;
+                            color: var(--text-main);
+                            font-weight: 500;
+                          "
+                          >Availability</label
+                        >
+                        <select
+                          required
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                          "
+                        >
+                          <option value="full-time">Full Time</option>
+                          <option value="part-time">Part Time</option>
+                          <option value="weekends" selected>
+                            Weekends Only
+                          </option>
+                          <option value="flexible">Flexible</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label
+                          style="
+                            display: block;
+                            margin-bottom: 8px;
+                            color: var(--text-main);
+                            font-weight: 500;
+                          "
+                          >Preferred Areas</label
+                        >
+                        <select
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                          "
+                        >
+                          <option value="north">North District</option>
+                          <option value="south" selected>South District</option>
+                          <option value="any">Anywhere</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label
+                        style="
+                          display: block;
+                          margin-bottom: 8px;
+                          color: var(--text-main);
+                          font-weight: 500;
+                        "
+                        >Skills & Certifications</label
+                      >
+                      <textarea
+                        rows="3"
+                        style="
+                          width: 100%;
+                          padding: 12px;
+                          border: 1px solid var(--border-color);
+                          border-radius: 8px;
+                          resize: vertical;
+                        "
+                      >
+Patient care, Communication, First aid certified, CPR</textarea
+                      >
+                    </div>
+
+                    <div
+                      style="
+                        display: flex;
+                        gap: 1rem;
+                        margin-top: 32px;
+                        justify-content: flex-end;
+                      "
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-outline-lavender"
+                        onclick="switchTab('view')"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                        style="
+                          background: var(--hope-green);
+                          border-color: var(--hope-green);
+                        "
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/manage_profile.js"></script>
+  </body>
+</html>

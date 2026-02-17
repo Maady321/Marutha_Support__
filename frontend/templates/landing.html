@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marutha Palliative | Compassionate Care and Support</title>
+    <!-- Fonts & Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/landing.css" />
+    <style>
+      /* Additional Landing Specific Tweaks */
+      .role-card {
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .role-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--medical-blue-light);
+      }
+      .role-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 24px;
+        transition: transform 0.3s ease;
+      }
+      .role-card:hover .role-icon {
+        transform: scale(1.1);
+      }
+      .nav-links .btn-primary {
+        background: var(--medical-blue);
+        border-color: var(--medical-blue);
+      }
+      .nav-links .btn-primary:hover {
+        background: #1e3a8a; /* darker blue */
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="container">
+      <nav
+        style="
+          padding: 20px 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <a
+          href="/"
+          class="logo"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--medical-blue);
+            text-decoration: none;
+          "
+        >
+          <i class="fas fa-hand-holding-heart" style="font-size: 2rem"></i>
+          <span>Marutha Palliative</span>
+        </a>
+        <div
+          class="nav-links"
+          style="display: flex; gap: 32px; align-items: center"
+        >
+          <a
+            href="#about"
+            style="
+              color: var(--text-main);
+              font-weight: 500;
+              text-decoration: none;
+            "
+            >About</a
+          >
+          <a
+            href="#services"
+            style="
+              color: var(--text-main);
+              font-weight: 500;
+              text-decoration: none;
+            "
+            >Services</a
+          >
+          <a
+            href="#roles"
+            style="
+              color: var(--text-main);
+              font-weight: 500;
+              text-decoration: none;
+            "
+            >Portals</a
+          >
+          <a
+            href="login.html"
+            style="
+              color: var(--medical-blue);
+              font-weight: 600;
+              text-decoration: none;
+            "
+            >Login</a
+          >
+          <a
+            href="register.html"
+            class="btn btn-primary"
+            style="padding: 12px 24px; border-radius: 50px"
+            >Get Started</a
+          >
+        </div>
+      </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="hero" style="padding: 80px 0 120px">
+      <div
+        class="container"
+        style="display: flex; align-items: center; gap: 80px"
+      >
+        <div class="hero-content" style="flex: 1">
+          <span
+            style="
+              background: var(--lavender-soft);
+              color: var(--medical-blue);
+              padding: 8px 16px;
+              border-radius: 50px;
+              font-size: 0.9rem;
+              font-weight: 600;
+              display: inline-block;
+              margin-bottom: 24px;
+            "
+          >
+            <i class="fas fa-heart" style="margin-right: 8px"></i> Compassionate
+            Palliative Care
+          </span>
+          <h1
+            style="
+              font-size: 3.5rem;
+              line-height: 1.1;
+              margin-bottom: 24px;
+              color: var(--text-main);
+            "
+          >
+            Dignity, Comfort, and
+            <span style="color: var(--medical-blue)">Peace of Mind.</span>
+          </h1>
+          <p
+            style="
+              font-size: 1.25rem;
+              color: var(--text-muted);
+              margin-bottom: 40px;
+              line-height: 1.6;
+            "
+          >
+            We provide specialized medical care and emotional support focused on
+            improving the quality of life for patients and their families. You
+            are not alone.
+          </p>
+          <div class="cta-group" style="display: flex; gap: 16px">
+            <a
+              href="register.html"
+              class="btn btn-primary"
+              style="padding: 16px 32px; font-size: 1.1rem; border-radius: 50px"
+              >Book Consultation</a
+            >
+            <a
+              href="#about"
+              class="btn btn-outline-lavender"
+              style="
+                padding: 16px 32px;
+                font-size: 1.1rem;
+                border-radius: 50px;
+                background: white;
+              "
+              >Learn More</a
+            >
+          </div>
+
+          <div
+            style="
+              margin-top: 48px;
+              display: flex;
+              align-items: center;
+              gap: 16px;
+            "
+          >
+            <div style="display: flex">
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 50%;
+                  background: #ccc;
+                  border: 2px solid white;
+                  margin-right: -10px;
+                  background-image: url(&quot;https://randomuser.me/api/portraits/women/44.jpg&quot;);
+                  background-size: cover;
+                "
+              ></div>
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 50%;
+                  background: #ccc;
+                  border: 2px solid white;
+                  margin-right: -10px;
+                  background-image: url(&quot;https://randomuser.me/api/portraits/men/32.jpg&quot;);
+                  background-size: cover;
+                "
+              ></div>
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 50%;
+                  background: #ccc;
+                  border: 2px solid white;
+                  margin-right: -10px;
+                  background-image: url(&quot;https://randomuser.me/api/portraits/women/68.jpg&quot;);
+                  background-size: cover;
+                "
+              ></div>
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 50%;
+                  background: var(--medical-blue);
+                  color: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.8rem;
+                  border: 2px solid white;
+                "
+              >
+                +2k
+              </div>
+            </div>
+            <p style="margin: 0; color: var(--text-muted); font-size: 0.95rem">
+              <strong>2,000+</strong> families supported this year.
+            </p>
+          </div>
+        </div>
+
+        <div class="hero-image" style="flex: 1; position: relative">
+          <div
+            style="
+              position: absolute;
+              top: -20px;
+              right: -20px;
+              width: 100px;
+              height: 100px;
+              background: var(--sunshine-yellow);
+              border-radius: 50%;
+              opacity: 0.2;
+              z-index: -1;
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              bottom: -40px;
+              left: -40px;
+              width: 150px;
+              height: 150px;
+              background: var(--medical-blue);
+              border-radius: 50%;
+              opacity: 0.1;
+              z-index: -1;
+            "
+          ></div>
+          <img
+            src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=1000&q=80"
+            alt="Doctor holding patient's hand"
+            style="
+              width: 100%;
+              border-radius: 24px;
+              box-shadow: 0 20px 40px rgba(45, 74, 138, 0.15);
+            "
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- Roles / Portals Section -->
+    <section
+      id="roles"
+      class="section"
+      style="background: #fcfcfd; padding: 100px 0"
+    >
+      <div class="container">
+        <div
+          class="section-header"
+          style="text-align: center; max-width: 700px; margin: 0 auto 60px"
+        >
+          <h2
+            style="
+              font-size: 2.5rem;
+              margin-bottom: 16px;
+              color: var(--medical-blue);
+            "
+          >
+            Dedicated Portals for Everyone
+          </h2>
+          <p style="font-size: 1.1rem; color: var(--text-muted)">
+            Whether you are seeking care, providing medical expertise, or
+            volunteering your time, we have a tailored experience for you.
+          </p>
+        </div>
+
+        <div
+          class="dashboard-grid"
+          style="
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+          "
+        >
+          <!-- Patient Card -->
+          <div class="role-card fade-in" style="animation-delay: 0.1s">
+            <div
+              class="role-icon"
+              style="
+                background: var(--lavender-soft);
+                color: var(--medical-blue);
+              "
+            >
+              <i class="fas fa-user-injured"></i>
+            </div>
+            <h3 style="margin-bottom: 12px; color: var(--text-main)">
+              For Patients & Families
+            </h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px; flex: 1">
+              Access your health logs, schedule appointments, and connect with
+              your care team from the comfort of your home.
+            </p>
+            <a
+              href="login.html"
+              class="btn btn-outline-lavender"
+              style="width: 100%; justify-content: center"
+              >Patient Login</a
+            >
+          </div>
+
+          <!-- Doctor Card -->
+          <div class="role-card fade-in" style="animation-delay: 0.2s">
+            <div class="role-icon" style="background: #eff6ff; color: #1e40af">
+              <i class="fas fa-user-md"></i>
+            </div>
+            <h3 style="margin-bottom: 12px; color: var(--text-main)">
+              For Medical Professionals
+            </h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px; flex: 1">
+              Manage patient records, track vitals, and coordinate care plans
+              efficiently with our advanced dashboard.
+            </p>
+            <a
+              href="login.html"
+              class="btn btn-primary"
+              style="
+                width: 100%;
+                justify-content: center;
+                background: #1e40af;
+                border-color: #1e40af;
+              "
+              >Doctor Login</a
+            >
+          </div>
+
+          <!-- Volunteer Card -->
+          <div class="role-card fade-in" style="animation-delay: 0.3s">
+            <div class="role-icon" style="background: #f0fdf4; color: #15803d">
+              <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <h3 style="margin-bottom: 12px; color: var(--text-main)">
+              For Volunteers
+            </h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px; flex: 1">
+              Make a difference by managing your tasks, reporting activities,
+              and supporting patients in your community.
+            </p>
+            <a
+              href="login.html"
+              class="btn btn-primary"
+              style="
+                width: 100%;
+                justify-content: center;
+                background: #15803d;
+                border-color: #15803d;
+              "
+              >Volunteer Login</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section services" style="padding: 100px 0">
+      <div class="container">
+        <div
+          class="section-header"
+          style="text-align: center; margin-bottom: 60px"
+        >
+          <h2
+            style="
+              font-size: 2.5rem;
+              margin-bottom: 16px;
+              color: var(--medical-blue);
+            "
+          >
+            Our Specialized Services
+          </h2>
+          <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto">
+            Comprehensive support tailored to physical, emotional, and social
+            needs.
+          </p>
+        </div>
+        <div class="services-grid">
+          <div
+            class="service-card role-card"
+            style="align-items: flex-start; text-align: left"
+          >
+            <i
+              class="far fa-heart"
+              style="
+                font-size: 2.5rem;
+                color: var(--medical-blue);
+                margin-bottom: 24px;
+              "
+            ></i>
+            <h3 style="margin-bottom: 12px">Symptom Management</h3>
+            <p style="color: var(--text-muted)">
+              Expert care to manage pain and other distressing symptoms,
+              ensuring comfort at every stage of the journey.
+            </p>
+          </div>
+          <div
+            class="service-card role-card"
+            style="align-items: flex-start; text-align: left"
+          >
+            <i
+              class="far fa-user-friends"
+              style="
+                font-size: 2.5rem;
+                color: var(--hope-green);
+                margin-bottom: 24px;
+              "
+            ></i>
+            <h3 style="margin-bottom: 12px">Family Support</h3>
+            <p style="color: var(--text-muted)">
+              Professional counseling and resources for family members to
+              navigate the emotional challenges of serious illness.
+            </p>
+          </div>
+          <div
+            class="service-card role-card"
+            style="align-items: flex-start; text-align: left"
+          >
+            <i
+              class="far fa-hospital"
+              style="
+                font-size: 2.5rem;
+                color: var(--sunshine-yellow);
+                margin-bottom: 24px;
+              "
+            ></i>
+            <h3 style="margin-bottom: 12px">Respite Care</h3>
+            <p style="color: var(--text-muted)">
+              Short-term relief for primary caregivers, giving them a
+              much-needed break while ensuring patient safety.
+            </p>
+          </div>
+          <div
+            class="service-card role-card"
+            style="align-items: flex-start; text-align: left"
+          >
+            <i
+              class="far fa-comments"
+              style="font-size: 2.5rem; color: #6366f1; margin-bottom: 24px"
+            ></i>
+            <h3 style="margin-bottom: 12px">Advance Care Planning</h3>
+            <p style="color: var(--text-muted)">
+              Guidance in making future medical decisions that align with your
+              personal values and long-term goals.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section container" style="padding: 100px 0">
+      <div class="about-grid">
+        <div class="about-image" style="position: relative">
+          <div
+            style="
+              position: absolute;
+              top: -20px;
+              left: -20px;
+              width: 100%;
+              height: 100%;
+              border: 2px solid var(--medical-blue);
+              border-radius: 24px;
+              z-index: -1;
+            "
+          ></div>
+          <img
+            src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1000&q=80"
+            alt="Supportive Care"
+            style="width: 100%; border-radius: 24px"
+          />
+        </div>
+        <div class="about-content">
+          <h2
+            style="
+              font-size: 2.5rem;
+              margin-bottom: 24px;
+              color: var(--medical-blue);
+            "
+          >
+            What is Palliative Care?
+          </h2>
+          <p
+            style="
+              font-size: 1.1rem;
+              line-height: 1.8;
+              color: var(--text-muted);
+              margin-bottom: 32px;
+            "
+          >
+            Palliative care is specialized medical care for people living with a
+            serious illness. This type of care is focused on providing relief
+            from the symptoms and stress of the illness. The goal is to improve
+            quality of life for both the patient and the family.
+          </p>
+          <ul class="icon-list">
+            <li>
+              <i class="far fa-circle-check"></i>
+              <span
+                >Improve quality of life for both the patient and the
+                family.</span
+              >
+            </li>
+            <li>
+              <i class="far fa-circle-check"></i>
+              <span>Extra layer of support along with curative treatment.</span>
+            </li>
+            <li>
+              <i class="far fa-circle-check"></i>
+              <span>Provided by a specially-trained team of specialists.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section
+      class="section container"
+      style="padding: 100px 0; text-align: center"
+    >
+      <div
+        class="testimonial-card"
+        style="
+          background: var(--lavender-soft);
+          padding: 60px;
+          border-radius: 24px;
+          position: relative;
+          max-width: 900px;
+          margin: 0 auto;
+        "
+      >
+        <i
+          class="fas fa-quote-left"
+          style="
+            font-size: 3rem;
+            color: var(--medical-blue);
+            opacity: 0.1;
+            position: absolute;
+            top: 40px;
+            left: 40px;
+          "
+        ></i>
+        <p
+          style="
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            font-style: italic;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+          "
+        >
+          "The team at Marutha Palliative didn't just treat the illness; they
+          treated our whole family. They brought light and comfort to our
+          darkest days."
+        </p>
+        <div
+          style="
+            font-weight: 700;
+            color: var(--medical-blue);
+            font-size: 1.2rem;
+          "
+        >
+          The Mitchell Family
+        </div>
+        <div
+          style="
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+          "
+        >
+          Family Testimonial
+        </div>
+      </div>
+    </section>
+
+    <!-- Emergency Contact Section -->
+    <section id="emergency" class="container" style="padding-bottom: 100px">
+      <div
+        class="emergency"
+        style="
+          background: var(--medical-blue-light);
+          border-radius: 24px;
+          padding: 60px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 32px;
+        "
+      >
+        <div class="emergency-info" style="flex: 1; min-width: 300px">
+          <h2
+            style="
+              font-size: 2rem;
+              color: var(--medical-blue);
+              margin-bottom: 12px;
+            "
+          >
+            Need Immediate Support?
+          </h2>
+          <p style="font-size: 1.1rem; color: var(--text-muted)">
+            Our care team is available 24/7 for urgent consultations.
+          </p>
+        </div>
+        <div style="text-align: right; flex-shrink: 0">
+          <div
+            class="phone-number"
+            style="
+              font-size: 2.5rem;
+              font-weight: 800;
+              color: var(--medical-blue);
+            "
+          >
+            1-800-MARUTHA
+          </div>
+          <a
+            href="login.html"
+            class="btn btn-primary"
+            style="margin-top: 16px; padding: 14px 28px; border-radius: 50px"
+            >Request Urgent Visit</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      style="
+        background: var(--medical-blue);
+        padding: 80px 0 40px;
+        color: white;
+      "
+    >
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <a
+              href="/"
+              class="logo"
+              style="
+                color: white;
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 1.5rem;
+                font-weight: 700;
+                text-decoration: none;
+              "
+            >
+              <i class="fas fa-hand-holding-heart"></i>
+              <span>Marutha Palliative</span>
+            </a>
+            <p
+              style="
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 1rem;
+                line-height: 1.6;
+              "
+            >
+              Empowering lives through compassionate care and professional
+              medical support. We are dedicated to comfort, dignity, and peace.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#services">Our Services</a></li>
+              <li><a href="#roles">Portals</a></li>
+              <li><a href="register.html">Sign Up</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul class="footer-links">
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Follow Us</h4>
+            <div style="display: flex; gap: 16px; margin-top: 16px">
+              <a
+                href="#"
+                style="
+                  color: white;
+                  font-size: 1.2rem;
+                  background: rgba(255, 255, 255, 0.1);
+                  width: 40px;
+                  height: 40px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 50%;
+                  transition: background 0.3s;
+                "
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                href="#"
+                style="
+                  color: white;
+                  font-size: 1.2rem;
+                  background: rgba(255, 255, 255, 0.1);
+                  width: 40px;
+                  height: 40px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 50%;
+                  transition: background 0.3s;
+                "
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                href="#"
+                style="
+                  color: white;
+                  font-size: 1.2rem;
+                  background: rgba(255, 255, 255, 0.1);
+                  width: 40px;
+                  height: 40px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 50%;
+                  transition: background 0.3s;
+                "
+                ><i class="fab fa-twitter"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2024 Marutha Palliative Care Service. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

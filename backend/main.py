@@ -1,58 +1,79 @@
-# Import system libraries for path management
-import sys
-import os
+from fastapi import FastAPI  # Import FastAPI framework to create the API
+from fastapi.staticfiles import StaticFiles  # Import StaticFiles for serving static files
+from fastapi.middleware.cors import CORSMiddleware  # Import CORSMiddleware for handling Cross-Origin Resource Sharing
+from backend import auth, database, models  # Import application modules: auth, database, and models
+from backend.routers import users, clinical, chats  # Import router modules from the backend.routers package
+from backend.socket_io import sio_app  # Import Socket.io application
 
-# Add the project's parent directory to the system path so imports work correctly
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Create all database tables defined in models using the database engine
+models.Base.metadata.create_all(bind=database.engine)
 
-# Import FastAPI framework and its core utilities
-from fastapi import FastAPI
+# Initialize the FastAPI application with a custom title
+app = FastAPI(title="Marutha Support API")
 
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
+# Mount Socket.io app
+app.mount("/socket.io", sio_app)
 
-# Import local backend modules (database connection, models, and auth logic)
-from backend import models, database, auth
-
-# Import specialized API routers for different features
-from backend.routers import patients, doctors, volunteers, chats, reports, consultations, vitals
-
-# initialize the core FastAPI application
-# this 'app' variable is the heart of our backend
-app = FastAPI(
-    title="Marutha Support API",
-    description="A human-friendly backend for health coordination",
-    version="1.1.0"
-)
-
-# configure 'CORS' so our frontend (website) can safely talk to this backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],           # allow all websites for now (good for development)
+    allow_origins=[
+        "http://127.0.0.1:5505",
+        "http://localhost:5505",
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],           # allow all types of requests (GET, POST, etc.)
-    allow_headers=["*"],           # allow all custom headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# mount the folder where medical reports are saved so they can be viewed online
-app.mount("/uploaded_reports", StaticFiles(directory="uploaded_reports"), name="uploaded_reports")
+from fastapi import Request
+from fastapi.responses import JSONResponse
+import traceback
 
+@app.middleware("http")
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        with open("crash_log.txt", "a") as f:
+            f.write(f"\nCRASH at {request.url}\n")
+            f.write(traceback.format_exc())
+        return JSONResponse(status_code=500, content={"detail": str(e)})
 
-# register all our feature-specific routes (patients, doctors, etc.)
-app.include_router(auth.router) # default prefix or no prefix as per original
-app.include_router(patients.router)
-app.include_router(doctors.router)
-app.include_router(chats.router)
-app.include_router(volunteers.router)
-app.include_router(reports.router)
-app.include_router(consultations.router)
-app.include_router(vitals.router)
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"GLOBAL CRASH: {exc}")
+    traceback.print_exc()
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error", "error": str(exc)},
+    )
 
+# Mount the 'uploaded_reports' directory to serve report files under the '/uploaded_reports' path
+app.mount("/uploaded_reports", StaticFiles(directory="uploaded_reports"), name="reports")
 
-# basic welcome message when someone visits the home URL
+# Include the authentication router
+app.include_router(auth.router)
+# Include the patients router
+app.include_router(users.patients_router)
+# Include the doctors router
+app.include_router(users.doctors_router)
+# Include the volunteers router
+app.include_router(users.volunteers_router)
+# Include the consultations router
+app.include_router(clinical.consult_router)
+# Include the vitals router
+app.include_router(clinical.vitals_router)
+# Include the reports router
+app.include_router(clinical.reports_router)
+# Include the chat router
+app.include_router(chats.chat_router)
+
+# Define the root endpoint for the API
 @app.get("/")
-def welcome_message():
-    return {
-        "message": "Welcome to the Marutha Support Platform!",
-        "status": "Online and Ready"
-    }
+def home():
+    # Return a JSON response confirming the API is running
+    return {"message": "Marutha Support API is running!"}

@@ -4,10 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Volunteer Dashboard - Marutha Support</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
     <style>
-      body {
-        overflow-x: hidden;
+      /* Specific Volunteer Dashboard Styles override or addition */
+      .volunteer-header-icon {
+        color: var(--hope-green);
+      }
+      .stat-card.volunteer-accent {
+        border-left: 4px solid var(--hope-green);
+      }
+      .text-green {
+        color: var(--hope-green);
+      }
+      .bg-green-soft {
+        background-color: #f0fdf4;
+        color: #15803d;
       }
     </style>
   </head>
@@ -15,195 +32,393 @@
     <div class="dashboard-container">
       <!-- Volunteer Sidebar -->
       <aside class="sidebar">
-        <a
-          href="dashboard_volunteer.html"
-          class="sidebar-brand"
-          style="display: flex; align-items: center; gap: 0.75rem"
-        >
-          <img
-            src="../static/images/logo.png"
-            alt="Marutha Support Logo"
-            style="width: 40px; height: 40px; object-fit: contain"
-          />
-          <span
-            style="
-              background: linear-gradient(
-                135deg,
-                #7ed957 0%,
-                #34d399 35%,
-                #22d3ee 65%,
-                #00a6e8 100%
-              );
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              font-weight: 700;
-            "
-            >Marutha Support</span
-          >
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
         </a>
 
         <nav class="sidebar-nav">
-          <a href="dashboard_volunteer.html" class="sidebar-link active"
-            >Dashboard</a
-          >
-          <a href="assigned_patients.html" class="sidebar-link"
-            >Assigned Patients</a
-          >
-          <a href="volunteer_tasks.html" class="sidebar-link">My Tasks</a>
-          <a href="volunteer_reports.html" class="sidebar-link">Reports</a>
+          <a href="dashboard_volunteer.html" class="sidebar-link active">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="assigned_patients.html" class="sidebar-link">
+            <i class="fas fa-hands-helping"></i>
+            Assigned Patients
+          </a>
+          <a href="volunteer_activities.html#tasks" class="sidebar-link">
+            <i class="fas fa-tasks"></i>
+            My Tasks
+          </a>
+          <a href="volunteer_activities.html#reports" class="sidebar-link">
+            <i class="fas fa-file-alt"></i>
+            Reports
+          </a>
+          <a href="chat_volunteer.html" class="sidebar-link">
+            <i class="fas fa-comments"></i>
+            Messages
+          </a>
           <div style="flex-grow: 1"></div>
-          <a href="setup_profile_volunteer.html" class="sidebar-link"
-            >My Profile</a
+          <a href="manage_profile_volunteer.html#view" class="sidebar-link">
+            <i class="fas fa-user-circle"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
           >
-          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
-            >Logout</a
-          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
         </nav>
       </aside>
 
       <!-- Main Content Area -->
       <main class="main-content">
         <header class="top-header">
-          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
-            Volunteer Dashboard
-          </h2>
-          <div class="profile-snippet">
-            <div
-              style="text-align: right; display: flex; flex-direction: column"
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
             >
-              <span style="font-weight: 700; font-size: 0.95rem"
-                >Jane Smith</span
+              <i
+                class="fas fa-hand-holding-heart volunteer-header-icon"
+                style="font-size: 1.8rem"
+              ></i>
+              Volunteer Dashboard
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Welcome back, Jane. Thank you for your service today.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
               >
-              <span style="font-size: 0.8rem; color: var(--text-muted)"
-                >Volunteer</span
-              >
+                Jane Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Senior Volunteer
+              </div>
             </div>
-            <div class="profile-pic" style="background: var(--green-gradient)">
+            <div
+              class="profile-pic"
+              style="background: var(--hope-green); color: white"
+            >
               JS
             </div>
           </div>
         </header>
 
-        <div class="container" style="max-width: 1400px; padding: 2rem">
-          <!-- Stats Cards -->
-          <div class="stats-grid">
-            <div class="stat-card">
+        <div class="container" style="padding: 0 64px 64px">
+          <!-- Stats Grid -->
+          <div class="stats-grid" style="padding: 0; margin-bottom: 40px">
+            <div
+              class="card stat-card fade-in volunteer-accent"
+              style="animation-delay: 0.1s"
+            >
               <div class="stat-title">Assigned Patients</div>
-              <div class="stat-value" style="color: var(--primary)">5</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-title">Tasks Completed</div>
-              <div class="stat-value" style="color: var(--accent-green)">
-                23
+              <div class="stat-value text-green">5</div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                <i class="fas fa-user-check" style="margin-right: 4px"></i>
+                Active cases
               </div>
             </div>
-            <div class="stat-card">
-              <div class="stat-title">Pending Tasks</div>
-              <div class="stat-value" style="color: var(--warning)">3</div>
+            <div
+              class="card stat-card fade-in"
+              style="
+                animation-delay: 0.2s;
+                border-left: 4px solid var(--sunshine-yellow);
+              "
+            >
+              <div class="stat-title">Tasks Completed</div>
+              <div class="stat-value" style="color: #b45309">23</div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                This month
+              </div>
             </div>
-            <div class="stat-card">
-              <div class="stat-title">Hours This Month</div>
-              <div class="stat-value" style="color: var(--accent-blue)">42</div>
+            <div
+              class="card stat-card fade-in"
+              style="animation-delay: 0.3s; border-left: 4px solid #ef4444"
+            >
+              <div class="stat-title">Pending Tasks</div>
+              <div class="stat-value" style="color: #dc2626">3</div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                Due today
+              </div>
+            </div>
+            <div
+              class="card stat-card fade-in"
+              style="
+                animation-delay: 0.4s;
+                border-left: 4px solid var(--medical-blue);
+              "
+            >
+              <div class="stat-title">Volunteer Hours</div>
+              <div class="stat-value" style="color: var(--medical-blue)">
+                42
+              </div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                <i class="fas fa-clock" style="margin-right: 4px"></i> Total
+                logged
+              </div>
             </div>
           </div>
 
-          <!-- Quick Actions & Recent Activity -->
-          <div class="grid" style="margin-top: 1rem">
-            <div class="card glass delay-1">
-              <h3>Quick Actions</h3>
+          <!-- Main Layout Grid -->
+          <div
+            class="dashboard-grid"
+            style="padding: 0; gap: 32px; grid-template-columns: 2fr 1fr"
+          >
+            <!-- Today's Schedule -->
+            <div class="card fade-in" style="padding: 32px">
               <div
                 style="
                   display: flex;
-                  gap: 1rem;
-                  flex-wrap: wrap;
-                  margin-top: 1rem;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 24px;
                 "
               >
-                <a href="assigned_patients.html" class="btn">View Patients</a>
-                <a href="volunteer_tasks.html" class="btn btn-secondary"
-                  >Check Tasks</a
-                >
-                <a href="volunteer_reports.html" class="btn btn-secondary"
-                  >Submit Report</a
+                <h3 style="color: var(--medical-blue)">Today's Schedule</h3>
+                <a
+                  href="volunteer_activities.html#tasks"
+                  class="btn btn-outline-lavender"
+                  style="padding: 8px 16px; font-size: 0.9rem"
+                  >View All</a
                 >
               </div>
-            </div>
 
-            <div class="card glass delay-2">
-              <h3>Today's Schedule</h3>
-              <div style="margin-top: 1rem">
+              <div style="display: flex; flex-direction: column; gap: 16px">
                 <div
+                  class="card"
                   style="
-                    margin-bottom: 1rem;
-                    padding-bottom: 1rem;
-                    border-bottom: 1px solid var(--divider);
+                    padding: 16px;
+                    border: 1px solid rgba(0, 0, 0, 0.05);
+                    display: flex;
+                    gap: 16px;
+                    align-items: center;
                   "
                 >
-                  <p style="margin-bottom: 0.5rem">
-                    <strong>Visit John Doe</strong>
-                  </p>
-                  <span
-                    class="timestamp"
-                    style="color: var(--text-muted); font-size: 0.8rem"
-                    >10:00 AM - Check vitals</span
+                  <div
+                    style="
+                      width: 50px;
+                      height: 50px;
+                      background: #f0fdf4;
+                      border-radius: 12px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      color: var(--hope-green);
+                      font-size: 1.2rem;
+                      flex-shrink: 0;
+                    "
                   >
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        font-weight: 600;
+                        color: var(--text-main);
+                        margin-bottom: 4px;
+                      "
+                    >
+                      Home Visit: John Doe
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted)">
+                      10:00 AM - 11:30 AM • Vitals Check & Support
+                    </div>
+                  </div>
+                  <button class="btn btn-sm btn-outline-lavender">View</button>
                 </div>
-                <div>
-                  <p style="margin-bottom: 0.5rem">
-                    <strong>Call Sarah Lee</strong>
-                  </p>
-                  <span
-                    class="timestamp"
-                    style="color: var(--text-muted); font-size: 0.8rem"
-                    >2:00 PM - Follow-up</span
+
+                <div
+                  class="card"
+                  style="
+                    padding: 16px;
+                    border: 1px solid rgba(0, 0, 0, 0.05);
+                    display: flex;
+                    gap: 16px;
+                    align-items: center;
+                  "
+                >
+                  <div
+                    style="
+                      width: 50px;
+                      height: 50px;
+                      background: #fffbeb;
+                      border-radius: 12px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      color: #b45309;
+                      font-size: 1.2rem;
+                      flex-shrink: 0;
+                    "
                   >
+                    <i class="fas fa-phone-alt"></i>
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        font-weight: 600;
+                        color: var(--text-main);
+                        margin-bottom: 4px;
+                      "
+                    >
+                      Call: Sarah Lee
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted)">
+                      2:00 PM • Weekly Follow-up
+                    </div>
+                  </div>
+                  <button class="btn btn-sm btn-outline-lavender">Call</button>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Recent Reports -->
-          <div style="margin-top: 2rem">
-            <h3 style="margin-bottom: 1rem; color: var(--text-primary)">
-              Recent Activity
-            </h3>
+            <!-- Quick Actions & Notifications -->
+            <div style="display: flex; flex-direction: column; gap: 32px">
+              <!-- Quick Actions -->
+              <div
+                class="card"
+                style="
+                  padding: 32px;
+                  background: linear-gradient(
+                    135deg,
+                    var(--hope-green),
+                    #10b981
+                  );
+                  color: white;
+                "
+              >
+                <h3 style="margin-bottom: 16px; color: white">Quick Actions</h3>
+                <div
+                  style="display: grid; grid-template-columns: 1fr; gap: 12px"
+                >
+                  <a
+                    href="volunteer_activities.html#reports"
+                    class="btn"
+                    style="
+                      background: rgba(255, 255, 255, 0.2);
+                      color: white;
+                      border: 1px solid rgba(255, 255, 255, 0.3);
+                      justify-content: flex-start;
+                    "
+                  >
+                    <i
+                      class="fas fa-plus-circle"
+                      style="margin-right: 12px"
+                    ></i>
+                    Log Activity / Report
+                  </a>
+                  <a
+                    href="assigned_patients.html"
+                    class="btn"
+                    style="
+                      background: rgba(255, 255, 255, 0.2);
+                      color: white;
+                      border: 1px solid rgba(255, 255, 255, 0.3);
+                      justify-content: flex-start;
+                    "
+                  >
+                    <i class="fas fa-user-plus" style="margin-right: 12px"></i>
+                    View New Patients
+                  </a>
+                </div>
+              </div>
 
-            <div class="table-container fade-in">
-              <table class="custom-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Patient</th>
-                    <th>Activity</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Today</td>
-                    <td><span style="font-weight: 600">John Doe</span></td>
-                    <td>Vitals Check</td>
-                    <td><span class="badge badge-active">Completed</span></td>
-                  </tr>
-                  <tr>
-                    <td>Yesterday</td>
-                    <td><span style="font-weight: 600">Sarah Lee</span></td>
-                    <td>Medication Reminder</td>
-                    <td><span class="badge badge-active">Completed</span></td>
-                  </tr>
-                  <tr>
-                    <td>Jan 25</td>
-                    <td><span style="font-weight: 600">David Wilson</span></td>
-                    <td>Home Visit</td>
-                    <td><span class="badge badge-mid">Pending</span></td>
-                  </tr>
-                </tbody>
-              </table>
+              <!-- Recent Activity Feed -->
+              <div class="card" style="padding: 32px">
+                <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
+                  Recent Activity
+                </h3>
+                <div class="table-container">
+                  <table class="custom-table" style="font-size: 0.9rem">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div style="font-weight: 600">John Doe</div>
+                          <div
+                            style="font-size: 0.8rem; color: var(--text-muted)"
+                          >
+                            Vitals Check
+                          </div>
+                        </td>
+                        <td style="text-align: right">
+                          <span class="badge bg-green-soft">Completed</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div style="font-weight: 600">Sarah Lee</div>
+                          <div
+                            style="font-size: 0.8rem; color: var(--text-muted)"
+                          >
+                            Med Reminder
+                          </div>
+                        </td>
+                        <td style="text-align: right">
+                          <span class="badge bg-green-soft">Completed</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div style="text-align: center; margin-top: 16px">
+                    <a
+                      href="#"
+                      style="
+                        font-size: 0.85rem;
+                        color: var(--medical-blue);
+                        font-weight: 500;
+                      "
+                      >View History</a
+                    >
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
     </div>
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/dashboard_volunteer.js"></script>
   </body>
 </html>

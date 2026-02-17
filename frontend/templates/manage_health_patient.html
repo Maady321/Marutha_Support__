@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Health Management - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <style>
+      .tab-nav {
+        display: flex;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 32px;
+      }
+      .tab-btn {
+        padding: 16px 24px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+        font-size: 1rem;
+      }
+      .tab-btn:hover {
+        color: var(--medical-blue);
+      }
+      .tab-btn.active {
+        color: var(--medical-blue);
+        border-bottom-color: var(--medical-blue);
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Log Specific Styles */
+      .mood-badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .mood-peaceful {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .mood-stable {
+        background: #eff6ff;
+        color: #1e40af;
+      }
+      .mood-tired {
+        background: #f3f4f6;
+        color: #374151;
+      }
+
+      /* Doctor Card Styles */
+      .doctor-card {
+        transition: all 0.3s ease;
+      }
+      .doctor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Patient Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_patient.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_patient.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a
+            href="#"
+            onclick="switchTab('appointments')"
+            class="sidebar-link"
+            id="nav-appointments"
+          >
+            <i class="fas fa-calendar-alt"></i>
+            Appointments
+          </a>
+          <a
+            href="#"
+            onclick="switchTab('logs')"
+            class="sidebar-link"
+            id="nav-logs"
+          >
+            <i class="fas fa-notes-medical"></i>
+            Health Logs
+          </a>
+          <a href="chat.html" class="sidebar-link">
+            <i class="fas fa-comment-medical"></i>
+            Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a href="manage_profile_patient.html#view" class="sidebar-link">
+            <i class="fas fa-cog"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header">
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
+            >
+              <i
+                class="fas fa-heartbeat"
+                style="color: var(--medical-blue)"
+              ></i>
+              My Health Management
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Track your wellness and coordinate with your care team.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                John Doe
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Early Recovery
+              </div>
+            </div>
+            <div class="profile-pic">JD</div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 64px 64px; max-width: 1400px">
+          <!-- Tab Navigation -->
+          <div class="tab-nav">
+            <button
+              class="tab-btn active"
+              onclick="switchTab('logs')"
+              id="tab-logs"
+            >
+              <i class="fas fa-notes-medical" style="margin-right: 8px"></i>
+              Daily Check-ins
+            </button>
+            <button
+              class="tab-btn"
+              onclick="switchTab('appointments')"
+              id="tab-appointments"
+            >
+              <i class="fas fa-calendar-alt" style="margin-right: 8px"></i>
+              Appointments
+            </button>
+            <button
+              class="tab-btn"
+              onclick="switchTab('find-doctor')"
+              id="tab-find-doctor"
+            >
+              <i class="fas fa-user-md" style="margin-right: 8px"></i> Find
+              Specialists
+            </button>
+          </div>
+
+          <!-- TAB 1: HEALTH LOGS -->
+          <div id="content-logs" class="tab-content active">
+            <div
+              class="dashboard-grid"
+              style="grid-template-columns: 1fr 2fr; padding: 0; gap: 32px"
+            >
+              <!-- Left: New Entry Form -->
+              <div>
+                <div
+                  class="card fade-in"
+                  style="padding: 32px; border-top: 4px solid var(--hope-green)"
+                >
+                  <h3 style="margin-bottom: 24px">How are you today?</h3>
+                  <form onsubmit="submitLog(event)">
+                    <div class="form-group">
+                      <label>Comfort Level (1-10)</label>
+                      <div
+                        style="display: flex; align-items: center; gap: 16px"
+                      >
+                        <input
+                          type="range"
+                          min="1"
+                          max="10"
+                          value="5"
+                          id="pain_range"
+                          style="flex: 1"
+                          oninput="updatePainValue(this.value)"
+                        />
+                        <span
+                          id="pain_val"
+                          style="font-weight: 700; color: var(--medical-blue)"
+                          >5</span
+                        >
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Current Mood</label>
+                      <select
+                        id="mood_select"
+                        style="
+                          width: 100%;
+                          padding: 12px;
+                          border-radius: 8px;
+                          border: 1px solid var(--border-color);
+                        "
+                      >
+                        <option>Peaceful</option>
+                        <option selected>Stable</option>
+                        <option>Restless</option>
+                        <option>Tired</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Notes</label>
+                      <textarea
+                        rows="3"
+                        style="
+                          width: 100%;
+                          padding: 12px;
+                          border-radius: 8px;
+                          border: 1px solid var(--border-color);
+                        "
+                        placeholder="Any specific concerns?"
+                      ></textarea>
+                    </div>
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      style="width: 100%"
+                    >
+                      Submit Check-in
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Right: History -->
+              <div>
+                <div class="card fade-in" style="padding: 32px">
+                  <h3 style="margin-bottom: 24px; color: var(--medical-blue)">
+                    Check-in History
+                  </h3>
+                  <div
+                    class="table-container"
+                    style="border: 1px solid rgba(0, 0, 0, 0.05)"
+                  >
+                    <table class="custom-table">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Mood</th>
+                          <th>Pain</th>
+                          <th>Notes</th>
+                        </tr>
+                      </thead>
+                      <tbody id="logs-table-body">
+                        <!-- Data fetched properly -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: APPOINTMENTS -->
+          <div id="content-appointments" class="tab-content">
+            <div class="card fade-in" style="padding: 32px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 24px;
+                "
+              >
+                <h3 style="color: var(--medical-blue)">My Scheduled Care</h3>
+                <button
+                  class="btn btn-outline-lavender"
+                  onclick="switchTab('find-doctor')"
+                >
+                  Book New
+                </button>
+              </div>
+
+              <div
+                id="appointments-grid"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                  gap: 24px;
+                "
+              >
+                <!-- Fetched appointments -->
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: FIND DOCTOR -->
+          <div id="content-find-doctor" class="tab-content">
+            <div
+              class="card fade-in"
+              style="
+                padding: 32px;
+                background: linear-gradient(
+                  to right,
+                  #fff,
+                  var(--lavender-soft)
+                );
+                margin-bottom: 32px;
+              "
+            >
+              <h3>Find the Right Care</h3>
+              <p style="color: var(--text-muted)">
+                Connect with specialists who understand your journey.
+              </p>
+            </div>
+
+            <div
+              id="doctor-grid"
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 32px;
+              "
+            >
+              <!-- Fetched doctors -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/manage_health.js"></script>
+  </body>
+</html>

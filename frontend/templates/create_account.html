@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account - Marutha Support</title>
+    <!-- Fonts & Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/auth.css" />
+  </head>
+  <body>
+    <div class="login-wrapper">
+      <div class="login-container">
+        <div class="login-box fade-in" style="max-width: 500px">
+          <div class="logo-section">
+            <a href="../landing.html" style="text-decoration: none">
+              <i
+                class="fas fa-hand-holding-heart"
+                style="
+                  font-size: 3rem;
+                  color: var(--medical-blue);
+                  margin-bottom: 16px;
+                "
+              ></i>
+            </a>
+            <h1>Create Account</h1>
+            <p id="role-subtitle">Join us as a Patient</p>
+          </div>
+
+          <form id="registerForm">
+            <input type="hidden" id="role" name="role" value="patient" />
+
+            <div class="form-group">
+              <label for="fullname">Full Name</label>
+              <div style="position: relative">
+                <i
+                  class="fas fa-user"
+                  style="
+                    position: absolute;
+                    left: 14px;
+                    top: 14px;
+                    color: var(--text-light);
+                  "
+                ></i>
+                <input
+                  type="text"
+                  id="fullname"
+                  required
+                  placeholder="John Doe"
+                  style="padding-left: 40px"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <div style="position: relative">
+                <i
+                  class="fas fa-envelope"
+                  style="
+                    position: absolute;
+                    left: 14px;
+                    top: 14px;
+                    color: var(--text-light);
+                  "
+                ></i>
+                <input
+                  type="email"
+                  id="email"
+                  required
+                  placeholder="you@example.com"
+                  style="padding-left: 40px"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <div style="position: relative">
+                <i
+                  class="fas fa-lock"
+                  style="
+                    position: absolute;
+                    left: 14px;
+                    top: 14px;
+                    color: var(--text-light);
+                  "
+                ></i>
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  placeholder="••••••••"
+                  style="padding-left: 40px"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <div style="position: relative">
+                <i
+                  class="fas fa-check-circle"
+                  style="
+                    position: absolute;
+                    left: 14px;
+                    top: 14px;
+                    color: var(--text-light);
+                  "
+                ></i>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  required
+                  placeholder="••••••••"
+                  style="padding-left: 40px"
+                />
+              </div>
+            </div>
+
+            <div class="checkbox-wrapper" style="margin-bottom: 24px">
+              <input type="checkbox" id="terms" required />
+              <label
+                for="terms"
+                style="
+                  margin: 0;
+                  font-size: 0.85rem;
+                  color: var(--text-secondary);
+                "
+              >
+                I agree to the
+                <a href="#" class="link-text">Terms of Service</a> and
+                <a href="#" class="link-text">Privacy Policy</a>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%">
+              Sign Up
+            </button>
+          </form>
+
+          <div class="divider">
+            <span>Already have an account?</span>
+          </div>
+
+          <a
+            href="login.html"
+            class="btn btn-outline-lavender"
+            style="width: 100%; text-align: center"
+          >
+            Sign In
+          </a>
+
+          <div style="text-align: center; margin-top: 16px">
+            <a href="register.html" class="link-text" style="font-size: 0.85rem"
+              >Change Role</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/auth.js"></script>
+  </body>
+</html>

@@ -4,10 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assigned Patients - Marutha Support</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
     <style>
-      body {
-        overflow-x: hidden;
+      .patient-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .patient-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      }
+      .text-green {
+        color: var(--hope-green);
+      }
+      .bg-green-soft {
+        background-color: #f0fdf4;
+        color: #15803d;
       }
     </style>
   </head>
@@ -15,157 +33,679 @@
     <div class="dashboard-container">
       <!-- Volunteer Sidebar -->
       <aside class="sidebar">
-        <a
-          href="dashboard_volunteer.html"
-          class="sidebar-brand"
-          style="display: flex; align-items: center; gap: 0.75rem"
-        >
-          <img
-            src="../static/images/logo.png"
-            alt="Marutha Support Logo"
-            style="width: 40px; height: 40px; object-fit: contain"
-          />
-          <span
-            style="
-              background: linear-gradient(
-                135deg,
-                #7ed957 0%,
-                #34d399 35%,
-                #22d3ee 65%,
-                #00a6e8 100%
-              );
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              font-weight: 700;
-            "
-            >Marutha Support</span
-          >
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
         </a>
 
         <nav class="sidebar-nav">
-          <a href="dashboard_volunteer.html" class="sidebar-link">Dashboard</a>
-          <a href="assigned_patients.html" class="sidebar-link active"
-            >Assigned Patients</a
-          >
-          <a href="volunteer_tasks.html" class="sidebar-link">My Tasks</a>
-          <a href="volunteer_reports.html" class="sidebar-link">Reports</a>
+          <a href="dashboard_volunteer.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="assigned_patients.html" class="sidebar-link active">
+            <i class="fas fa-hands-helping"></i>
+            Assigned Patients
+          </a>
+          <a href="volunteer_activities.html#tasks" class="sidebar-link">
+            <i class="fas fa-tasks"></i>
+            My Tasks
+          </a>
+          <a href="volunteer_activities.html#reports" class="sidebar-link">
+            <i class="fas fa-file-alt"></i>
+            Reports
+          </a>
+          <a href="chat_volunteer.html" class="sidebar-link">
+            <i class="fas fa-comments"></i>
+            Messages
+          </a>
           <div style="flex-grow: 1"></div>
-          <a href="setup_profile_volunteer.html" class="sidebar-link"
-            >My Profile</a
+          <a href="manage_profile_volunteer.html#view" class="sidebar-link">
+            <i class="fas fa-user-circle"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
           >
-          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
-            >Logout</a
-          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
         </nav>
       </aside>
 
       <!-- Main Content Area -->
       <main class="main-content">
         <header class="top-header">
-          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
-            Assigned Patients
-          </h2>
-          <div class="profile-snippet">
-            <div
-              style="text-align: right; display: flex; flex-direction: column"
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
             >
-              <span style="font-weight: 700; font-size: 0.95rem"
-                >Jane Smith</span
+              <i
+                class="fas fa-users-cog"
+                style="color: var(--hope-green); font-size: 1.8rem"
+              ></i>
+              Assigned Patients
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Directly manage and support the patients entrusted to your care.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
               >
-              <span style="font-size: 0.8rem; color: var(--text-muted)"
-                >Volunteer</span
-              >
+                Jane Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Senior Volunteer
+              </div>
             </div>
-            <div class="profile-pic" style="background: var(--green-gradient)">
+            <div
+              class="profile-pic"
+              style="background: var(--hope-green); color: white"
+            >
               JS
             </div>
           </div>
         </header>
 
-        <div class="container" style="max-width: 1400px; padding: 2rem">
-          <div class="glass fade-in p-4 mb-4">
-            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary)">
-              My Assigned Patients
-            </h3>
-            <p style="color: var(--text-muted)">
-              Patients under your care and supervision.
-            </p>
+        <div class="container" style="padding: 0 64px 64px; max-width: 1400px">
+          <!-- Search and Filter Bar -->
+          <div
+            class="card fade-in"
+            style="
+              padding: 16px;
+              margin-bottom: 32px;
+              display: flex;
+              gap: 16px;
+              align-items: center;
+            "
+          >
+            <div style="position: relative; flex: 1">
+              <i
+                class="fas fa-search"
+                style="
+                  position: absolute;
+                  left: 16px;
+                  top: 12px;
+                  color: var(--text-light);
+                "
+              ></i>
+              <input
+                type="text"
+                placeholder="Search by name, ID, or condition..."
+                style="
+                  width: 100%;
+                  padding: 10px 10px 10px 42px;
+                  border: 1px solid var(--border-color);
+                  border-radius: 8px;
+                  outline: none;
+                "
+              />
+            </div>
+            <select
+              style="
+                padding: 10px 16px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                outline: none;
+                color: var(--text-main);
+              "
+            >
+              <option value="all">Check All Statuses</option>
+              <option value="normal">Stable</option>
+              <option value="monitor">Needs Monitoring</option>
+              <option value="urgent">Urgent</option>
+            </select>
+            <button
+              class="btn btn-primary"
+              style="
+                background: var(--hope-green);
+                border-color: var(--hope-green);
+              "
+            >
+              <i class="fas fa-filter" style="margin-right: 8px"></i> Filter
+            </button>
           </div>
 
-          <div class="table-container fade-in">
-            <table class="custom-table">
-              <thead>
-                <tr>
-                  <th>Patient Name</th>
-                  <th>Age</th>
-                  <th>Condition</th>
-                  <th>Last Contact</th>
-                  <th>Priority</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span style="font-weight: 600">John Doe</span></td>
-                  <td>65</td>
-                  <td>Stage 2 Recovery</td>
-                  <td>Today, 10:00 AM</td>
-                  <td><span class="badge badge-active">Normal</span></td>
-                  <td>
-                    <a href="#" class="action-btn">View Details</a>
-                    <a href="#" class="action-btn">Contact</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td><span style="font-weight: 600">Sarah Lee</span></td>
-                  <td>58</td>
-                  <td>Early Stage</td>
-                  <td>Yesterday</td>
-                  <td><span class="badge badge-mid">Monitor</span></td>
-                  <td>
-                    <a href="#" class="action-btn">View Details</a>
-                    <a href="#" class="action-btn">Contact</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td><span style="font-weight: 600">David Wilson</span></td>
-                  <td>72</td>
-                  <td>Stage 3</td>
-                  <td>2 days ago</td>
-                  <td><span class="badge badge-high">Urgent</span></td>
-                  <td>
-                    <a href="#" class="action-btn">View Details</a>
-                    <a href="#" class="action-btn">Contact</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td><span style="font-weight: 600">Linda Carter</span></td>
-                  <td>45</td>
-                  <td>Post-Treatment</td>
-                  <td>Today, 2:00 PM</td>
-                  <td><span class="badge badge-active">Normal</span></td>
-                  <td>
-                    <a href="#" class="action-btn">View Details</a>
-                    <a href="#" class="action-btn">Contact</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td><span style="font-weight: 600">Michael Brown</span></td>
-                  <td>61</td>
-                  <td>Stage 1</td>
-                  <td>3 days ago</td>
-                  <td><span class="badge badge-mid">Monitor</span></td>
-                  <td>
-                    <a href="#" class="action-btn">View Details</a>
-                    <a href="#" class="action-btn">Contact</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Patient Grid -->
+          <div
+            class="dashboard-grid"
+            style="
+              grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+              padding: 0;
+              gap: 24px;
+            "
+          >
+            <!-- Patient Card 1 -->
+            <div
+              class="card patient-card fade-in"
+              style="
+                padding: 0;
+                overflow: hidden;
+                border-left: 4px solid var(--medical-blue);
+              "
+            >
+              <div style="padding: 24px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 16px;
+                  "
+                >
+                  <div style="display: flex; gap: 16px; align-items: center">
+                    <div
+                      class="profile-pic"
+                      style="
+                        width: 60px;
+                        height: 60px;
+                        background: #eff6ff;
+                        color: var(--medical-blue);
+                        font-size: 1.2rem;
+                      "
+                    >
+                      JD
+                    </div>
+                    <div>
+                      <h3
+                        style="
+                          margin: 0;
+                          font-size: 1.1rem;
+                          color: var(--medical-blue);
+                        "
+                      >
+                        John Doe
+                      </h3>
+                      <div
+                        style="
+                          font-size: 0.85rem;
+                          color: var(--text-muted);
+                          margin-top: 4px;
+                        "
+                      >
+                        ID: #883920
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="badge"
+                    style="background: #e0f2fe; color: #0284c7"
+                    >Stable</span
+                  >
+                </div>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                    margin-bottom: 16px;
+                    border-top: 1px solid rgba(0, 0, 0, 0.05);
+                    padding-top: 16px;
+                  "
+                >
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Age
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      65 Years
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Condition
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      Stage 2 Recovery
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Last Visit
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      Today, 10 AM
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Priority
+                    </div>
+                    <div style="font-weight: 600; color: #0284c7">Normal</div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  background: #f8fafc;
+                  padding: 12px 24px;
+                  border-top: 1px solid rgba(0, 0, 0, 0.05);
+                  display: flex;
+                  gap: 12px;
+                "
+              >
+                <button class="btn btn-sm btn-outline-lavender" style="flex: 1">
+                  <i class="fas fa-notes-medical" style="margin-right: 8px"></i>
+                  View Log
+                </button>
+                <button
+                  class="btn btn-sm btn-primary"
+                  style="
+                    flex: 1;
+                    background: var(--hope-green);
+                    border-color: var(--hope-green);
+                  "
+                >
+                  <i class="fas fa-check-circle" style="margin-right: 8px"></i>
+                  Log Visit
+                </button>
+              </div>
+            </div>
+
+            <!-- Patient Card 2 -->
+            <div
+              class="card patient-card fade-in"
+              style="
+                padding: 0;
+                overflow: hidden;
+                border-left: 4px solid #f59e0b;
+              "
+            >
+              <div style="padding: 24px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 16px;
+                  "
+                >
+                  <div style="display: flex; gap: 16px; align-items: center">
+                    <div
+                      class="profile-pic"
+                      style="
+                        width: 60px;
+                        height: 60px;
+                        background: #fffbeb;
+                        color: #b45309;
+                        font-size: 1.2rem;
+                      "
+                    >
+                      SL
+                    </div>
+                    <div>
+                      <h3
+                        style="
+                          margin: 0;
+                          font-size: 1.1rem;
+                          color: var(--medical-blue);
+                        "
+                      >
+                        Sarah Lee
+                      </h3>
+                      <div
+                        style="
+                          font-size: 0.85rem;
+                          color: var(--text-muted);
+                          margin-top: 4px;
+                        "
+                      >
+                        ID: #992122
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="badge"
+                    style="background: #fef3c7; color: #b45309"
+                    >Monitor</span
+                  >
+                </div>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                    margin-bottom: 16px;
+                    border-top: 1px solid rgba(0, 0, 0, 0.05);
+                    padding-top: 16px;
+                  "
+                >
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Age
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      58 Years
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Condition
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      Early Stage
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Last Visit
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      Yesterday
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Priority
+                    </div>
+                    <div style="font-weight: 600; color: #b45309">
+                      Needs Monitoring
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  background: #f8fafc;
+                  padding: 12px 24px;
+                  border-top: 1px solid rgba(0, 0, 0, 0.05);
+                  display: flex;
+                  gap: 12px;
+                "
+              >
+                <button class="btn btn-sm btn-outline-lavender" style="flex: 1">
+                  <i class="fas fa-notes-medical" style="margin-right: 8px"></i>
+                  View Log
+                </button>
+                <button
+                  class="btn btn-sm btn-primary"
+                  style="
+                    flex: 1;
+                    background: var(--hope-green);
+                    border-color: var(--hope-green);
+                  "
+                >
+                  <i class="fas fa-check-circle" style="margin-right: 8px"></i>
+                  Log Visit
+                </button>
+              </div>
+            </div>
+
+            <!-- Patient Card 3 -->
+            <div
+              class="card patient-card fade-in"
+              style="
+                padding: 0;
+                overflow: hidden;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <div style="padding: 24px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 16px;
+                  "
+                >
+                  <div style="display: flex; gap: 16px; align-items: center">
+                    <div
+                      class="profile-pic"
+                      style="
+                        width: 60px;
+                        height: 60px;
+                        background: #fef2f2;
+                        color: #dc2626;
+                        font-size: 1.2rem;
+                      "
+                    >
+                      DW
+                    </div>
+                    <div>
+                      <h3
+                        style="
+                          margin: 0;
+                          font-size: 1.1rem;
+                          color: var(--medical-blue);
+                        "
+                      >
+                        David Wilson
+                      </h3>
+                      <div
+                        style="
+                          font-size: 0.85rem;
+                          color: var(--text-muted);
+                          margin-top: 4px;
+                        "
+                      >
+                        ID: #773123
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="badge"
+                    style="background: #fee2e2; color: #dc2626"
+                    >Urgent</span
+                  >
+                </div>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                    margin-bottom: 16px;
+                    border-top: 1px solid rgba(0, 0, 0, 0.05);
+                    padding-top: 16px;
+                  "
+                >
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Age
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      72 Years
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Condition
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      Stage 3
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Last Visit
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      2 days ago
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Priority
+                    </div>
+                    <div style="font-weight: 600; color: #dc2626">
+                      High Attention
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  background: #f8fafc;
+                  padding: 12px 24px;
+                  border-top: 1px solid rgba(0, 0, 0, 0.05);
+                  display: flex;
+                  gap: 12px;
+                "
+              >
+                <button class="btn btn-sm btn-outline-lavender" style="flex: 1">
+                  <i class="fas fa-notes-medical" style="margin-right: 8px"></i>
+                  View Log
+                </button>
+                <button
+                  class="btn btn-sm btn-primary"
+                  style="flex: 1; background: #dc2626; border-color: #dc2626"
+                >
+                  <i class="fas fa-bell" style="margin-right: 8px"></i> Alert
+                  Doctor
+                </button>
+              </div>
+            </div>
+
+            <!-- Patient Card 4 (New) -->
+            <div
+              class="card patient-card fade-in"
+              style="
+                padding: 0;
+                overflow: hidden;
+                border-left: 4px solid var(--medical-blue);
+              "
+            >
+              <div style="padding: 24px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 16px;
+                  "
+                >
+                  <div style="display: flex; gap: 16px; align-items: center">
+                    <div
+                      class="profile-pic"
+                      style="
+                        width: 60px;
+                        height: 60px;
+                        background: #eff6ff;
+                        color: var(--medical-blue);
+                        font-size: 1.2rem;
+                      "
+                    >
+                      LC
+                    </div>
+                    <div>
+                      <h3
+                        style="
+                          margin: 0;
+                          font-size: 1.1rem;
+                          color: var(--medical-blue);
+                        "
+                      >
+                        Linda Carter
+                      </h3>
+                      <div
+                        style="
+                          font-size: 0.85rem;
+                          color: var(--text-muted);
+                          margin-top: 4px;
+                        "
+                      >
+                        ID: #112839
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="badge"
+                    style="background: #e0f2fe; color: #0284c7"
+                    >Stable</span
+                  >
+                </div>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                    margin-bottom: 16px;
+                    border-top: 1px solid rgba(0, 0, 0, 0.05);
+                    padding-top: 16px;
+                  "
+                >
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Age
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      45 Years
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Condition
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      Post-Treatment
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Last Visit
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-main)">
+                      Today, 2:00 PM
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Priority
+                    </div>
+                    <div style="font-weight: 600; color: #0284c7">Normal</div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  background: #f8fafc;
+                  padding: 12px 24px;
+                  border-top: 1px solid rgba(0, 0, 0, 0.05);
+                  display: flex;
+                  gap: 12px;
+                "
+              >
+                <button class="btn btn-sm btn-outline-lavender" style="flex: 1">
+                  <i class="fas fa-notes-medical" style="margin-right: 8px"></i>
+                  View Log
+                </button>
+                <button
+                  class="btn btn-sm btn-primary"
+                  style="
+                    flex: 1;
+                    background: var(--hope-green);
+                    border-color: var(--hope-green);
+                  "
+                >
+                  <i class="fas fa-check-circle" style="margin-right: 8px"></i>
+                  Log Visit
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </main>
     </div>
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/assigned_patients.js"></script>
   </body>
 </html>

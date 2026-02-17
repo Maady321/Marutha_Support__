@@ -4,206 +4,447 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Doctor Dashboard - Marutha Support</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <style>
-      /* Specific page override to ensure full screen */
-      body {
-        overflow-x: hidden;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
   </head>
   <body>
     <div class="dashboard-container">
-      <!-- Sidebar Navigation -->
+      <!-- Sidebar -->
       <aside class="sidebar">
-        <a
-          href="dashboard_doctor.html"
-          class="sidebar-brand"
-          style="display: flex; align-items: center; gap: 0.75rem"
-        >
-          <img
-            src="../static/images/logo.png"
-            alt="Marutha Support Logo"
-            style="width: 40px; height: 40px; object-fit: contain"
-          />
-          <span
-            style="
-              background: linear-gradient(
-                135deg,
-                #7ed957 0%,
-                #34d399 35%,
-                #22d3ee 65%,
-                #00a6e8 100%
-              );
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              font-weight: 700;
-            "
-            >Marutha Support</span
-          >
+        <a href="dashboard_doctor.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
         </a>
 
         <nav class="sidebar-nav">
-          <a href="dashboard_doctor.html" class="sidebar-link active"
-            >Dashboard</a
+          <a href="dashboard_doctor.html" class="sidebar-link active">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="patients.html" class="sidebar-link">
+            <i class="fas fa-users"></i>
+            Patients
+          </a>
+          <a href="requests.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i>
+            Appointments
+          </a>
+          <a
+            href="manage_records_doctor.html#consultations"
+            class="sidebar-link"
           >
-          <a href="patients.html" class="sidebar-link">Patients</a>
-          <a href="requests.html" class="sidebar-link">Appointments</a>
-          <a href="#" class="sidebar-link">Consultations</a>
-          <a href="#" class="sidebar-link">Medical Records</a>
-          <a href="#" class="sidebar-link">Prescriptions</a>
-          <a href="#" class="sidebar-link">Reports</a>
+            <i class="fas fa-video"></i>
+            Consultations
+          </a>
+          <a href="manage_records_doctor.html#records" class="sidebar-link">
+            <i class="fas fa-clipboard-list"></i>
+            Medical Records
+          </a>
+          <a
+            href="manage_records_doctor.html#prescriptions"
+            class="sidebar-link"
+          >
+            <i class="fas fa-prescription-bottle-alt"></i>
+            Prescriptions
+          </a>
+          <a href="manage_records_doctor.html#reports" class="sidebar-link">
+            <i class="fas fa-file-medical-alt"></i>
+            Reports
+          </a>
+          <a href="chat_doctor.html" class="sidebar-link">
+            <i class="fas fa-comment-medical"></i>
+            Messages
+          </a>
           <div style="flex-grow: 1"></div>
-          <a href="#" class="sidebar-link">Settings</a>
-          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
-            >Logout</a
+          <a href="manage_profile_doctor.html#view" class="sidebar-link">
+            <i class="fas fa-cog"></i>
+            Settings
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
           >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
         </nav>
       </aside>
 
-      <!-- Main Content Area -->
+      <!-- Main Content -->
       <main class="main-content">
-        <!-- Top Header -->
+        <!-- Header -->
         <header class="top-header">
-          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
-            Doctor Dashboard
-          </h2>
-          <div class="profile-snippet">
-            <div
-              style="text-align: right; display: flex; flex-direction: column"
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
             >
-              <span style="font-weight: 700; font-size: 0.95rem"
-                >Dr. John Smith</span
+              <i
+                class="fas fa-sun"
+                style="color: var(--sunshine-yellow); font-size: 1.8rem"
+              ></i>
+              Welcome back, Dr. Smith
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Here is your daily overview and patient updates.
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 24px">
+            <!-- Online Status Toggle -->
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 20px;
+                background: white;
+                border-radius: 50px;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--border-color);
+              "
+            >
+              <div
+                id="status-dot"
+                style="
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 50%;
+                  background: #94a3b8;
+                "
+              ></div>
+              <span
+                id="status-text"
+                style="
+                  font-weight: 600;
+                  font-size: 0.9rem;
+                  color: var(--text-muted);
+                "
+                >Offline</span
               >
-              <span style="font-size: 0.8rem; color: var(--text-muted)"
-                >Cardiologist</span
+              <button
+                id="toggle-status-btn"
+                onclick="toggleOnlineStatus()"
+                class="btn btn-sm btn-outline-lavender"
+                style="padding: 6px 16px; border-radius: 20px"
               >
+                Go Online
+              </button>
             </div>
-            <div class="profile-pic">JS</div>
+
+            <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                Dr. John Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Cardiologist
+              </div>
+            </div>
+            <div
+              class="profile-pic"
+              style="background: var(--medical-blue); color: white"
+            >
+              JS
+            </div>
           </div>
         </header>
 
-        <div class="container" style="max-width: 1400px; padding: 2rem">
-          <!-- Stats Cards Row -->
-          <div class="stats-grid">
-            <div class="stat-card">
+        <div class="container" style="padding: 0 64px 64px">
+          <!-- Stats Grid -->
+          <div class="stats-grid" style="padding: 0; margin-bottom: 40px">
+            <div
+              class="card stat-card fade-in"
+              style="
+                animation-delay: 0.1s;
+                border-left: 4px solid var(--medical-blue);
+              "
+            >
               <div class="stat-title">Today's Appointments</div>
-              <div class="stat-value" style="color: var(--primary)">8</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-title">Active Patients</div>
-              <div class="stat-value" style="color: var(--accent-green)">
-                152
+              <div class="stat-value" style="color: var(--medical-blue)">8</div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                <i class="fas fa-clock" style="margin-right: 4px"></i> Next at
+                10:00 AM
               </div>
             </div>
-            <div class="stat-card">
-              <div class="stat-title">Pending Reports</div>
-              <div class="stat-value" style="color: var(--warning)">5</div>
+            <div
+              class="card stat-card fade-in"
+              style="
+                animation-delay: 0.2s;
+                border-left: 4px solid var(--sunshine-yellow);
+              "
+            >
+              <div class="stat-title">Active Patients</div>
+              <div class="stat-value" style="color: #b45309">152</div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                <i
+                  class="fas fa-arrow-up"
+                  style="margin-right: 4px; color: var(--hope-green)"
+                ></i>
+                +3 this week
+              </div>
             </div>
-            <div class="stat-card">
+            <div
+              class="card stat-card fade-in"
+              style="
+                animation-delay: 0.3s;
+                border-left: 4px solid var(--hope-green);
+              "
+            >
+              <div class="stat-title">Pending Reports</div>
+              <div class="stat-value" style="color: var(--hope-green-hover)">
+                5
+              </div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                Needs review
+              </div>
+            </div>
+            <div
+              class="card stat-card fade-in"
+              style="animation-delay: 0.4s; border-left: 4px solid #a855f7"
+            >
               <div class="stat-title">Online Consults</div>
-              <div class="stat-value" style="color: var(--accent-blue)">3</div>
+              <div class="stat-value" style="color: #9333ea">3</div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                "
+              >
+                Scheduled today
+              </div>
             </div>
           </div>
 
-          <!-- Appointments Table Section -->
-          <div style="margin-top: 2.5rem">
-            <h3 style="margin-bottom: 1rem; color: var(--text-main)">
-              Appointments
-            </h3>
+          <!-- Main Dashboard Content -->
+          <div
+            class="dashboard-grid"
+            style="padding: 0; gap: 32px; grid-template-columns: 2fr 1fr"
+          >
+            <!-- Upcoming Appointments -->
+            <div class="card" style="padding: 32px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 24px;
+                "
+              >
+                <h3 style="color: var(--medical-blue)">
+                  Upcoming Appointments
+                </h3>
+                <a
+                  href="requests.html"
+                  class="btn btn-outline-lavender"
+                  style="padding: 8px 16px; font-size: 0.9rem"
+                  >View All</a
+                >
+              </div>
 
-            <div class="table-container">
-              <table class="custom-table">
-                <thead>
-                  <tr>
-                    <th>Patient Name</th>
-                    <th>Age / Gender</th>
-                    <th>Appointment Type</th>
-                    <th>Time Slot</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span style="font-weight: 600">Sarah Lee</span></td>
-                    <td>35 / Female</td>
-                    <td>Follow-up</td>
-                    <td>10:00 AM - 10:30 AM</td>
-                    <td><span class="badge badge-active">Confirmed</span></td>
-                    <td>
-                      <a href="#" class="action-btn">View</a>
-                      <a href="#" class="action-btn">Edit</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><span style="font-weight: 600">Michael Brown</span></td>
-                    <td>58 / Male</td>
-                    <td>Consultation</td>
-                    <td>11:00 AM - 11:30 AM</td>
-                    <td><span class="badge badge-mid">Pending</span></td>
-                    <td>
-                      <a href="#" class="action-btn">View</a>
-                      <a href="#" class="action-btn">Edit</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><span style="font-weight: 600">Linda Carter</span></td>
-                    <td>42 / Female</td>
-                    <td>Physical Exam</td>
-                    <td>01:00 PM - 01:30 PM</td>
-                    <td>
-                      <span
-                        class="badge badge-online"
-                        style="background: #dbeafe; color: #1e40af"
-                        >Completed</span
+              <div class="table-container">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Patient</th>
+                      <th>Time</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="appointments-table-body">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Recent Activity / Notifications -->
+            <div style="display: flex; flex-direction: column; gap: 32px">
+              <!-- Quick Actions -->
+              <div
+                class="card"
+                style="
+                  padding: 32px;
+                  background: linear-gradient(
+                    135deg,
+                    var(--medical-blue),
+                    var(--medical-blue-light)
+                  );
+                  color: white;
+                "
+              >
+                <h3 style="margin-bottom: 16px; color: white">Quick Actions</h3>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                  "
+                >
+                  <a
+                    href="manage_records_doctor.html#prescriptions"
+                    class="btn"
+                    style="
+                      background: rgba(255, 255, 255, 0.2);
+                      color: white;
+                      border: 1px solid rgba(255, 255, 255, 0.3);
+                      justify-content: center;
+                    "
+                  >
+                    <i
+                      class="fas fa-file-prescription"
+                      style="margin-right: 8px"
+                    ></i>
+                    Rx
+                  </a>
+                  <a
+                    href="manage_records_doctor.html#reports"
+                    class="btn"
+                    style="
+                      background: rgba(255, 255, 255, 0.2);
+                      color: white;
+                      border: 1px solid rgba(255, 255, 255, 0.3);
+                      justify-content: center;
+                    "
+                  >
+                    <i class="fas fa-file-alt" style="margin-right: 8px"></i>
+                    Report
+                  </a>
+                  <a
+                    href="chat_doctor.html"
+                    class="btn"
+                    style="
+                      background: rgba(255, 255, 255, 0.2);
+                      color: white;
+                      border: 1px solid rgba(255, 255, 255, 0.3);
+                      justify-content: center;
+                    "
+                  >
+                    <i class="fas fa-comment" style="margin-right: 8px"></i>
+                    Chat
+                  </a>
+                  <a
+                    href="patients.html"
+                    class="btn"
+                    style="
+                      background: rgba(255, 255, 255, 0.2);
+                      color: white;
+                      border: 1px solid rgba(255, 255, 255, 0.3);
+                      justify-content: center;
+                    "
+                  >
+                    <i class="fas fa-user-plus" style="margin-right: 8px"></i>
+                    Add
+                  </a>
+                </div>
+              </div>
+
+              <!-- Notifications -->
+              <div class="card" style="padding: 32px">
+                <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
+                  Recent Activity
+                </h3>
+                <div
+                  class="notification-list"
+                  style="display: flex; flex-direction: column; gap: 16px"
+                >
+                  <div style="display: flex; gap: 12px; align-items: start">
+                    <div
+                      style="
+                        width: 32px;
+                        height: 32px;
+                        background: var(--lavender-soft);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: var(--medical-blue);
+                        flex-shrink: 0;
+                      "
+                    >
+                      <i class="fas fa-file-medical"></i>
+                    </div>
+                    <div>
+                      <p style="font-size: 0.9rem; margin-bottom: 4px">
+                        <strong>Lab Report Available</strong> for Sarah Connor
+                      </p>
+                      <span style="font-size: 0.8rem; color: var(--text-light)"
+                        >10 mins ago</span
                       >
-                    </td>
-                    <td>
-                      <a href="#" class="action-btn">View</a>
-                      <a href="#" class="action-btn">Edit</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><span style="font-weight: 600">David Wilson</span></td>
-                    <td>67 / Male</td>
-                    <td>Check-up</td>
-                    <td>02:00 PM - 02:30 PM</td>
-                    <td><span class="badge badge-active">Confirmed</span></td>
-                    <td>
-                      <a href="#" class="action-btn">View</a>
-                      <a href="#" class="action-btn">Edit</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><span style="font-weight: 600">Emily Ross</span></td>
-                    <td>29 / Female</td>
-                    <td>Teleconsultation</td>
-                    <td>03:30 PM - 04:00 PM</td>
-                    <td><span class="badge badge-mid">Pending</span></td>
-                    <td>
-                      <a href="#" class="action-btn">View</a>
-                      <a href="#" class="action-btn">Edit</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><span style="font-weight: 600">James Carter</span></td>
-                    <td>50 / Male</td>
-                    <td>New Patient</td>
-                    <td>04:30 PM - 05:00 PM</td>
-                    <td><span class="badge badge-active">Confirmed</span></td>
-                    <td>
-                      <a href="#" class="action-btn">View</a>
-                      <a href="#" class="action-btn">Edit</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 12px; align-items: start">
+                    <div
+                      style="
+                        width: 32px;
+                        height: 32px;
+                        background: #fffbeb;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #b45309;
+                        flex-shrink: 0;
+                      "
+                    >
+                      <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div>
+                      <p style="font-size: 0.9rem; margin-bottom: 4px">
+                        <strong>Urgent Request</strong> from Patient #8832
+                      </p>
+                      <span style="font-size: 0.8rem; color: var(--text-light)"
+                        >1 hour ago</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
     </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/dashboard_doctor.js"></script>
   </body>
 </html>

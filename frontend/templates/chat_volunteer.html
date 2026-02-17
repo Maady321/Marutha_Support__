@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Messages - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <link rel="stylesheet" href="../static/css/chat.css" />
+    <style>
+      .chat-layout {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 0;
+        height: calc(100vh - 140px);
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(45, 74, 138, 0.05);
+        border: 1px solid rgba(45, 74, 138, 0.08);
+      }
+
+      .chat-list {
+        border-right: 1px solid rgba(45, 74, 138, 0.08);
+        background: #fcfcfd;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chat-list-header {
+        padding: 24px;
+        border-bottom: 1px solid rgba(45, 74, 138, 0.08);
+      }
+
+      .chat-item {
+        padding: 16px 24px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .chat-item:hover {
+        background: var(--lavender-soft);
+      }
+
+      .chat-item.active {
+        background: var(--lavender-soft);
+        border-left: 4px solid var(--hope-green);
+      }
+
+      .conversation-view {
+        display: flex;
+        flex-direction: column;
+        background: white;
+      }
+
+      .chat-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid rgba(45, 74, 138, 0.08);
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .chat-container {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+        background: #fafafa;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .message {
+        max-width: 60%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        position: relative;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .message-sent {
+        align-self: flex-end;
+        background: var(--hope-green);
+        color: white;
+        border-bottom-right-radius: 2px;
+      }
+
+      .message-received {
+        align-self: flex-start;
+        background: white;
+        border: 1px solid rgba(45, 74, 138, 0.1);
+        color: var(--text-main);
+        border-bottom-left-radius: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      }
+
+      .timestamp {
+        display: block;
+        font-size: 0.7rem;
+        margin-top: 6px;
+        opacity: 0.8;
+        text-align: right;
+      }
+
+      .message-sent .timestamp {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .message-received .timestamp {
+        color: var(--text-light);
+      }
+
+      .chat-input-area {
+        padding: 16px 24px;
+        background: white;
+        border-top: 1px solid rgba(45, 74, 138, 0.08);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .chat-input-area input {
+        background: #f8fafc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Volunteer Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_volunteer.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_volunteer.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="assigned_patients.html" class="sidebar-link">
+            <i class="fas fa-hands-helping"></i>
+            Assigned Patients
+          </a>
+          <a href="volunteer_activities.html#tasks" class="sidebar-link">
+            <i class="fas fa-tasks"></i>
+            My Tasks
+          </a>
+          <a href="volunteer_activities.html#reports" class="sidebar-link">
+            <i class="fas fa-file-alt"></i>
+            Reports
+          </a>
+          <a href="chat_volunteer.html" class="sidebar-link active">
+            <i class="fas fa-comments"></i>
+            Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a href="manage_profile_volunteer.html#view" class="sidebar-link">
+            <i class="fas fa-user-circle"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
+            >
+              <i
+                class="fas fa-comments"
+                style="color: var(--hope-green); font-size: 1.8rem"
+              ></i>
+              Messages
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Direct Support Chat & Coordination
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                Jane Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Senior Volunteer
+              </div>
+            </div>
+            <div
+              class="profile-pic"
+              style="background: var(--hope-green); color: white"
+            >
+              JS
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 64px 64px; max-width: 1400px">
+          <div class="chat-layout fade-in">
+            <!-- Chat List Panel -->
+            <div class="chat-list">
+              <div class="chat-list-header">
+                <div style="position: relative">
+                  <i
+                    class="fas fa-search"
+                    style="
+                      position: absolute;
+                      left: 16px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      color: var(--text-light);
+                    "
+                  ></i>
+                  <input
+                    type="text"
+                    placeholder="Search messages..."
+                    style="
+                      width: 100%;
+                      padding: 12px 12px 12px 48px;
+                      border: 1px solid var(--border-color);
+                      border-radius: 50px;
+                      outline: none;
+                      background: white;
+                    "
+                  />
+                </div>
+              </div>
+
+              <div style="overflow-y: auto; flex: 1">
+                <!-- Chat Items -->
+                <div class="chat-item active">
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 48px;
+                      height: 48px;
+                      background: var(--medical-blue);
+                      color: white;
+                      font-size: 1rem;
+                    "
+                  >
+                    JS
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+                        margin-bottom: 4px;
+                      "
+                    >
+                      <h4
+                        style="
+                          margin: 0;
+                          font-size: 0.95rem;
+                          color: var(--text-main);
+                        "
+                      >
+                        Dr. John Smith
+                      </h4>
+                      <span style="font-size: 0.75rem; color: var(--text-light)"
+                        >09:15 AM</span
+                      >
+                    </div>
+                    <p
+                      style="
+                        margin: 0;
+                        font-size: 0.85rem;
+                        color: var(--text-muted);
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 180px;
+                      "
+                    >
+                      Please check on Mr. Doe's blood press...
+                    </p>
+                  </div>
+                </div>
+
+                <div class="chat-item">
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 48px;
+                      height: 48px;
+                      background: #e0e7ff;
+                      color: #4338ca;
+                      font-size: 1rem;
+                    "
+                  >
+                    CC
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+                        margin-bottom: 4px;
+                      "
+                    >
+                      <h4
+                        style="
+                          margin: 0;
+                          font-size: 0.95rem;
+                          color: var(--text-main);
+                        "
+                      >
+                        Care Coordinator
+                      </h4>
+                      <span style="font-size: 0.75rem; color: var(--text-light)"
+                        >Yesterday</span
+                      >
+                    </div>
+                    <p
+                      style="
+                        margin: 0;
+                        font-size: 0.85rem;
+                        color: var(--text-muted);
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 180px;
+                      "
+                    >
+                      New schedule for next week is up.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="chat-item">
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 48px;
+                      height: 48px;
+                      background: #fdf2f8;
+                      color: #be185d;
+                      font-size: 1rem;
+                    "
+                  >
+                    SL
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+                        margin-bottom: 4px;
+                      "
+                    >
+                      <h4
+                        style="
+                          margin: 0;
+                          font-size: 0.95rem;
+                          color: var(--text-main);
+                        "
+                      >
+                        Sarah Lee (Patient)
+                      </h4>
+                      <span style="font-size: 0.75rem; color: var(--text-light)"
+                        >Mon</span
+                      >
+                    </div>
+                    <p
+                      style="
+                        margin: 0;
+                        font-size: 0.85rem;
+                        color: var(--text-muted);
+                      "
+                    >
+                      Thank you for the groceries!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Conversation Panel -->
+            <div class="conversation-view">
+              <div class="chat-header">
+                <div style="display: flex; align-items: center; gap: 12px">
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 40px;
+                      height: 40px;
+                      background: var(--medical-blue);
+                      color: white;
+                      font-size: 0.9rem;
+                    "
+                  >
+                    JS
+                  </div>
+                  <div>
+                    <h3
+                      style="
+                        margin: 0;
+                        font-size: 1.1rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      Dr. John Smith
+                    </h3>
+                    <span
+                      style="
+                        font-size: 0.8rem;
+                        color: #10b981;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                      "
+                      ><i class="fas fa-circle" style="font-size: 0.5rem"></i>
+                      Online</span
+                    >
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button
+                    class="btn btn-sm btn-outline-lavender"
+                    title="View Profile"
+                  >
+                    <i class="fas fa-user-circle"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-lavender" title="Call">
+                    <i class="fas fa-phone-alt"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="chat-container">
+                <div style="text-align: center; margin: 16px 0">
+                  <span
+                    style="
+                      background: rgba(0, 0, 0, 0.05);
+                      padding: 4px 12px;
+                      border-radius: 20px;
+                      font-size: 0.8rem;
+                      color: var(--text-light);
+                    "
+                    >Today</span
+                  >
+                </div>
+
+                <div class="message message-received">
+                  Jane, could you please visit Mr. Doe today? I'm concerned
+                  about his recovery pace.
+                  <span class="timestamp">09:00 AM</span>
+                </div>
+                <div class="message message-sent">
+                  Sure, Doctor. I have him on my schedule for 10 AM. I'll check
+                  his vitals.
+                  <span class="timestamp">09:05 AM</span>
+                </div>
+                <div class="message message-received">
+                  Great. Please let me know specifically if his BP is above
+                  140/90.
+                  <span class="timestamp">09:10 AM</span>
+                </div>
+                <div class="message message-sent">
+                  Will do. I'll update the report immediately after the visit.
+                  <span class="timestamp">09:15 AM</span>
+                </div>
+              </div>
+
+              <!-- Input Area -->
+              <div class="chat-input-area">
+                <button
+                  class="btn btn-sm btn-outline-lavender"
+                  style="border: none; font-size: 1.2rem; padding: 0 8px"
+                >
+                  <i class="fas fa-paperclip"></i>
+                </button>
+                <input
+                  type="text"
+                  placeholder="Type a message..."
+                  style="
+                    flex: 1;
+                    padding: 12px;
+                    border-radius: 24px;
+                    border: 1px solid var(--border-color);
+                    outline: none;
+                  "
+                />
+                <button
+                  class="btn btn-primary"
+                  style="
+                    border-radius: 50%;
+                    width: 48px;
+                    height: 48px;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: var(--hope-green);
+                    border-color: var(--hope-green);
+                  "
+                >
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/chat_ui.js"></script>
+  </body>
+</html>

@@ -1,263 +1,87 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register - Marutha Support</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <style>
-      .register-container {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
-      }
+    <title>Create Account - Marutha Support</title>
 
-      .register-container::before {
-        content: "";
-        position: absolute;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(
-          circle,
-          rgba(52, 211, 153, 0.12) 0%,
-          transparent 70%
-        );
-        top: -300px;
-        left: -300px;
-        animation: pulse 5s ease-in-out infinite;
-      }
-
-      .register-container::after {
-        content: "";
-        position: absolute;
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(
-          circle,
-          rgba(96, 165, 250, 0.1) 0%,
-          transparent 70%
-        );
-        bottom: -250px;
-        right: -250px;
-        animation: pulse 4s ease-in-out infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 0.5;
-        }
-        50% {
-          transform: scale(1.1);
-          opacity: 0.8;
-        }
-      }
-
-      .role-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        border: 2px solid var(--border-color);
-        border-radius: 16px;
-        padding: 2rem;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .role-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--primary-gradient);
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
-      }
-
-      .role-card:hover {
-        border-color: var(--primary);
-        transform: translateY(-4px);
-        box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2);
-      }
-
-      .role-card:hover::before {
-        transform: scaleX(1);
-      }
-
-      .role-icon {
-        width: 64px;
-        height: 64px;
-        margin: 0 auto 1rem;
-        background: var(--primary-gradient);
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
-      }
-
-      .role-card.doctor .role-icon {
-        background: var(--blue-gradient);
-        box-shadow: 0 8px 24px rgba(96, 165, 250, 0.3);
-      }
-
-      .role-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 0.5rem;
-      }
-
-      .role-description {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/auth.css" />
   </head>
   <body>
-    <div class="register-container">
-      <div class="auth-box glass fade-in" style="max-width: 600px">
-        <div
-          class="brand-header"
-          style="text-align: center; margin-bottom: 3rem"
-        >
-          <div
-            style="
-              width: 110px;
-              height: 110px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin: 0 auto 1.5rem;
-            "
-          >
-            <img src="../static/images/logo.png" alt="Marutha Support Logo" style="width: 100%; height: 100%; object-fit: contain;" />
-          </div>
-          <h1
-            style="
-              font-size: 2.25rem;
-              font-weight: 800;
-              background: linear-gradient(
-                135deg,
-                #7ED957 0%,
-                #34D399 35%,
-                #22D3EE 65%,
-                #00A6E8 100%
-              );
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              margin-bottom: 0.5rem;
-            "
-          >
-            Join Marutha Support
-          </h1>
-          <p style="color: var(--text-muted); font-size: 1rem">
-            Choose your role to get started
-          </p>
-        </div>
-
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-          "
-        >
-          <a
-            href="setup_profile.html"
-            class="role-card"
-            style="text-decoration: none"
-          >
-            <div class="role-icon">👤</div>
-            <h3 class="role-title">Patient</h3>
-            <p class="role-description">
-              Access healthcare services and track your health
-            </p>
-          </a>
-
-          <a
-            href="setup_profile_doctor.html"
-            class="role-card doctor"
-            style="text-decoration: none"
-          >
-            <div class="role-icon">⚕️</div>
-            <h3 class="role-title">Doctor</h3>
-            <p class="role-description">
-              Provide care and manage patient consultations
-            </p>
-          </a>
-
-          <a
-            href="setup_profile_volunteer.html"
-            class="role-card"
-            style="text-decoration: none"
-          >
-            <div
-              class="role-icon"
+    <div class="login-wrapper">
+      <div class="register-container">
+        <div class="register-box fade-in">
+          <div class="logo-section">
+            <i
+              class="fas fa-hand-holding-heart"
               style="
-                background: var(--green-gradient);
-                box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+                font-size: 3rem;
+                color: var(--medical-blue);
+                margin-bottom: 16px;
               "
-            >
-              🤝
-            </div>
-            <h3 class="role-title">Volunteer</h3>
-            <p class="role-description">
-              Support patients and assist with care activities
+            ></i>
+            <h1>Join Marutha Support</h1>
+            <p>
+              Choose your role to get started with our compassionate network
             </p>
-          </a>
-        </div>
+          </div>
 
-        <div
-          style="
-            border-top: 1px solid var(--border-color);
-            padding-top: 2rem;
-            text-align: center;
-          "
-        >
-          <p style="color: var(--text-muted); margin-bottom: 1rem">
-            Already have an account?
-          </p>
-          <a
-            href="login.html"
-            class="btn btn-secondary"
-            style="width: 100%; padding: 1rem"
-          >
-            Sign In Instead
-          </a>
+          <div class="role-grid">
+            <a href="create_account.html?role=patient" class="role-card">
+              <div class="role-icon"><i class="far fa-user"></i></div>
+              <div class="role-title">Patient</div>
+              <div class="role-desc">
+                Access healthcare services and track your comfort and vitals
+              </div>
+            </a>
+
+            <a href="create_account.html?role=doctor" class="role-card doctor">
+              <div class="role-icon"><i class="fas fa-stethoscope"></i></div>
+              <div class="role-title">Doctor</div>
+              <div class="role-desc">
+                Provide expert care and manage patient consultations
+              </div>
+            </a>
+
+            <a
+              href="create_account.html?role=volunteer"
+              class="role-card volunteer"
+            >
+              <div class="role-icon"><i class="far fa-handshake"></i></div>
+              <div class="role-title">Volunteer</div>
+              <div class="role-desc">
+                Support local patients and assist with community care
+              </div>
+            </a>
+          </div>
+
+          <div class="divider">
+            <span>Already have an account?</span>
+          </div>
+
+          <div style="text-align: center">
+            <a
+              href="login.html"
+              class="btn btn-outline-lavender"
+              style="width: 100%; max-width: 300px"
+              >Sign In</a
+            >
+          </div>
         </div>
       </div>
     </div>
-    </div>
-    
-    <script>
-      // Store selected role in localStorage for profile setup
-      document.querySelectorAll('.role-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-          const href = this.getAttribute('href');
-          
-          // Determine role based on href
-          if (href.includes('setup_profile_doctor')) {
-            localStorage.setItem('userRole', 'doctor');
-          } else if (href.includes('setup_profile_volunteer')) {
-            localStorage.setItem('userRole', 'volunteer');
-          } else {
-            localStorage.setItem('userRole', 'patient');
-          }
-        });
-      });
-    </script>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/auth.js"></script>
   </body>
 </html>

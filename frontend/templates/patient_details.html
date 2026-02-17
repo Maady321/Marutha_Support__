@@ -4,288 +4,570 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Patient Details - Marutha Support</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <style>
-      body {
-        overflow-x: hidden;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
   </head>
   <body>
     <div class="dashboard-container">
-      <!-- Sidebar (Dynamic based on user role) -->
+      <!-- Sidebar -->
       <aside class="sidebar">
-        <a
-          href="dashboard_doctor.html"
-          class="sidebar-brand"
-          style="display: flex; align-items: center; gap: 0.75rem"
-        >
-          <img
-            src="../static/images/logo.png"
-            alt="Marutha Support Logo"
-            style="width: 40px; height: 40px; object-fit: contain"
-          />
-          <span
-            style="
-              background: linear-gradient(
-                135deg,
-                #7ed957 0%,
-                #34d399 35%,
-                #22d3ee 65%,
-                #00a6e8 100%
-              );
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              font-weight: 700;
-            "
-            >Marutha Support</span
-          >
+        <a href="dashboard_doctor.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
         </a>
 
         <nav class="sidebar-nav">
-          <a href="dashboard_doctor.html" class="sidebar-link">Dashboard</a>
-          <a href="patients.html" class="sidebar-link active">Patients</a>
-          <a href="requests.html" class="sidebar-link">Appointments</a>
-          <a href="#" class="sidebar-link">Consultations</a>
+          <a href="dashboard_doctor.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="patients.html" class="sidebar-link active">
+            <i class="fas fa-users"></i>
+            Patients
+          </a>
+          <a href="requests.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i>
+            Appointments
+          </a>
+          <a
+            href="manage_records_doctor.html#consultations"
+            class="sidebar-link"
+          >
+            <i class="fas fa-video"></i>
+            Consultations
+          </a>
+          <a href="manage_records_doctor.html#records" class="sidebar-link">
+            <i class="fas fa-clipboard-list"></i>
+            Medical Records
+          </a>
+          <a
+            href="manage_records_doctor.html#prescriptions"
+            class="sidebar-link"
+          >
+            <i class="fas fa-prescription-bottle-alt"></i>
+            Prescriptions
+          </a>
+          <a href="manage_records_doctor.html#reports" class="sidebar-link">
+            <i class="fas fa-file-medical-alt"></i>
+            Reports
+          </a>
+          <a href="chat_doctor.html" class="sidebar-link">
+            <i class="fas fa-comment-medical"></i>
+            Messages
+          </a>
           <div style="flex-grow: 1"></div>
-          <a href="setup_profile_doctor.html" class="sidebar-link"
-            >My Profile</a
+          <a
+            href="manage_manage_profile_doctor.html#view#view"
+            class="sidebar-link"
           >
-          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
-            >Logout</a
+            <i class="fas fa-cog"></i>
+            Settings
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
           >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
         </nav>
       </aside>
 
       <!-- Main Content -->
       <main class="main-content">
         <header class="top-header">
-          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
-            Patient Details
-          </h2>
-          <div class="profile-snippet">
-            <div
-              style="text-align: right; display: flex; flex-direction: column"
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
             >
-              <span style="font-weight: 700; font-size: 0.95rem"
-                >Dr. John Smith</span
+              <i
+                class="fas fa-user-injured"
+                style="color: var(--medical-blue); font-size: 1.8rem"
+              ></i>
+              Patient Details
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Comprehensive view of patient history and status.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
               >
-              <span style="font-size: 0.8rem; color: var(--text-muted)"
-                >Cardiologist</span
-              >
+                Dr. John Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Cardiologist
+              </div>
             </div>
-            <div class="profile-pic">JS</div>
+            <div
+              class="profile-pic"
+              style="background: var(--medical-blue); color: white"
+            >
+              JS
+            </div>
           </div>
         </header>
 
-        <div class="container" style="max-width: 1400px; padding: 2rem">
-          <!-- Patient Info Card -->
-          <div class="glass fade-in p-4 mb-4">
+        <div class="container" style="padding: 0 64px 64px; max-width: 1400px">
+          <!-- Patient Profile Card -->
+          <div
+            class="card fade-in"
+            style="
+              padding: 40px;
+              margin-bottom: 32px;
+              border-top: 4px solid var(--medical-blue);
+            "
+          >
             <div
               style="
                 display: flex;
                 justify-content: space-between;
                 align-items: start;
+                gap: 32px;
+                flex-wrap: wrap;
               "
             >
-              <div style="display: flex; gap: 2rem; align-items: center">
+              <div style="display: flex; gap: 32px; align-items: center">
                 <div
+                  id="patient-pic"
                   class="profile-pic"
                   style="
-                    width: 80px;
-                    height: 80px;
-                    font-size: 2rem;
+                    width: 100px;
+                    height: 100px;
+                    font-size: 2.5rem;
                     background: var(--green-gradient);
+                    color: white;
+                    box-shadow: 0 10px 25px rgba(52, 211, 153, 0.25);
                   "
                 >
                   JD
                 </div>
                 <div>
-                  <h2 style="margin: 0 0 0.5rem 0; color: var(--text-primary)">
+                  <h1
+                    id="patient-name"
+                    style="
+                      margin: 0 0 8px 0;
+                      color: var(--medical-blue);
+                      font-size: 2rem;
+                    "
+                  >
                     John Doe
-                  </h2>
-                  <p style="margin: 0.25rem 0; color: var(--text-muted)">
-                    <strong>Age:</strong> 65 years
-                  </p>
-                  <p style="margin: 0.25rem 0; color: var(--text-muted)">
-                    <strong>Condition:</strong> Stage 2 Recovery
-                  </p>
-                  <p style="margin: 0.25rem 0; color: var(--text-muted)">
-                    <strong>Last Visit:</strong> Today, 10:00 AM
-                  </p>
+                  </h1>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 16px;
+                      margin-bottom: 12px;
+                      color: var(--text-muted);
+                    "
+                  >
+                    <span
+                      ><i
+                        class="fas fa-id-card-alt"
+                        style="margin-right: 6px"
+                      ></i>
+                      ID: <span id="patient-id-display">#883920</span></span
+                    >
+                    <span
+                      ><i
+                        class="fas fa-birthday-cake"
+                        style="margin-right: 6px"
+                      ></i>
+                      <span id="patient-age">65</span> Years</span
+                    >
+                    <span
+                      ><i
+                        class="fas fa-venus-mars"
+                        style="margin-right: 6px"
+                      ></i>
+                      Male</span
+                    >
+                  </div>
+                  <div id="patient-badges" style="display: flex; gap: 12px">
+                    <span
+                      class="badge"
+                      id="patient-stage-badge"
+                      style="
+                        background: #d1fae5;
+                        color: #065f46;
+                        border: 1px solid #a7f3d0;
+                      "
+                    >
+                      Stage 2 Recovery
+                    </span>
+                    <span
+                      class="badge"
+                      style="
+                        background: #eff6ff;
+                        color: #1e40af;
+                        border: 1px solid #bfdbfe;
+                      "
+                    >
+                      Palliative Care
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div style="display: flex; gap: 1rem">
-                <button class="btn">Send Message</button>
-                <button class="btn btn-secondary">Schedule Appointment</button>
+
+              <div style="display: flex; gap: 16px">
+                <button
+                  class="btn btn-outline-lavender"
+                  onclick="window.location.href = 'chat_doctor.html'"
+                >
+                  <i
+                    class="fas fa-comment-medical"
+                    style="margin-right: 8px"
+                  ></i>
+                  Message
+                </button>
+                <button
+                  class="btn btn-primary"
+                  onclick="window.location.href = 'requests.html'"
+                >
+                  <i class="fas fa-calendar-plus" style="margin-right: 8px"></i>
+                  Schedule Visit
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Stats Grid -->
-          <div class="stats-grid" style="margin-bottom: 2rem">
-            <div class="stat-card">
+          <!-- Quick Stats -->
+          <div class="stats-grid" style="padding: 0; margin-bottom: 32px">
+            <div
+              class="card stat-card fade-in"
+              style="border-left: 4px solid var(--medical-blue)"
+            >
               <div class="stat-title">Total Visits</div>
-              <div class="stat-value" style="color: var(--primary)">24</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-title">Last Pain Level</div>
-              <div class="stat-value" style="color: var(--accent-green)">
-                3/10
+              <div class="stat-value" style="color: var(--medical-blue)">
+                24
+              </div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> 2 this month
               </div>
             </div>
-            <div class="stat-card">
-              <div class="stat-title">Medications</div>
-              <div class="stat-value" style="color: var(--accent-blue)">5</div>
+            <div
+              class="card stat-card fade-in"
+              style="border-left: 4px solid var(--hope-green)"
+            >
+              <div class="stat-title">Pain Level (Last)</div>
+              <div class="stat-value" style="color: var(--hope-green)">
+                3<span style="font-size: 1.2rem; color: var(--text-muted)"
+                  >/10</span
+                >
+              </div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-down"></i> Improved
+              </div>
             </div>
-            <div class="stat-card">
-              <div class="stat-title">Next Appointment</div>
+            <div
+              class="card stat-card fade-in"
+              style="border-left: 4px solid var(--sunshine-yellow)"
+            >
+              <div class="stat-title">Active Meds</div>
+              <div class="stat-value" style="color: #b45309">5</div>
               <div
-                class="stat-value"
-                style="color: var(--warning); font-size: 1.5rem"
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-top: 8px;
+                "
               >
+                Adherence: 95%
+              </div>
+            </div>
+            <div
+              class="card stat-card fade-in"
+              style="border-left: 4px solid #6366f1"
+            >
+              <div class="stat-title">Next Appointment</div>
+              <div class="stat-value" style="color: #4338ca; font-size: 1.5rem">
                 Jan 30
               </div>
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-top: 8px;
+                "
+              >
+                10:00 AM • Consult
+              </div>
             </div>
           </div>
 
-          <!-- Tabs Section -->
-          <div class="glass fade-in p-4 mb-4">
-            <div
-              style="
-                display: flex;
-                gap: 2rem;
-                border-bottom: 1px solid var(--divider);
-                margin-bottom: 2rem;
-              "
-            >
-              <button
-                class="tab-btn active"
+          <!-- Main Info Grid -->
+          <div
+            class="dashboard-grid"
+            style="grid-template-columns: 2fr 1fr; padding: 0; gap: 32px"
+          >
+            <!-- Left Column: Tabs & History -->
+            <div class="card fade-in" style="padding: 0; overflow: hidden">
+              <!-- Tabs Header -->
+              <div
                 style="
-                  padding: 1rem;
-                  border: none;
-                  background: none;
-                  color: var(--primary);
-                  border-bottom: 2px solid var(--primary);
-                  cursor: pointer;
-                  font-weight: 600;
+                  display: flex;
+                  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                  background: #f9fafb;
                 "
               >
-                Health Logs
-              </button>
-              <button
-                class="tab-btn"
-                style="
-                  padding: 1rem;
-                  border: none;
-                  background: none;
-                  color: var(--text-muted);
-                  cursor: pointer;
-                  font-weight: 600;
-                "
+                <button
+                  class="tab-btn active"
+                  onclick="switchTab(this, 'logs')"
+                  style="
+                    flex: 1;
+                    padding: 16px;
+                    border: none;
+                    background: white;
+                    font-weight: 600;
+                    color: var(--medical-blue);
+                    border-bottom: 3px solid var(--medical-blue);
+                    cursor: pointer;
+                    transition: all 0.2s;
+                  "
+                >
+                  Health Logs
+                </button>
+                <button
+                  class="tab-btn"
+                  onclick="switchTab(this, 'vitals')"
+                  style="
+                    flex: 1;
+                    padding: 16px;
+                    border: none;
+                    background: transparent;
+                    font-weight: 600;
+                    color: var(--text-muted);
+                    border-bottom: 3px solid transparent;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                  "
+                >
+                  Vitals History
+                </button>
+                <button
+                  class="tab-btn"
+                  onclick="switchTab(this, 'meds')"
+                  style="
+                    flex: 1;
+                    padding: 16px;
+                    border: none;
+                    background: transparent;
+                    font-weight: 600;
+                    color: var(--text-muted);
+                    border-bottom: 3px solid transparent;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                  "
+                >
+                  Medications
+                </button>
+              </div>
+
+              <!-- Tab Content: Logs -->
+              <div id="logs" class="tab-content" style="padding: 24px">
+                <div class="table-container">
+                  <table class="custom-table">
+                    <thead>
+                      <tr>
+                        <th>Date & Time</th>
+                        <th>Mood</th>
+                        <th>Pain</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div style="font-weight: 600">Today</div>
+                          <div
+                            style="font-size: 0.8rem; color: var(--text-light)"
+                          >
+                            10:00 AM
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            class="badge"
+                            style="background: #ecfdf5; color: #047857"
+                            >Happy</span
+                          >
+                        </td>
+                        <td><span style="font-weight: 700">3</span>/10</td>
+                        <td style="color: var(--text-muted); font-size: 0.9rem">
+                          Feeling lighter today, pain reduced significantly
+                          after therapy.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div style="font-weight: 600">Yesterday</div>
+                          <div
+                            style="font-size: 0.8rem; color: var(--text-light)"
+                          >
+                            09:30 AM
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            class="badge"
+                            style="background: #f3f4f6; color: #4b5563"
+                            >Neutral</span
+                          >
+                        </td>
+                        <td><span style="font-weight: 700">5</span>/10</td>
+                        <td style="color: var(--text-muted); font-size: 0.9rem">
+                          Moderate pain, took prescribed medication. Appetite
+                          normal.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div style="font-weight: 600">Jan 25</div>
+                          <div
+                            style="font-size: 0.8rem; color: var(--text-light)"
+                          >
+                            08:00 AM
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            class="badge"
+                            style="background: #fef2f2; color: #dc2626"
+                            >Anxious</span
+                          >
+                        </td>
+                        <td><span style="font-weight: 700">7</span>/10</td>
+                        <td style="color: var(--text-muted); font-size: 0.9rem">
+                          High pain level reported early morning. Difficulty
+                          sleeping.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Placeholder content for other tabs -->
+              <div
+                id="vitals"
+                class="tab-content"
+                style="display: none; padding: 24px"
               >
-                Vitals
-              </button>
-              <button
-                class="tab-btn"
-                style="
-                  padding: 1rem;
-                  border: none;
-                  background: none;
-                  color: var(--text-muted);
-                  cursor: pointer;
-                  font-weight: 600;
-                "
+                <p style="text-align: center; color: var(--text-muted)">
+                  Vitals signs chart would appear here.
+                </p>
+              </div>
+              <div
+                id="meds"
+                class="tab-content"
+                style="display: none; padding: 24px"
               >
-                Medications
-              </button>
-              <button
-                class="tab-btn"
-                style="
-                  padding: 1rem;
-                  border: none;
-                  background: none;
-                  color: var(--text-muted);
-                  cursor: pointer;
-                  font-weight: 600;
-                "
-              >
-                Appointments
-              </button>
+                <p style="text-align: center; color: var(--text-muted)">
+                  Current active medications list.
+                </p>
+              </div>
             </div>
 
-            <!-- Health Logs Tab Content -->
-            <div class="table-container">
-              <table class="custom-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Mood</th>
-                    <th>Pain Level</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Today</td>
-                    <td>10:00 AM</td>
-                    <td><span class="badge badge-active">Happy</span></td>
-                    <td>3/10</td>
-                    <td style="color: var(--text-muted)">
-                      Feeling lighter today, pain reduced significantly.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Yesterday</td>
-                    <td>9:30 AM</td>
-                    <td><span class="badge badge-mid">Neutral</span></td>
-                    <td>5/10</td>
-                    <td style="color: var(--text-muted)">
-                      Moderate pain, took prescribed medication.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Jan 25</td>
-                    <td>8:00 AM</td>
-                    <td><span class="badge badge-high">Anxious</span></td>
-                    <td>7/10</td>
-                    <td style="color: var(--text-muted)">
-                      High pain level, difficulty sleeping.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+            <!-- Right Column: Notes & Contact -->
+            <div style="display: flex; flex-direction: column; gap: 32px">
+              <div
+                class="card fade-in"
+                style="padding: 24px; border-top: 4px solid #f59e0b"
+              >
+                <h3
+                  style="
+                    margin-bottom: 16px;
+                    color: var(--text-main);
+                    font-size: 1.1rem;
+                  "
+                >
+                  <i
+                    class="fas fa-sticky-note"
+                    style="color: #f59e0b; margin-right: 8px"
+                  ></i>
+                  Private Doctor Notes
+                </h3>
+                <textarea
+                  placeholder="Add notes about this patient..."
+                  style="
+                    width: 100%;
+                    min-height: 150px;
+                    padding: 1rem;
+                    border-radius: 12px;
+                    border: 1px solid var(--border-color);
+                    background: white;
+                    color: var(--text-main);
+                    font-family: inherit;
+                    resize: vertical;
+                    outline: none;
+                    margin-bottom: 16px;
+                  "
+                ></textarea>
+                <button
+                  class="btn btn-sm btn-outline-lavender"
+                  style="width: 100%"
+                >
+                  Save Note
+                </button>
+              </div>
 
-          <!-- Notes Section -->
-          <div class="glass fade-in p-4">
-            <h3 style="margin-bottom: 1rem; color: var(--text-primary)">
-              Doctor's Notes
-            </h3>
-            <textarea
-              placeholder="Add notes about this patient..."
-              style="
-                width: 100%;
-                min-height: 120px;
-                padding: 1rem;
-                border-radius: 12px;
-                border: 1px solid var(--border-color);
-                background: var(--bg-tertiary);
-                color: var(--text-primary);
-                font-family: inherit;
-              "
-            ></textarea>
-            <div
-              style="margin-top: 1rem; display: flex; justify-content: flex-end"
-            >
-              <button class="btn">Save Notes</button>
+              <div class="card fade-in" style="padding: 24px">
+                <h3
+                  style="
+                    margin-bottom: 16px;
+                    color: var(--text-main);
+                    font-size: 1.1rem;
+                  "
+                >
+                  Contact Info
+                </h3>
+                <div style="margin-bottom: 12px">
+                  <div style="font-size: 0.8rem; color: var(--text-muted)">
+                    Phone
+                  </div>
+                  <div style="font-weight: 500">+1 (555) 123-4567</div>
+                </div>
+                <div style="margin-bottom: 12px">
+                  <div style="font-size: 0.8rem; color: var(--text-muted)">
+                    Email
+                  </div>
+                  <div style="font-weight: 500">john.doe@example.com</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted)">
+                    Emergency Contact
+                  </div>
+                  <div style="font-weight: 500">Jane Doe (Wife)</div>
+                  <div style="font-size: 0.85rem; color: var(--medical-blue)">
+                    +1 (555) 987-6543
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
     </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/patient_details.js"></script>
   </body>
 </html>

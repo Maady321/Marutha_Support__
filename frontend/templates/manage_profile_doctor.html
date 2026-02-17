@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <style>
+      .tab-nav {
+        display: flex;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 32px;
+      }
+      .tab-btn {
+        padding: 16px 24px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+        font-size: 1rem;
+      }
+      .tab-btn:hover {
+        color: var(--medical-blue);
+      }
+      .tab-btn.active {
+        color: var(--medical-blue);
+        border-bottom-color: var(--medical-blue);
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_doctor.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_doctor.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="patients.html" class="sidebar-link">
+            <i class="fas fa-users"></i>
+            Patients
+          </a>
+          <a href="requests.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i>
+            Appointments
+          </a>
+          <a
+            href="manage_records_doctor.html#consultations"
+            class="sidebar-link"
+          >
+            <i class="fas fa-video"></i>
+            Consultations
+          </a>
+          <a href="manage_records_doctor.html#records" class="sidebar-link">
+            <i class="fas fa-clipboard-list"></i>
+            Medical Records
+          </a>
+          <a
+            href="manage_records_doctor.html#prescriptions"
+            class="sidebar-link"
+          >
+            <i class="fas fa-prescription-bottle-alt"></i>
+            Prescriptions
+          </a>
+          <a href="manage_records_doctor.html#reports" class="sidebar-link">
+            <i class="fas fa-file-medical-alt"></i>
+            Reports
+          </a>
+          <a href="chat_doctor.html" class="sidebar-link">
+            <i class="fas fa-comment-medical"></i>
+            Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a
+            href="#"
+            onclick="switchTab('view')"
+            class="sidebar-link active"
+            id="nav-profile"
+          >
+            <i class="fas fa-cog"></i>
+            Settings
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header">
+          <div>
+            <h2 style="font-size: 2rem; margin-bottom: 8px">
+              My Professional Profile
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              View and manage your professional information.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                Dr. John Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Cardiologist
+              </div>
+            </div>
+            <div
+              class="profile-pic"
+              style="background: var(--medical-blue); color: white"
+            >
+              JS
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 64px 64px; max-width: 1200px">
+          <!-- Tab Navigation -->
+          <div class="tab-nav">
+            <button
+              class="tab-btn active"
+              onclick="switchTab('view')"
+              id="tab-view"
+            >
+              <i class="fas fa-user-md" style="margin-right: 8px"></i> View
+              Profile
+            </button>
+            <button class="tab-btn" onclick="switchTab('edit')" id="tab-edit">
+              <i class="fas fa-edit" style="margin-right: 8px"></i> Edit Profile
+            </button>
+          </div>
+
+          <!-- TAB 1: VIEW PROFILE -->
+          <div id="content-view" class="tab-content active">
+            <!-- Profile Overview Card -->
+            <div
+              class="card fade-in"
+              style="
+                padding: 48px;
+                border-top: 6px solid var(--medical-blue);
+                background: linear-gradient(to bottom, #fff, #f8fafc);
+                margin-bottom: 32px;
+              "
+            >
+              <div style="display: flex; gap: 48px; align-items: flex-start">
+                <div style="position: relative">
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 150px;
+                      height: 150px;
+                      font-size: 3.5rem;
+                      background: var(--medical-blue);
+                      color: white;
+                      border: 4px solid white;
+                      box-shadow: 0 10px 25px rgba(45, 74, 138, 0.15);
+                    "
+                  >
+                    JS
+                  </div>
+                  <div
+                    style="
+                      position: absolute;
+                      bottom: 10px;
+                      right: 10px;
+                      width: 32px;
+                      height: 32px;
+                      background: #10b981;
+                      border: 3px solid white;
+                      border-radius: 50%;
+                    "
+                    title="Online"
+                  ></div>
+                </div>
+                <div style="flex: 1">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: start;
+                    "
+                  >
+                    <div>
+                      <h1
+                        style="
+                          font-size: 2.2rem;
+                          color: var(--medical-blue);
+                          margin-bottom: 8px;
+                        "
+                      >
+                        Dr. John Smith
+                      </h1>
+                      <div
+                        style="
+                          font-size: 1.1rem;
+                          color: var(--text-muted);
+                          font-weight: 500;
+                          margin-bottom: 16px;
+                        "
+                      >
+                        Interventional Cardiologist • MD, FACC
+                      </div>
+                      <div
+                        style="display: flex; gap: 12px; margin-bottom: 24px"
+                      >
+                        <span
+                          class="badge"
+                          style="
+                            background: var(--lavender-soft);
+                            color: var(--medical-blue);
+                          "
+                          >15+ Years Exp</span
+                        >
+                        <span
+                          class="badge"
+                          style="background: #e0f2fe; color: #0284c7"
+                          >Top Rated</span
+                        >
+                        <span
+                          class="badge"
+                          style="background: #d1fae5; color: #059669"
+                          >Available</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: repeat(3, 1fr);
+                      gap: 24px;
+                      margin-top: 16px;
+                      padding-top: 24px;
+                      border-top: 1px solid rgba(0, 0, 0, 0.05);
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        License ID
+                      </div>
+                      <div style="font-weight: 600; color: var(--text-main)">
+                        MED-8832-NY
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Email
+                      </div>
+                      <div style="font-weight: 600; color: var(--text-main)">
+                        john.smith@marutha.health
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Phone
+                      </div>
+                      <div style="font-weight: 600; color: var(--text-main)">
+                        +1 (555) 019-2834
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="dashboard-grid"
+              style="padding: 0; gap: 32px; grid-template-columns: 2fr 1fr"
+            >
+              <div style="display: flex; flex-direction: column; gap: 32px">
+                <div class="card" style="padding: 32px">
+                  <h3 style="margin-bottom: 16px; color: var(--medical-blue)">
+                    About Me
+                  </h3>
+                  <p
+                    style="
+                      color: var(--text-secondary);
+                      line-height: 1.7;
+                      margin-bottom: 16px;
+                    "
+                  >
+                    Dedicated and experienced Interventional Cardiologist with a
+                    strong background in diagnosing and treating cardiovascular
+                    diseases. Committed to providing compassionate,
+                    patient-centered care and employing the latest medical
+                    advancements to improve patient outcomes.
+                  </p>
+                  <p style="color: var(--text-secondary); line-height: 1.7">
+                    "I believe in treating the patient, not just the disease.
+                    Listening and empathy are just as precise instruments as any
+                    in the cath lab."
+                  </p>
+                </div>
+                <div class="card" style="padding: 32px">
+                  <h3 style="margin-bottom: 24px; color: var(--medical-blue)">
+                    Performance Overview
+                  </h3>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: repeat(3, 1fr);
+                      gap: 24px;
+                    "
+                  >
+                    <div
+                      style="
+                        text-align: center;
+                        padding: 16px;
+                        background: #fffbeb;
+                        border-radius: 12px;
+                        border: 1px solid #fcd34d;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 2rem;
+                          font-weight: 700;
+                          color: #b45309;
+                        "
+                      >
+                        1.2k
+                      </div>
+                      <div style="font-size: 0.9rem; color: #92400e">
+                        Patients Treated
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        text-align: center;
+                        padding: 16px;
+                        background: #eff6ff;
+                        border-radius: 12px;
+                        border: 1px solid #bfdbfe;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 2rem;
+                          font-weight: 700;
+                          color: #1e40af;
+                        "
+                      >
+                        98%
+                      </div>
+                      <div style="font-size: 0.9rem; color: #1e3a8a">
+                        Success Rate
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        text-align: center;
+                        padding: 16px;
+                        background: #f0fdf4;
+                        border-radius: 12px;
+                        border: 1px solid #bbf7d0;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 2rem;
+                          font-weight: 700;
+                          color: #15803d;
+                        "
+                      >
+                        4.9
+                      </div>
+                      <div style="font-size: 0.9rem; color: #14532d">
+                        Patient Rating
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 32px">
+                <div class="card" style="padding: 32px">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 24px;
+                    "
+                  >
+                    <h3 style="margin: 0; color: var(--medical-blue)">
+                      Recent Reviews
+                    </h3>
+                    <a
+                      href="#"
+                      style="font-size: 0.9rem; color: var(--medical-blue)"
+                      >View All</a
+                    >
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 20px">
+                    <div
+                      style="
+                        padding-bottom: 20px;
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                      "
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          margin-bottom: 8px;
+                        "
+                      >
+                        <strong style="color: var(--text-main)"
+                          >Sarah Lee</strong
+                        >
+                        <div style="color: #f59e0b; font-size: 0.8rem">
+                          <i class="fas fa-star"></i><i class="fas fa-star"></i
+                          ><i class="fas fa-star"></i><i class="fas fa-star"></i
+                          ><i class="fas fa-star"></i>
+                        </div>
+                      </div>
+                      <p
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          font-style: italic;
+                        "
+                      >
+                        "Dr. Smith explained everything so clearly. I felt very
+                        reassured."
+                      </p>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          margin-bottom: 8px;
+                        "
+                      >
+                        <strong style="color: var(--text-main)">Mike R.</strong>
+                        <div style="color: #f59e0b; font-size: 0.8rem">
+                          <i class="fas fa-star"></i><i class="fas fa-star"></i
+                          ><i class="fas fa-star"></i><i class="fas fa-star"></i
+                          ><i class="far fa-star"></i>
+                        </div>
+                      </div>
+                      <p
+                        style="
+                          font-size: 0.9rem;
+                          color: var(--text-muted);
+                          font-style: italic;
+                        "
+                      >
+                        "Great experience, though the wait time was a bit long."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card" style="padding: 32px; background: #fafafa">
+                  <h3 style="margin-bottom: 16px; color: var(--medical-blue)">
+                    Schedule
+                  </h3>
+                  <p
+                    style="
+                      font-size: 0.9rem;
+                      color: var(--text-muted);
+                      margin-bottom: 24px;
+                    "
+                  >
+                    Typical weekly availability
+                  </p>
+                  <div style="display: flex; flex-direction: column; gap: 12px">
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.95rem;
+                      "
+                    >
+                      <span style="color: var(--text-main)">Mon - Fri</span>
+                      <span style="font-weight: 600; color: var(--medical-blue)"
+                        >9:00 AM - 5:00 PM</span
+                      >
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.95rem;
+                      "
+                    >
+                      <span style="color: var(--text-main)">Saturday</span>
+                      <span style="font-weight: 600; color: var(--medical-blue)"
+                        >10:00 AM - 2:00 PM</span
+                      >
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.95rem;
+                      "
+                    >
+                      <span style="color: var(--text-muted)">Sunday</span>
+                      <span style="color: var(--text-muted)">Closed</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: EDIT PROFILE -->
+          <div id="content-edit" class="tab-content">
+            <div
+              class="card fade-in"
+              style="padding: 40px; border-top: 4px solid var(--medical-blue)"
+            >
+              <h3
+                style="
+                  margin-bottom: 24px;
+                  color: var(--medical-blue);
+                  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                  padding-bottom: 16px;
+                "
+              >
+                Edit Your Profile
+              </h3>
+              <form onsubmit="saveProfile(event)">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 24px;
+                    margin-bottom: 32px;
+                  "
+                >
+                  <div
+                    class="profile-pic"
+                    style="
+                      width: 80px;
+                      height: 80px;
+                      font-size: 1.5rem;
+                      background: var(--medical-blue);
+                      color: white;
+                    "
+                  >
+                    JS
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-lavender"
+                      style="margin-bottom: 8px"
+                    >
+                      Change Photo
+                    </button>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Recommended: Square JPG, PNG
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 24px;
+                  "
+                >
+                  <div class="form-group">
+                    <label
+                      style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                      "
+                      >Full Name</label
+                    >
+                    <input
+                      type="text"
+                      value="Dr. John Smith"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid var(--medical-blue-light);
+                        border-radius: 8px;
+                      "
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label
+                      style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                      "
+                      >Specialty</label
+                    >
+                    <input
+                      type="text"
+                      value="Cardiologist"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid var(--medical-blue-light);
+                        border-radius: 8px;
+                      "
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label
+                      style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                      "
+                      >Email Address</label
+                    >
+                    <input
+                      type="email"
+                      value="john.smith@marutha.health"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid var(--medical-blue-light);
+                        border-radius: 8px;
+                        background: #f9fafb;
+                      "
+                      readonly
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label
+                      style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                      "
+                      >License ID</label
+                    >
+                    <input
+                      type="text"
+                      value="MED-8832-NY"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid var(--medical-blue-light);
+                        border-radius: 8px;
+                      "
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 24px">
+                  <label
+                    style="
+                      display: block;
+                      margin-bottom: 8px;
+                      color: var(--text-main);
+                      font-weight: 500;
+                    "
+                    >Bio / Description</label
+                  >
+                  <textarea
+                    rows="4"
+                    style="
+                      width: 100%;
+                      padding: 12px;
+                      border: 1px solid var(--medical-blue-light);
+                      border-radius: 8px;
+                      resize: vertical;
+                    "
+                  >
+Experienced Interventional Cardiologist with 15+ years of practice...</textarea
+                  >
+                </div>
+
+                <div
+                  style="
+                    margin-top: 32px;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 16px;
+                  "
+                >
+                  <button
+                    type="button"
+                    class="btn btn-outline-lavender"
+                    onclick="switchTab('view')"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/manage_profile.js"></script>
+  </body>
+</html>

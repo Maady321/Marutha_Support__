@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medical Records - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <style>
+      .tab-nav {
+        display: flex;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 32px;
+      }
+      .tab-btn {
+        padding: 16px 24px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+        font-size: 1rem;
+      }
+      .tab-btn:hover {
+        color: var(--medical-blue);
+      }
+      .tab-btn.active {
+        color: var(--medical-blue);
+        border-bottom-color: var(--medical-blue);
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_doctor.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_doctor.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a href="patients.html" class="sidebar-link">
+            <i class="fas fa-users"></i>
+            Patients
+          </a>
+          <a href="requests.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i>
+            Appointments
+          </a>
+          <!-- Consolidated Links -->
+          <a
+            href="#"
+            onclick="switchTab('consultations')"
+            class="sidebar-link"
+            id="nav-consultations"
+          >
+            <i class="fas fa-video"></i>
+            Consultations
+          </a>
+          <a
+            href="#"
+            onclick="switchTab('records')"
+            class="sidebar-link"
+            id="nav-records"
+          >
+            <i class="fas fa-clipboard-list"></i>
+            Medical Records
+          </a>
+          <a
+            href="#"
+            onclick="switchTab('prescriptions')"
+            class="sidebar-link"
+            id="nav-prescriptions"
+          >
+            <i class="fas fa-prescription-bottle-alt"></i>
+            Prescriptions
+          </a>
+          <a
+            href="#"
+            onclick="switchTab('reports')"
+            class="sidebar-link"
+            id="nav-reports"
+          >
+            <i class="fas fa-file-medical-alt"></i>
+            Reports
+          </a>
+
+          <a href="chat_doctor.html" class="sidebar-link">
+            <i class="fas fa-comment-medical"></i>
+            Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a
+            href="manage_manage_profile_doctor.html#view#view"
+            class="sidebar-link"
+          >
+            <i class="fas fa-cog"></i>
+            Settings
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+          <div>
+            <h2
+              id="page-title"
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
+            >
+              <i
+                class="fas fa-folder-open"
+                style="color: var(--medical-blue); font-size: 1.8rem"
+              ></i>
+              Medical Management
+            </h2>
+            <p
+              style="color: var(--text-muted); font-weight: 500"
+              id="page-desc"
+            >
+              Manage all patient records and history in one place.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                Dr. John Smith
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Cardiologist
+              </div>
+            </div>
+            <div
+              class="profile-pic"
+              style="background: var(--medical-blue); color: white"
+            >
+              JS
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 64px 64px">
+          <!-- Tab Navigation -->
+          <div class="tab-nav">
+            <button
+              class="tab-btn active"
+              onclick="switchTab('consultations')"
+              id="tab-consultations"
+            >
+              <i class="fas fa-video" style="margin-right: 8px"></i>
+              Consultations
+            </button>
+            <button
+              class="tab-btn"
+              onclick="switchTab('records')"
+              id="tab-records"
+            >
+              <i class="fas fa-clipboard-list" style="margin-right: 8px"></i>
+              Medical Records
+            </button>
+            <button
+              class="tab-btn"
+              onclick="switchTab('prescriptions')"
+              id="tab-prescriptions"
+            >
+              <i
+                class="fas fa-prescription-bottle-alt"
+                style="margin-right: 8px"
+              ></i>
+              Prescriptions
+            </button>
+            <button
+              class="tab-btn"
+              onclick="switchTab('reports')"
+              id="tab-reports"
+            >
+              <i class="fas fa-chart-line" style="margin-right: 8px"></i>
+              Reports & Analytics
+            </button>
+          </div>
+
+          <!-- TAB 1: CONSULTATIONS -->
+          <div id="content-consultations" class="tab-content active">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 32px;
+              "
+            >
+              <div class="item-search" style="position: relative; width: 350px">
+                <i
+                  class="fas fa-search"
+                  style="
+                    position: absolute;
+                    left: 16px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: var(--text-light);
+                  "
+                ></i>
+                <input
+                  type="text"
+                  placeholder="Search consultations..."
+                  style="
+                    width: 100%;
+                    padding: 12px 12px 12px 48px;
+                    border: 1px solid var(--medical-blue-light);
+                    border-radius: 50px;
+                    outline: none;
+                  "
+                />
+              </div>
+              <button class="btn btn-primary">
+                <i class="fas fa-plus" style="margin-right: 8px"></i> New Note
+              </button>
+            </div>
+
+            <div
+              class="card fade-in"
+              style="
+                padding: 0;
+                border-top: 4px solid var(--medical-blue);
+                overflow: hidden;
+              "
+            >
+              <table class="custom-table" style="margin: 0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Reason</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="color: var(--text-muted)">Oct 24, 2023</td>
+                    <td style="font-weight: 600; color: var(--medical-blue)">
+                      Sarah Lee
+                    </td>
+                    <td>Hypertension Review</td>
+                    <td>
+                      <span
+                        class="badge"
+                        style="background: #ecfdf5; color: #047857"
+                        >Follow-up</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-sm btn-outline-lavender"
+                        >View</a
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="color: var(--text-muted)">Oct 23, 2023</td>
+                    <td style="font-weight: 600; color: var(--medical-blue)">
+                      Michael Brown
+                    </td>
+                    <td>Chest Pain</td>
+                    <td>
+                      <span
+                        class="badge"
+                        style="background: #fef2f2; color: #b91c1c"
+                        >Emergency</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-sm btn-outline-lavender"
+                        >View</a
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 2: MEDICAL RECORDS -->
+          <div id="content-records" class="tab-content">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 24px;
+              "
+            >
+              <!-- Record Item -->
+              <div
+                class="card"
+                style="
+                  padding: 24px;
+                  text-align: center;
+                  border: 1px solid var(--border-color);
+                "
+              >
+                <i
+                  class="fas fa-file-pdf"
+                  style="font-size: 3rem; color: #ef4444; margin-bottom: 16px"
+                ></i>
+                <h4 style="margin-bottom: 4px">Lab_Results_Oct2023.pdf</h4>
+                <p
+                  style="
+                    color: var(--text-muted);
+                    font-size: 0.85rem;
+                    margin-bottom: 16px;
+                  "
+                >
+                  Added yesterday by Lab
+                </p>
+                <button
+                  class="btn btn-sm btn-outline-lavender"
+                  style="width: 100%; justify-content: center"
+                >
+                  Download
+                </button>
+              </div>
+              <div
+                class="card"
+                style="
+                  padding: 24px;
+                  text-align: center;
+                  border: 1px solid var(--border-color);
+                "
+              >
+                <i
+                  class="fas fa-file-image"
+                  style="font-size: 3rem; color: #3b82f6; margin-bottom: 16px"
+                ></i>
+                <h4 style="margin-bottom: 4px">XRay_Chest_MB.png</h4>
+                <p
+                  style="
+                    color: var(--text-muted);
+                    font-size: 0.85rem;
+                    margin-bottom: 16px;
+                  "
+                >
+                  Added Oct 23 by Radiology
+                </p>
+                <button
+                  class="btn btn-sm btn-outline-lavender"
+                  style="width: 100%; justify-content: center"
+                >
+                  View
+                </button>
+              </div>
+              <div
+                class="card"
+                style="
+                  padding: 24px;
+                  text-align: center;
+                  border: 1px solid var(--border-color);
+                  border-style: dashed;
+                  background: var(--bg-warm);
+                  cursor: pointer;
+                "
+              >
+                <i
+                  class="fas fa-cloud-upload-alt"
+                  style="
+                    font-size: 3rem;
+                    color: var(--text-light);
+                    margin-bottom: 16px;
+                  "
+                ></i>
+                <h4 style="margin-bottom: 4px; color: var(--text-muted)">
+                  Upload New File
+                </h4>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: PRESCRIPTIONS -->
+          <div id="content-prescriptions" class="tab-content">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 32px;
+              "
+            >
+              <div class="item-search" style="position: relative; width: 350px">
+                <i
+                  class="fas fa-search"
+                  style="
+                    position: absolute;
+                    left: 16px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: var(--text-light);
+                  "
+                ></i>
+                <input
+                  type="text"
+                  placeholder="Search prescriptions..."
+                  style="
+                    width: 100%;
+                    padding: 12px 12px 12px 48px;
+                    border: 1px solid var(--medical-blue-light);
+                    border-radius: 50px;
+                    outline: none;
+                  "
+                />
+              </div>
+              <button class="btn btn-primary" onclick="alert('Open Modal')">
+                <i class="fas fa-plus" style="margin-right: 8px"></i> New Script
+              </button>
+            </div>
+
+            <div
+              class="card fade-in"
+              style="
+                padding: 0;
+                border-top: 4px solid var(--sunshine-yellow);
+                overflow: hidden;
+              "
+            >
+              <table class="custom-table" style="margin: 0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Medication</th>
+                    <th>Dosage</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="color: var(--text-muted)">Oct 24, 2023</td>
+                    <td style="font-weight: 600; color: var(--medical-blue)">
+                      Sarah Lee
+                    </td>
+                    <td>Lisinopril</td>
+                    <td>10mg Daily</td>
+                    <td>
+                      <a href="#" class="btn btn-sm btn-outline-lavender"
+                        ><i class="fas fa-print"></i
+                      ></a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="color: var(--text-muted)">Oct 23, 2023</td>
+                    <td style="font-weight: 600; color: var(--medical-blue)">
+                      Michael Brown
+                    </td>
+                    <td>Aspirin</td>
+                    <td>81mg Daily</td>
+                    <td>
+                      <a href="#" class="btn btn-sm btn-outline-lavender"
+                        ><i class="fas fa-print"></i
+                      ></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 4: REPORTS -->
+          <div id="content-reports" class="tab-content">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 32px;
+              "
+            >
+              <div class="card" style="padding: 32px">
+                <h3 style="margin-bottom: 16px">Patient Demographics</h3>
+                <div
+                  style="
+                    height: 200px;
+                    background: #f9fafb;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--text-muted);
+                  "
+                >
+                  [Chart Placeholder]
+                </div>
+              </div>
+              <div class="card" style="padding: 32px">
+                <h3 style="margin-bottom: 16px">Consultation Volume</h3>
+                <div
+                  style="
+                    height: 200px;
+                    background: #f9fafb;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--text-muted);
+                  "
+                >
+                  [Chart Placeholder]
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/manage_records.js"></script>
+  </body>
+</html>

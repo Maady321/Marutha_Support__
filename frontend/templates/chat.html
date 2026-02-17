@@ -1,162 +1,246 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Messages - Marutha Support</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <style>
-      body {
-        overflow-x: hidden;
-      }
-    </style>
+
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <link rel="stylesheet" href="../static/css/chat.css" />
   </head>
   <body>
     <div class="dashboard-container">
-      <!-- Patient Sidebar -->
+      <!-- Sidebar -->
       <aside class="sidebar">
-        <a
-          href="dashboard.html"
-          class="sidebar-brand"
-          style="display: flex; align-items: center; gap: 0.75rem"
-        >
-          <img
-            src="../static/images/logo.png"
-            alt="Marutha Support Logo"
-            style="width: 40px; height: 40px; object-fit: contain"
-          />
-          <span
-            style="
-              background: linear-gradient(
-                135deg,
-                #7ed957 0%,
-                #34d399 35%,
-                #22d3ee 65%,
-                #00a6e8 100%
-              );
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              font-weight: 700;
-            "
-            >Marutha Support</span
-          >
+        <a href="dashboard_patient.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
         </a>
 
         <nav class="sidebar-nav">
-          <a href="dashboard.html" class="sidebar-link">Dashboard</a>
-          <a href="doctors.html" class="sidebar-link">Find Doctor</a>
-          <a href="logs.html" class="sidebar-link">Health Logs</a>
-          <a href="chat.html" class="sidebar-link active">Messages</a>
-          <div style="flex-grow: 1"></div>
-          <a href="setup_profile.html" class="sidebar-link">My Profile</a>
-          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
-            >Logout</a
+          <a href="dashboard_patient.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a
+            href="manage_health_patient.html#appointments"
+            class="sidebar-link"
           >
+            <i class="fas fa-calendar-alt"></i>
+            Appointments
+          </a>
+          <a href="manage_health_patient.html#logs" class="sidebar-link">
+            <i class="fas fa-notes-medical"></i>
+            Health Logs
+          </a>
+          <a href="chat.html" class="sidebar-link active">
+            <i class="fas fa-comment-medical"></i>
+            Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a href="manage_profile_patient.html#view" class="sidebar-link">
+            <i class="fas fa-cog"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
         </nav>
       </aside>
 
       <!-- Main Content -->
       <main class="main-content">
+        <!-- Header -->
         <header class="top-header">
-          <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main)">
-            Chat with Dr. Smith
-          </h2>
+          <div>
+            <h2 style="font-size: 2rem; margin-bottom: 8px">
+              Care Conversations
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Direct communication with your care team.
+            </p>
+          </div>
           <div class="profile-snippet">
-            <div
-              style="text-align: right; display: flex; flex-direction: column"
-            >
-              <span style="font-weight: 700; font-size: 0.95rem">John Doe</span>
-              <span style="font-size: 0.8rem; color: var(--text-muted)"
-                >Early Recovery</span
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
               >
+                John Doe
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Early Recovery
+              </div>
             </div>
-            <div
-              class="profile-pic"
-              style="
-                background: linear-gradient(
-                  135deg,
-                  var(--accent-green),
-                  var(--accent-blue)
-                );
-              "
-            >
-              JD
-            </div>
+            <div class="profile-pic">JD</div>
           </div>
         </header>
 
-        <div class="container" style="max-width: 1400px; padding: 2rem">
-          <div class="chat-container glass fade-in" style="margin-bottom: 2rem">
-            <div class="message message-received">
-              Hello John, how are you feeling today?
-              <span class="timestamp">10:00 AM</span>
+        <div class="container" style="padding: 0 64px 64px">
+          <!-- Chat Card -->
+          <div
+            class="card"
+            style="
+              padding: 0;
+              background: white;
+              overflow: hidden;
+              border: 1px solid rgba(45, 74, 138, 0.05);
+              box-shadow: var(--shadow-soft);
+            "
+          >
+            <!-- Chat Header -->
+            <div
+              style="
+                padding: 24px 32px;
+                background: var(--lavender-soft);
+                border-bottom: 1px solid rgba(45, 74, 138, 0.05);
+                display: flex;
+                align-items: center;
+                gap: 16px;
+              "
+            >
+              <div
+                class="profile-pic"
+                style="
+                  width: 48px;
+                  height: 48px;
+                  background: white;
+                  border: 1px solid var(--medical-blue-light);
+                "
+              >
+                SJ
+              </div>
+              <div>
+                <h4 style="color: var(--medical-blue); margin: 0">
+                  Dr. Sarah Jenkins
+                </h4>
+                <div
+                  style="
+                    font-size: 0.8rem;
+                    color: var(--hope-green);
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                  "
+                >
+                  <span
+                    style="
+                      width: 8px;
+                      height: 8px;
+                      background: var(--hope-green);
+                      border-radius: 50%;
+                    "
+                  ></span>
+                  Online
+                </div>
+              </div>
             </div>
-            <div class="message message-sent">
-              Hi Doctor, I'm feeling a bit better. The pain has reduced.
-              <span class="timestamp">10:05 AM</span>
+
+            <!-- Messages Container -->
+            <div
+              class="chat-container"
+              style="
+                padding: 32px;
+                height: 500px;
+                max-height: 500px;
+                margin-bottom: 0;
+                border: none;
+                border-radius: 0;
+              "
+            >
+              <div class="message message-received">
+                Hello John, how are you feeling today?
+                <span class="timestamp">10:00 AM</span>
+              </div>
+              <div class="message message-sent">
+                Hi Doctor, I'm feeling much more comfortable today.
+                <span class="timestamp">10:05 AM</span>
+              </div>
+              <div class="message message-received">
+                That's wonderful. Your latest comfort scores look stable.
+                <span class="timestamp">10:15 AM</span>
+              </div>
             </div>
-            <div class="message message-received">
-              That's great to hear! Keep monitoring your vitals and let me know
-              if anything changes.
-              <span class="timestamp">10:15 AM</span>
+
+            <!-- Input Area -->
+            <div
+              style="
+                padding: 24px 32px;
+                background: var(--bg-warm);
+                border-top: 1px solid rgba(45, 74, 138, 0.05);
+              "
+            >
+              <form
+                id="chatForm"
+                style="display: flex; gap: 16px; align-items: center"
+              >
+                <textarea
+                  id="messageInput"
+                  placeholder="Share how you're feeling..."
+                  rows="1"
+                  style="
+                    flex: 1;
+                    padding: 16px 24px;
+                    border-radius: 30px;
+                    border: 2px solid var(--medical-blue-light);
+                    font-size: 1rem;
+                    resize: none;
+                    background: white;
+                    color: var(--text-main);
+                    outline: none;
+                  "
+                ></textarea>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="
+                    width: 54px;
+                    height: 54px;
+                    border-radius: 50%;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </form>
             </div>
           </div>
 
-          <div class="glass p-4">
-            <form id="chatForm" style="display: flex; gap: 1rem">
-              <textarea
-                id="messageInput"
-                placeholder="Type your message..."
-                rows="1"
-                style="
-                  flex: 1;
-                  border-radius: 8px;
-                  border: 1px solid var(--border-color);
-                  background: rgba(0, 0, 0, 0.2);
-                  color: #f5f3ff;
-                  padding: 1rem;
-                "
-              ></textarea>
-              <button
-                type="submit"
-                class="btn"
-                style="width: fit-content; align-self: flex-end"
-              >
-                Send
-              </button>
-            </form>
+          <!-- Encouragement Box -->
+          <div
+            style="
+              margin-top: 32px;
+              text-align: center;
+              color: var(--text-muted);
+              font-size: 0.9rem;
+              font-style: italic;
+              opacity: 0.8;
+            "
+          >
+            "We are walking this journey with you."
           </div>
         </div>
       </main>
     </div>
 
-    <script>
-      // Handle chat message submission
-      document
-        .getElementById("chatForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const messageInput = document.getElementById("messageInput");
-          const message = messageInput.value.trim();
-
-          if (message) {
-            // In a real app, this would send to backend
-            // For now, just clear the input and add message to chat
-            messageInput.value = "";
-
-            // Add message to chat container
-            const chatContainer = document.querySelector(".chat-container");
-            const messageDiv = document.createElement("div");
-            messageDiv.className = "message message-sent";
-            messageDiv.innerHTML =
-              '<p style="margin: 0;">' +
-              message +
-              '</p><span class="timestamp">Just now</span>';
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-          }
-        });
-    </script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="../static/js/chat.js"></script>
   </body>
 </html>

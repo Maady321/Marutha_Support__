@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <style>
+      .tab-nav {
+        display: flex;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 32px;
+      }
+      .tab-btn {
+        padding: 16px 24px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+        font-size: 1rem;
+      }
+      .tab-btn:hover {
+        color: var(--medical-blue);
+      }
+      .tab-btn.active {
+        color: var(--medical-blue);
+        border-bottom-color: var(--medical-blue);
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Patient Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_patient.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_patient.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i>
+            Dashboard
+          </a>
+          <a
+            href="manage_health_patient.html#appointments"
+            class="sidebar-link"
+          >
+            <i class="fas fa-calendar-alt"></i>
+            Appointments
+          </a>
+          <a href="manage_health_patient.html#logs" class="sidebar-link">
+            <i class="fas fa-notes-medical"></i>
+            Health Logs
+          </a>
+          <a href="chat.html" class="sidebar-link">
+            <i class="fas fa-comment-medical"></i>
+            Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a
+            href="#"
+            onclick="switchTab('view')"
+            class="sidebar-link active"
+            id="nav-profile"
+          >
+            <i class="fas fa-cog"></i>
+            My Profile
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header">
+          <div>
+            <h2 style="font-size: 2rem; margin-bottom: 8px">
+              My Account Settings
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              Manage your personal information and care preferences.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                John Doe
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Early Recovery
+              </div>
+            </div>
+            <div class="profile-pic">JD</div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 64px 64px; max-width: 1000px">
+          <!-- Tab Navigation -->
+          <div class="tab-nav">
+            <button
+              class="tab-btn active"
+              onclick="switchTab('view')"
+              id="tab-view"
+            >
+              <i class="fas fa-user-circle" style="margin-right: 8px"></i>
+              Profile Overview
+            </button>
+            <button class="tab-btn" onclick="switchTab('edit')" id="tab-edit">
+              <i class="fas fa-user-edit" style="margin-right: 8px"></i> Edit
+              Details
+            </button>
+          </div>
+
+          <!-- TAB 1: VIEW PROFILE -->
+          <div id="content-view" class="tab-content active">
+            <div
+              class="card fade-in"
+              style="
+                padding: 48px;
+                border-top: 6px solid var(--medical-blue);
+                display: flex;
+                gap: 48px;
+                align-items: center;
+                margin-bottom: 32px;
+              "
+            >
+              <div
+                class="profile-pic"
+                style="
+                  width: 120px;
+                  height: 120px;
+                  font-size: 3rem;
+                  border: 4px solid var(--medical-blue-light);
+                "
+              >
+                JD
+              </div>
+              <div style="flex: 1">
+                <h1 style="margin-bottom: 8px">John Doe</h1>
+                <p
+                  style="
+                    font-size: 1.1rem;
+                    color: var(--text-muted);
+                    margin-bottom: 16px;
+                  "
+                >
+                  Member ID: #883920
+                </p>
+                <span class="badge badge-active" style="font-size: 0.9rem"
+                  >Stage 2 Recovery</span
+                >
+              </div>
+            </div>
+
+            <div
+              class="dashboard-grid"
+              style="grid-template-columns: 1fr 1fr; padding: 0; gap: 32px"
+            >
+              <div class="card" style="padding: 32px">
+                <h3
+                  style="
+                    margin-bottom: 24px;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                    padding-bottom: 16px;
+                  "
+                >
+                  Personal Info
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 16px">
+                  <div style="display: flex; justify-content: space-between">
+                    <span>Age</span
+                    ><span style="font-weight: 600">35 Years</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between">
+                    <span>Email</span
+                    ><span style="font-weight: 600">john.doe@example.com</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between">
+                    <span>Phone</span
+                    ><span style="font-weight: 600">+1 (555) 123-4567</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="card"
+                style="
+                  padding: 32px;
+                  background: #fff5f5;
+                  border: 1px solid #fed7d7;
+                "
+              >
+                <h3 style="color: #c53030; margin-bottom: 16px">
+                  Account Zone
+                </h3>
+                <p style="font-size: 0.9rem; margin-bottom: 20px">
+                  Manage your security or logout.
+                </p>
+                <div style="display: flex; gap: 12px">
+                  <a
+                    href="reset_password.html"
+                    class="btn btn-sm"
+                    style="
+                      background: white;
+                      border: 1px solid #feb2b2;
+                      color: #c53030;
+                    "
+                    >Reset Password</a
+                  >
+                  <a
+                    href="login.html"
+                    class="btn btn-sm"
+                    style="
+                      background: transparent;
+                      border: none;
+                      color: #c53030;
+                      text-decoration: underline;
+                    "
+                    >Log Out</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: EDIT DETAILS -->
+          <div id="content-edit" class="tab-content">
+            <div
+              class="card fade-in"
+              style="padding: 48px; border-top: 6px solid var(--medical-blue)"
+            >
+              <h3 style="margin-bottom: 32px">Update Your Information</h3>
+              <form
+                onsubmit="saveProfile(event)"
+                style="display: flex; flex-direction: column; gap: 24px"
+              >
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    value="John Doe"
+                    style="
+                      width: 100%;
+                      padding: 12px;
+                      border-radius: 8px;
+                      border: 1px solid var(--border-color);
+                    "
+                  />
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 2fr;
+                    gap: 24px;
+                  "
+                >
+                  <div class="form-group">
+                    <label>Age</label>
+                    <input
+                      type="number"
+                      value="35"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border-radius: 8px;
+                        border: 1px solid var(--border-color);
+                      "
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Current Stage</label>
+                    <input
+                      type="text"
+                      value="Stage 2 Recovery"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border-radius: 8px;
+                        border: 1px solid var(--border-color);
+                      "
+                    />
+                  </div>
+                </div>
+                <div style="display: flex; gap: 16px; margin-top: 16px">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    style="flex: 2; padding: 16px"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-lavender"
+                    style="flex: 1"
+                    onclick="switchTab('view')"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/manage_profile.js"></script>
+  </body>
+</html>

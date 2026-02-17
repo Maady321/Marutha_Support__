@@ -1,37 +1,27 @@
-# SQLAlchemy components for building the database engine and sessions
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine  # Import create_engine to establish a database connection
+from sqlalchemy.ext.declarative import declarative_base  # Import declarative_base for defining the base class for models
+from sqlalchemy.orm import sessionmaker  # Import sessionmaker to create database sessions
+import os  # Import os to interact with the operating system environment variables
+from dotenv import load_dotenv  # Import load_dotenv to load environment variables from a .env file
 
-# Standard libraries for environment variable management
-import os
-from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from the .env file
 
-# Load secret keys and URLs from the .env file
-load_dotenv()
+# Define the database URL, retrieving it from environment variables or using a default local PostgreSQL URL
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:AcademyRootPassword@localhost/marutha_db")
 
-# Define the database URL. It checks the environment variable first,
-# then falls back to a default PostgreSQL URL if not found.
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:AcademyRootPassword@localhost/marutha_db")
+# Create the SQLAlchemy engine using the defined database URL
+engine = create_engine(DATABASE_URL)
 
-# Create the SQLAlchemy engine that connects the Python code to PostgreSQL
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
-# Create a 'SessionLocal' class. Each instance of this class will be a database session.
-# We set autocommit and autoflush to False for better control over transactions.
+# Create a customized SessionLocal class, disabling autocommit and autoflush, and binding it to the engine
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base class for our database models to inherit from
+# Create a Base class for the ORM models to inherit from
 Base = declarative_base()
 
-# dependency function to open a connection to the database
-# this is used by our API routes whenever they need to save or fetch data
+# Define a dependency function to get a database session
 def get_database_session():
-    # create a new database session
-    database_session = SessionLocal()
+    db = SessionLocal()  # Create a new database session
     try:
-        # 'yield' makes this session available to the route that called it
-        yield database_session
+        yield db  # Yield the session to the caller
     finally:
-        # once the API route is done, always close the connection
-        database_session.close()
+        db.close()  # Close the session after the request is finished
