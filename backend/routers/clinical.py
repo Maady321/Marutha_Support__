@@ -111,8 +111,10 @@ def get_my_logs(
     # Return logs ordered by timestamp descending
     return db.query(models.HealthLog).filter_by(patient_id=patient.id).order_by(models.HealthLog.timestamp.desc()).all()
 
-# Ensure the upload directory exists
-os.makedirs("uploaded_reports", exist_ok=True)
+import os
+
+UPLOAD_DIR = "/tmp/uploaded_reports" if os.getenv("VERCEL") else "uploaded_reports"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Endpoint to upload a medical report
 @reports_router.post("/upload")
@@ -126,17 +128,20 @@ def upload_file(
     if not patient:
         raise HTTPException(status_code=404, detail="Profile not found.")
 
-    # Construct the file path
-    file_path = f"uploaded_reports/{file.filename}"
-    # Save the uploaded file to disk
-    with open(file_path, "wb") as buffer:
+    # Construct the file paths
+    import shutil
+    physical_path = f"{UPLOAD_DIR}/{file.filename}"
+    db_relative_path = f"uploaded_reports/{file.filename}"
+    
+    # Save the uploaded file to disk using the writable directory
+    with open(physical_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # Create a database record for the report
+    # Create a database record for the report using the standard URL path
     new_report = models.MedicalReport(
         patient_id=patient.id,
         title=title,
-        file_path=file_path     
+        file_path=db_relative_path     
     )
     db.add(new_report)
     db.commit()

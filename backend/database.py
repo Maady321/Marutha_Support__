@@ -11,7 +11,13 @@ if not env_path.exists():
 load_dotenv(dotenv_path=env_path)
 
 # Define the database URL, retrieving it from environment variables or using a default local SQLite database
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    # If running on Vercel's serverless environment, local files are read-only, so write to /tmp
+    if os.getenv("VERCEL"):
+        DATABASE_URL = "sqlite:////tmp/test.db"
+    else:
+        DATABASE_URL = "sqlite:///./test.db"
 
 # Create the SQLAlchemy engine using the defined database URL
 # For SQLite, check_same_thread is set to False for compatibility with FastAPI

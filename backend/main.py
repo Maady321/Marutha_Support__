@@ -45,8 +45,12 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": "Internal Server Error", "error": str(exc)},
     )
 
+import os
+UPLOAD_DIR = "/tmp/uploaded_reports" if os.getenv("VERCEL") else "uploaded_reports"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 # Mount the 'uploaded_reports' directory to serve report files under the '/uploaded_reports' path
-app.mount("/uploaded_reports", StaticFiles(directory="uploaded_reports"), name="reports")
+app.mount("/uploaded_reports", StaticFiles(directory=UPLOAD_DIR), name="reports")
 
 # Include the authentication router
 app.include_router(auth.router)
