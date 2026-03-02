@@ -8,6 +8,8 @@ const CONFIG = {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize global UI features
     initNavigation();
+    initMobileSidebar();
+    initMobileNav();
     initNotifications();
     checkAuth();
     populateGlobalProfile();
