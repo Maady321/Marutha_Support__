@@ -39,6 +39,102 @@ function initNavigation() {
 }
 
 /**
+ * Mobile Sidebar Toggle (Dashboard pages)
+ */
+function initMobileSidebar() {
+    const sidebar  = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    // Create overlay if not present
+    let overlay = document.querySelector('.sidebar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+    }
+
+    // Create toggle button if not present
+    let toggle = document.querySelector('.sidebar-toggle');
+    if (!toggle) {
+        toggle = document.createElement('button');
+        toggle.className = 'sidebar-toggle';
+        toggle.innerHTML = '<i class="fas fa-bars"></i>';
+        toggle.setAttribute('aria-label', 'Toggle menu');
+        document.body.appendChild(toggle);
+    }
+
+    const openSidebar = () => {
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        toggle.innerHTML = '<i class="fas fa-times"></i>';
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeSidebar = () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        toggle.innerHTML = '<i class="fas fa-bars"></i>';
+        document.body.style.overflow = '';
+    };
+
+    toggle.addEventListener('click', () => {
+        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+
+    overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar when a link is clicked on mobile
+    sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) closeSidebar();
+        });
+    });
+}
+
+/**
+ * Mobile Navigation Toggle (Landing / Public pages)
+ */
+function initMobileNav() {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+
+    // Create toggle button if not already in HTML
+    let toggle = nav.querySelector('.nav-toggle');
+    if (!toggle) {
+        toggle = document.createElement('button');
+        toggle.className = 'nav-toggle';
+        toggle.innerHTML = '<i class="fas fa-bars"></i>';
+        toggle.setAttribute('aria-label', 'Toggle navigation');
+        nav.appendChild(toggle);
+    }
+
+    // Create mobile nav menu if not in HTML
+    let mobileNav = document.querySelector('.nav-mobile');
+    if (!mobileNav) {
+        const links = nav.querySelector('.nav-links');
+        if (!links) return;
+        mobileNav = document.createElement('div');
+        mobileNav.className = 'nav-mobile';
+        // Clone links into mobile nav
+        links.querySelectorAll('a').forEach(a => {
+            const clone = a.cloneNode(true);
+            mobileNav.appendChild(clone);
+        });
+        nav.closest('.container')
+            ? nav.closest('.container').after(mobileNav)
+            : nav.after(mobileNav);
+    }
+
+    toggle.addEventListener('click', () => {
+        mobileNav.classList.toggle('open');
+        const isOpen = mobileNav.classList.contains('open');
+        toggle.innerHTML = isOpen
+            ? '<i class="fas fa-times"></i>'
+            : '<i class="fas fa-bars"></i>';
+    });
+}
+
+/**
  * Simple Authentication Check
  */
 function checkAuth() {
