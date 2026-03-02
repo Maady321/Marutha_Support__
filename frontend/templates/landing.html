@@ -63,141 +63,79 @@
   <body>
     <!-- Navbar -->
     <div class="container">
-      <nav
-        style="
-          padding: 20px 0;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <a
-          href="/"
-          class="logo"
-          style="
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--medical-blue);
-            text-decoration: none;
-          "
-        >
-          <i class="fas fa-hand-holding-heart" style="font-size: 2rem"></i>
+      <nav class="landing-nav">
+        <a href="/" class="logo">
+          <i class="fas fa-hand-holding-heart" style="font-size: 1.8rem"></i>
           <span>Marutha Palliative</span>
         </a>
-        <div
-          class="nav-links"
-          style="display: flex; gap: 32px; align-items: center"
-        >
-          <a
-            href="#about"
-            style="
-              color: var(--text-main);
-              font-weight: 500;
-              text-decoration: none;
-            "
-            >About</a
-          >
-          <a
-            href="#services"
-            style="
-              color: var(--text-main);
-              font-weight: 500;
-              text-decoration: none;
-            "
-            >Services</a
-          >
-          <a
-            href="#roles"
-            style="
-              color: var(--text-main);
-              font-weight: 500;
-              text-decoration: none;
-            "
-            >Portals</a
-          >
+        <!-- Desktop Nav -->
+        <div class="nav-links">
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#roles">Portals</a>
           <a
             href="login.html"
-            style="
-              color: var(--medical-blue);
-              font-weight: 600;
-              text-decoration: none;
-            "
+            style="color: var(--medical-blue); font-weight: 600"
             >Login</a
           >
           <a
             href="register.html"
             class="btn btn-primary"
-            style="padding: 12px 24px; border-radius: 50px"
+            style="padding: 10px 22px; border-radius: 50px; font-size: 0.9rem"
             >Get Started</a
           >
         </div>
+        <!-- Mobile Hamburger -->
+        <button
+          class="nav-hamburger"
+          id="navHamburger"
+          aria-label="Toggle navigation"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
       </nav>
+      <!-- Mobile Menu Drawer -->
+      <div class="landing-mobile-menu" id="landingMobileMenu">
+        <a href="#about" onclick="closeMobileMenu()">About</a>
+        <a href="#services" onclick="closeMobileMenu()">Services</a>
+        <a href="#roles" onclick="closeMobileMenu()">Portals</a>
+        <a href="login.html">Login</a>
+        <a
+          href="register.html"
+          class="btn btn-primary"
+          style="margin: 8px 12px; border-radius: 50px; text-align: center"
+          >Get Started</a
+        >
+      </div>
     </div>
 
     <!-- Hero Section -->
-    <header class="hero" style="padding: 80px 0 120px">
-      <div
-        class="container"
-        style="display: flex; align-items: center; gap: 80px"
-      >
-        <div class="hero-content" style="flex: 1">
-          <span
-            style="
-              background: var(--lavender-soft);
-              color: var(--medical-blue);
-              padding: 8px 16px;
-              border-radius: 50px;
-              font-size: 0.9rem;
-              font-weight: 600;
-              display: inline-block;
-              margin-bottom: 24px;
-            "
-          >
-            <i class="fas fa-heart" style="margin-right: 8px"></i> Compassionate
-            Palliative Care
+    <header class="hero landing-hero">
+      <div class="container landing-hero-inner">
+        <div class="hero-content">
+          <span class="hero-pill">
+            <i class="fas fa-heart"></i> Compassionate Palliative Care
           </span>
-          <h1
-            style="
-              font-size: 3.5rem;
-              line-height: 1.1;
-              margin-bottom: 24px;
-              color: var(--text-main);
-            "
-          >
+          <h1 class="hero-title">
             Dignity, Comfort, and
             <span style="color: var(--medical-blue)">Peace of Mind.</span>
           </h1>
-          <p
-            style="
-              font-size: 1.25rem;
-              color: var(--text-muted);
-              margin-bottom: 40px;
-              line-height: 1.6;
-            "
-          >
+          <p class="hero-subtitle">
             We provide specialized medical care and emotional support focused on
             improving the quality of life for patients and their families. You
             are not alone.
           </p>
-          <div class="cta-group" style="display: flex; gap: 16px">
+          <div class="cta-group">
             <a
               href="register.html"
-              class="btn btn-primary"
-              style="padding: 16px 32px; font-size: 1.1rem; border-radius: 50px"
+              class="btn btn-primary btn-lg"
+              style="border-radius: 50px"
               >Book Consultation</a
             >
             <a
               href="#about"
-              class="btn btn-outline-lavender"
-              style="
-                padding: 16px 32px;
-                font-size: 1.1rem;
-                border-radius: 50px;
-                background: white;
-              "
+              class="btn btn-outline-lavender btn-lg"
+              style="border-radius: 50px; background: white"
               >Learn More</a
             >
           </div>
