@@ -8,12 +8,32 @@
         {
             "src": "frontend/**",
             "use": "@vercel/static"
+        },
+        {
+            "src": "index.html",
+            "use": "@vercel/static"
         }
     ],
-    "rewrites": [
+    "routes": [
         {
-            "source": "/api/(.*)",
-            "destination": "/api/index.py"
+            "src": "/api/(.*)",
+            "dest": "/api/index.py"
+        },
+        {
+            "src": "/static/(.*)",
+            "dest": "/frontend/static/$1"
+        },
+        {
+            "src": "/templates/(.*)",
+            "dest": "/frontend/templates/$1"
+        },
+        {
+            "src": "/(landing|login|register|create_account|forgot_password|reset_password|dashboard_patient|dashboard_doctor|dashboard_volunteer|manage_health_patient|manage_profile_patient|manage_profile_doctor|manage_profile_volunteer|manage_records_doctor|doctor_profile|patient_details|patients|requests|assigned_patients|volunteer_activities|chat|chat_doctor|chat_volunteer|setup_profile_volunteer)\\.html",
+            "dest": "/frontend/templates/$1.html"
+        },
+        {
+            "src": "/",
+            "dest": "/index.html"
         }
     ]
 }
