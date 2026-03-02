@@ -1,14 +1,18 @@
-/* --- Navigation --- */
+/* ─────────────────────────────────────────────
+   NAVIGATION (Landing / Public pages)
+───────────────────────────────────────────── */
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 0;
+    padding: 16px 0;
     position: sticky;
     top: 0;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     z-index: 1000;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
 }
 
 .logo {
@@ -16,166 +20,399 @@ nav {
     align-items: center;
     gap: 10px;
     font-family: 'Poppins', sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: var(--medical-blue);
     text-decoration: none;
+    flex-shrink: 0;
 }
 
 .logo img {
-    height: 32px;
+    height: 30px;
     width: auto;
     object-fit: contain;
 }
 
 .nav-links {
     display: flex;
-    gap: 32px;
+    align-items: center;
+    gap: 24px;
 }
 
 .nav-links a {
     text-decoration: none;
     color: var(--text-muted);
     font-weight: 500;
+    font-size: 0.95rem;
     transition: var(--transition);
 }
 
-.nav-links a:hover {
+.nav-links a:hover { color: var(--medical-blue); }
+
+/* Mobile nav toggle */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
     color: var(--medical-blue);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
 }
 
-/* --- Buttons --- */
+/* Mobile nav drawer */
+.nav-mobile {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background: white;
+    border-top: 1px solid var(--border-color);
+    padding: 8px 0 16px;
+}
+
+.nav-mobile.open { display: flex; }
+
+.nav-mobile a {
+    padding: 14px 24px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.nav-mobile a:last-child { border-bottom: none; }
+.nav-mobile a:hover { background: var(--medical-blue-light); color: var(--medical-blue); }
+
+/* ─────────────────────────────────────────────
+   BUTTONS
+───────────────────────────────────────────── */
 .btn {
-    padding: 14px 28px;
+    padding: 12px 24px;
     border-radius: var(--radius-md);
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     transition: var(--transition);
     cursor: pointer;
-    border: none;
-    gap: 8px;
+    border: 2px solid transparent;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
 }
 
 .btn-primary {
-    background-color: var(--hope-green);
+    background: linear-gradient(135deg, var(--hope-green), #34D399);
     color: white;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(5,150,105,0.25);
 }
 
-.btn-primary:hover {
-    background-color: var(--hope-green-hover);
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--hope-green-hover), var(--hope-green));
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 6px 20px rgba(5,150,105,0.35);
 }
 
 .btn-outline-lavender {
     background: transparent;
     color: var(--medical-blue);
-    border: 2px solid var(--lavender-warm);
+    border-color: var(--lavender-warm);
 }
 
-.btn-outline-lavender:hover {
-    background-color: var(--lavender-soft);
+.btn-outline-lavender:hover:not(:disabled) {
+    background: var(--medical-blue-light);
+    border-color: var(--medical-blue);
 }
 
-/* --- Cards & Badges --- */
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger), #F87171);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(239,68,68,0.2);
+}
+
+.btn-danger:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239,68,68,0.3);
+}
+
+.btn-sm {
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+    padding: 16px 36px;
+    font-size: 1.05rem;
+    border-radius: var(--radius-lg);
+}
+
+/* ─────────────────────────────────────────────
+   CARDS
+───────────────────────────────────────────── */
 .card, .stat-card {
     background: white;
     padding: 24px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    border: 1px solid var(--lavender-soft);
+    border: 1px solid var(--border-color);
     transition: var(--transition);
 }
 
 .card:hover {
-    transform: translateY(-5px);
     box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
 }
 
+/* Flat card - no hover lift */
+.card-flat { transform: none !important; }
+
+/* ─────────────────────────────────────────────
+   BADGES
+───────────────────────────────────────────── */
 .badge {
-    padding: 4px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
     border-radius: 20px;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
-.badge-active {
-    background-color: #D1FAE5;
-    color: #065F46;
-}
+.badge-active    { background: var(--hope-green-light); color: #065F46; }
+.badge-pending   { background: #FEF3C7; color: #92400E; }
+.badge-declined  { background: var(--danger-light); color: #991B1B; }
+.badge-info      { background: var(--medical-blue-light); color: var(--medical-blue); }
 
-.badge-pending {
-    background-color: #FEF3C7;
-    color: #92400E;
-}
-
-/* --- Form Elements --- */
+/* ─────────────────────────────────────────────
+   FORM ELEMENTS
+───────────────────────────────────────────── */
 .form-group {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
     font-weight: 600;
-    color: var(--medical-blue);
-    font-size: 0.95rem;
+    color: var(--text-main);
+    font-size: 0.88rem;
+    letter-spacing: 0.01em;
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="tel"],
 select,
 textarea {
     width: 100%;
-    padding: 14px 18px;
+    padding: 12px 16px;
     border-radius: var(--radius-md);
-    border: 2px solid var(--lavender-warm);
+    border: 1.5px solid var(--border-color);
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: var(--transition);
     outline: none;
-    background-color: var(--bg-white);
+    background: #FAFAFA;
+    color: var(--text-main);
+    -webkit-appearance: none;
+    appearance: none;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
     border-color: var(--medical-blue);
-    background-color: white;
-    box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.05);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(45,74,138,0.08);
 }
 
-/* --- Tables --- */
+textarea { resize: vertical; min-height: 100px; }
+
+select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 18px;
+    padding-right: 40px;
+}
+
+/* ─────────────────────────────────────────────
+   TABLES (Responsive)
+───────────────────────────────────────────── */
 .table-container {
     background: white;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    border: 1px solid var(--lavender-soft);
+    border: 1px solid var(--border-color);
     overflow: hidden;
-    margin-top: 24px;
+    margin-top: 20px;
+    /* Allow horizontal scroll on mobile */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .custom-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
+    min-width: 560px; /* Force horizontal scroll before collapsing */
 }
 
 .custom-table th {
-    background-color: var(--lavender-soft);
+    background: linear-gradient(to right, #F8F9FE, #EEF2FF);
     color: var(--medical-blue);
     font-weight: 700;
-    padding: 16px 24px;
-    font-size: 0.9rem;
+    padding: 14px 20px;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .custom-table td {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--lavender-soft);
+    padding: 14px 20px;
+    border-bottom: 1px solid #F3F4F6;
     color: var(--text-muted);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.custom-table tr:last-child td { border-bottom: none; }
+
+.custom-table tbody tr {
+    transition: var(--transition);
+}
+
+.custom-table tbody tr:hover {
+    background: #FAFBFF;
+}
+
+/* ─────────────────────────────────────────────
+   MODALS
+───────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-box {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.3s ease;
+}
+
+/* ─────────────────────────────────────────────
+   SECTION (Landing)
+───────────────────────────────────────────── */
+.section { padding: 80px 0; }
+
+/* ─────────────────────────────────────────────
+   UTILITY
+───────────────────────────────────────────── */
+.text-muted  { color: var(--text-muted); }
+.text-light  { color: var(--text-light); }
+.text-green  { color: var(--hope-green); }
+.text-blue   { color: var(--medical-blue); }
+.text-danger { color: var(--danger); }
+
+.fw-600 { font-weight: 600; }
+.fw-700 { font-weight: 700; }
+
+.mb-0  { margin-bottom: 0; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+
+/* ─────────────────────────────────────────────
+   NOTIFICATION DOT
+───────────────────────────────────────────── */
+.notif-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--danger);
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* ─────────────────────────────────────────────
+   EMPTY STATE
+───────────────────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-light);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.4;
+    display: block;
+}
+
+.empty-state p {
+    font-size: 0.95rem;
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE — MOBILE COMPONENTS
+───────────────────────────────────────────── */
+@media (max-width: 768px) {
+    nav { padding: 12px 0; }
+
+    .nav-links { display: none; } /* hide desktop nav, show toggle */
+    .nav-toggle { display: block; }
+
+    .btn { padding: 11px 20px; font-size: 0.9rem; }
+    .btn-sm { padding: 7px 12px; font-size: 0.8rem; }
+
+    .card, .stat-card { padding: 18px; }
+
+    .modal-box {
+        padding: 24px 20px;
+        border-radius: var(--radius-lg);
+    }
+
+    .section { padding: 48px 0; }
+}
+
+@media (max-width: 480px) {
+    .btn-lg { padding: 14px 28px; font-size: 1rem; }
 }
