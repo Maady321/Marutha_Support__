@@ -2,13 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form  #
 from sqlalchemy.orm import Session  # Import Session for database operations
 from typing import List  # Import List for type hinting
 import shutil, os  # Import shutil and os for file operations
-from backend import database, models, schemas  # Import backend modules
-from backend.auth import fetch_logged_in_user  # Import auth dependency
+import database, models, schemas  # Import backend modules
+from auth import fetch_logged_in_user  # Import auth dependency
 
 # Initialize routers for consultations, vitals, and reports
 consult_router = APIRouter(prefix="/consultations", tags=["Consultations"])
 vitals_router = APIRouter(prefix="/vitals", tags=["Vitals"])
 reports_router = APIRouter(prefix="/reports", tags=["Reports"])
+notes_router = APIRouter(prefix="/notes", tags=["Notes"])
+prescriptions_router = APIRouter(prefix="/prescriptions", tags=["Prescriptions"])
 
 # Endpoint to create a new consultation request
 @consult_router.post("/", response_model=schemas.DoctorRequestDetails)
@@ -60,8 +62,10 @@ def get_my_requests(
             details = schemas.DoctorRequestDetails.model_validate(req)
             if req.patient:
                 details.patient_name = req.patient.name
+                details.patient_user_id = req.patient.user_id
             if req.doctor:
                 details.doctor_name = req.doctor.name
+                details.doctor_user_id = req.doctor.user_id
             results.append(details)
         except Exception as e:
             # Skip invalid entries or log error safely
@@ -143,3 +147,95 @@ def upload_file(
 @reports_router.get("/patient/{patient_id}", response_model=List[schemas.MedicalReportDetails])
 def get_patient_reports(patient_id: int, db: Session = Depends(database.get_database_session)):
     return db.query(models.MedicalReport).filter_by(patient_id=patient_id).all()
+
+# --- Notes Routes ---
+@notes_router.post("/", response_model=schemas.MedicalNoteDetails)
+def create_note(
+    data: schemas.MedicalNoteCreate,
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    if user.role != "doctor":
+        raise HTTPException(status_code=403, detail="Only doctors can create notes.")
+    doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
+    new_note = models.MedicalNote(
+        doctor_id=doctor.id,
+        patient_id=data.patient_id,
+        note_content=data.note_content
+    )
+    db.add(new_note)
+    db.commit()
+    db.refresh(new_note)
+    return new_note
+
+@notes_router.get("/patient/{patient_id}", response_model=List[schemas.MedicalNoteDetails])
+def get_patient_notes(patient_id: int, db: Session = Depends(database.get_database_session), user: models.UserAccount = Depends(fetch_logged_in_user)):
+    notes = db.query(models.MedicalNote).filter_by(patient_id=patient_id).all()
+    results = []
+    for n in notes:
+        d = schemas.MedicalNoteDetails.model_validate(n)
+        if n.patient: d.patient_name = n.patient.name
+        if n.doctor: d.doctor_name = n.doctor.name
+        results.append(d)
+    return results
+
+@notes_router.get("/my", response_model=List[schemas.MedicalNoteDetails])
+def get_my_notes(db: Session = Depends(database.get_database_session), user: models.UserAccount = Depends(fetch_logged_in_user)):
+    if user.role != "doctor":
+        raise HTTPException(status_code=403, detail="Only doctors can fetch all notes.")
+    doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
+    notes = db.query(models.MedicalNote).filter_by(doctor_id=doctor.id).order_by(models.MedicalNote.created_at.desc()).all()
+    results = []
+    for n in notes:
+        d = schemas.MedicalNoteDetails.model_validate(n)
+        if n.patient: d.patient_name = n.patient.name
+        if n.doctor: d.doctor_name = n.doctor.name
+        results.append(d)
+    return results
+
+# --- Prescriptions Routes ---
+@prescriptions_router.post("/", response_model=schemas.PrescriptionDetails)
+def create_prescription(
+    data: schemas.PrescriptionCreate,
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    if user.role != "doctor":
+        raise HTTPException(status_code=403, detail="Only doctors can create prescriptions.")
+    doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
+    new_script = models.Prescription(
+        doctor_id=doctor.id,
+        patient_id=data.patient_id,
+        medication=data.medication,
+        dosage=data.dosage,
+        instructions=data.instructions
+    )
+    db.add(new_script)
+    db.commit()
+    db.refresh(new_script)
+    return new_script
+
+@prescriptions_router.get("/patient/{patient_id}", response_model=List[schemas.PrescriptionDetails])
+def get_patient_prescriptions(patient_id: int, db: Session = Depends(database.get_database_session), user: models.UserAccount = Depends(fetch_logged_in_user)):
+    scripts = db.query(models.Prescription).filter_by(patient_id=patient_id).all()
+    results = []
+    for s in scripts:
+        d = schemas.PrescriptionDetails.model_validate(s)
+        if s.patient: d.patient_name = s.patient.name
+        if s.doctor: d.doctor_name = s.doctor.name
+        results.append(d)
+    return results
+
+@prescriptions_router.get("/my", response_model=List[schemas.PrescriptionDetails])
+def get_my_prescriptions(db: Session = Depends(database.get_database_session), user: models.UserAccount = Depends(fetch_logged_in_user)):
+    if user.role != "doctor":
+        raise HTTPException(status_code=403, detail="Only doctors can fetch all prescriptions.")
+    doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
+    scripts = db.query(models.Prescription).filter_by(doctor_id=doctor.id).order_by(models.Prescription.created_at.desc()).all()
+    results = []
+    for s in scripts:
+        d = schemas.PrescriptionDetails.model_validate(s)
+        if s.patient: d.patient_name = s.patient.name
+        if s.doctor: d.doctor_name = s.doctor.name
+        results.append(d)
+    return results

@@ -126,13 +126,13 @@
                   font-size: 0.95rem;
                 "
               >
-                John Doe
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Early Recovery
+                ...
               </div>
             </div>
-            <div class="profile-pic">JD</div>
+            <div class="profile-pic">...</div>
           </div>
         </header>
 
@@ -175,10 +175,10 @@
                   border: 4px solid var(--medical-blue-light);
                 "
               >
-                JD
+                ...
               </div>
               <div style="flex: 1">
-                <h1 style="margin-bottom: 8px">John Doe</h1>
+                <h1 id="view-name" style="margin-bottom: 8px">...</h1>
                 <p
                   style="
                     font-size: 1.1rem;
@@ -186,10 +186,13 @@
                     margin-bottom: 16px;
                   "
                 >
-                  Member ID: #883920
+                  Member ID: ...
                 </p>
-                <span class="badge badge-active" style="font-size: 0.9rem"
-                  >Stage 2 Recovery</span
+                <span
+                  id="view-stage"
+                  class="badge badge-active"
+                  style="font-size: 0.9rem"
+                  >...</span
                 >
               </div>
             </div>
@@ -211,15 +214,14 @@
                 <div style="display: flex; flex-direction: column; gap: 16px">
                   <div style="display: flex; justify-content: space-between">
                     <span>Age</span
-                    ><span style="font-weight: 600">35 Years</span>
+                    ><span id="view-age" style="font-weight: 600">...</span>
                   </div>
                   <div style="display: flex; justify-content: space-between">
                     <span>Email</span
-                    ><span style="font-weight: 600">john.doe@example.com</span>
+                    ><span id="view-email" style="font-weight: 600">...</span>
                   </div>
                   <div style="display: flex; justify-content: space-between">
-                    <span>Phone</span
-                    ><span style="font-weight: 600">+1 (555) 123-4567</span>
+                    <span>Phone</span><span style="font-weight: 600">...</span>
                   </div>
                 </div>
               </div>
@@ -279,7 +281,9 @@
                   <label>Full Name</label>
                   <input
                     type="text"
-                    value="John Doe"
+                    id="name"
+                    name="name"
+                    value=""
                     style="
                       width: 100%;
                       padding: 12px;
@@ -299,6 +303,8 @@
                     <label>Age</label>
                     <input
                       type="number"
+                      id="age"
+                      name="age"
                       value="35"
                       style="
                         width: 100%;
@@ -312,6 +318,8 @@
                     <label>Current Stage</label>
                     <input
                       type="text"
+                      id="stage"
+                      name="stage"
                       value="Stage 2 Recovery"
                       style="
                         width: 100%;

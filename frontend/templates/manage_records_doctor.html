@@ -175,17 +175,17 @@
                   font-size: 0.95rem;
                 "
               >
-                Dr. John Smith
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Cardiologist
+                ...
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--medical-blue); color: white"
             >
-              JS
+              ...
             </div>
           </div>
         </header>
@@ -263,7 +263,7 @@
                   "
                 />
               </div>
-              <button class="btn btn-primary">
+              <button class="btn btn-primary" onclick="openNoteModal()">
                 <i class="fas fa-plus" style="margin-right: 8px"></i> New Note
               </button>
             </div>
@@ -287,46 +287,40 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <!-- Data loaded dynamically -->
                   <tr>
-                    <td style="color: var(--text-muted)">Oct 24, 2023</td>
-                    <td style="font-weight: 600; color: var(--medical-blue)">
-                      Sarah Lee
-                    </td>
-                    <td>Hypertension Review</td>
-                    <td>
-                      <span
-                        class="badge"
-                        style="background: #ecfdf5; color: #047857"
-                        >Follow-up</span
-                      >
-                    </td>
-                    <td>
-                      <a href="#" class="btn btn-sm btn-outline-lavender"
-                        >View</a
-                      >
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="color: var(--text-muted)">Oct 23, 2023</td>
-                    <td style="font-weight: 600; color: var(--medical-blue)">
-                      Michael Brown
-                    </td>
-                    <td>Chest Pain</td>
-                    <td>
-                      <span
-                        class="badge"
-                        style="background: #fef2f2; color: #b91c1c"
-                        >Emergency</span
-                      >
-                    </td>
-                    <td>
-                      <a href="#" class="btn btn-sm btn-outline-lavender"
-                        >View</a
-                      >
+                    <td
+                      colspan="5"
+                      style="text-align: center; color: var(--text-muted)"
+                    >
+                      No consultations found
                     </td>
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            <!-- Notes Section -->
+            <h3
+              style="
+                margin-top: 48px;
+                margin-bottom: 24px;
+                color: var(--medical-blue);
+              "
+            >
+              Recent Clinical Notes
+            </h3>
+            <div
+              id="notes-container"
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 24px;
+              "
+            >
+              <div style="color: var(--text-muted); padding: 10px">
+                Loading notes...
+              </div>
             </div>
           </div>
 
@@ -340,86 +334,15 @@
               "
             >
               <!-- Record Item -->
+              <!-- Record Items populated by JS when available -->
               <div
-                class="card"
                 style="
-                  padding: 24px;
+                  grid-column: 1 / -1;
                   text-align: center;
-                  border: 1px solid var(--border-color);
+                  color: var(--text-muted);
                 "
               >
-                <i
-                  class="fas fa-file-pdf"
-                  style="font-size: 3rem; color: #ef4444; margin-bottom: 16px"
-                ></i>
-                <h4 style="margin-bottom: 4px">Lab_Results_Oct2023.pdf</h4>
-                <p
-                  style="
-                    color: var(--text-muted);
-                    font-size: 0.85rem;
-                    margin-bottom: 16px;
-                  "
-                >
-                  Added yesterday by Lab
-                </p>
-                <button
-                  class="btn btn-sm btn-outline-lavender"
-                  style="width: 100%; justify-content: center"
-                >
-                  Download
-                </button>
-              </div>
-              <div
-                class="card"
-                style="
-                  padding: 24px;
-                  text-align: center;
-                  border: 1px solid var(--border-color);
-                "
-              >
-                <i
-                  class="fas fa-file-image"
-                  style="font-size: 3rem; color: #3b82f6; margin-bottom: 16px"
-                ></i>
-                <h4 style="margin-bottom: 4px">XRay_Chest_MB.png</h4>
-                <p
-                  style="
-                    color: var(--text-muted);
-                    font-size: 0.85rem;
-                    margin-bottom: 16px;
-                  "
-                >
-                  Added Oct 23 by Radiology
-                </p>
-                <button
-                  class="btn btn-sm btn-outline-lavender"
-                  style="width: 100%; justify-content: center"
-                >
-                  View
-                </button>
-              </div>
-              <div
-                class="card"
-                style="
-                  padding: 24px;
-                  text-align: center;
-                  border: 1px solid var(--border-color);
-                  border-style: dashed;
-                  background: var(--bg-warm);
-                  cursor: pointer;
-                "
-              >
-                <i
-                  class="fas fa-cloud-upload-alt"
-                  style="
-                    font-size: 3rem;
-                    color: var(--text-light);
-                    margin-bottom: 16px;
-                  "
-                ></i>
-                <h4 style="margin-bottom: 4px; color: var(--text-muted)">
-                  Upload New File
-                </h4>
+                No medical records uploaded yet.
               </div>
             </div>
           </div>
@@ -457,7 +380,7 @@
                   "
                 />
               </div>
-              <button class="btn btn-primary" onclick="alert('Open Modal')">
+              <button class="btn btn-primary" onclick="openScriptModal()">
                 <i class="fas fa-plus" style="margin-right: 8px"></i> New Script
               </button>
             </div>
@@ -481,30 +404,13 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <!-- Data loaded dynamically -->
                   <tr>
-                    <td style="color: var(--text-muted)">Oct 24, 2023</td>
-                    <td style="font-weight: 600; color: var(--medical-blue)">
-                      Sarah Lee
-                    </td>
-                    <td>Lisinopril</td>
-                    <td>10mg Daily</td>
-                    <td>
-                      <a href="#" class="btn btn-sm btn-outline-lavender"
-                        ><i class="fas fa-print"></i
-                      ></a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="color: var(--text-muted)">Oct 23, 2023</td>
-                    <td style="font-weight: 600; color: var(--medical-blue)">
-                      Michael Brown
-                    </td>
-                    <td>Aspirin</td>
-                    <td>81mg Daily</td>
-                    <td>
-                      <a href="#" class="btn btn-sm btn-outline-lavender"
-                        ><i class="fas fa-print"></i
-                      ></a>
+                    <td
+                      colspan="5"
+                      style="text-align: center; color: var(--text-muted)"
+                    >
+                      No prescriptions found
                     </td>
                   </tr>
                 </tbody>
@@ -555,6 +461,315 @@
           </div>
         </div>
       </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- New Note Modal -->
+    <div
+      id="noteModal"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: white;
+          padding: 32px;
+          border-radius: 12px;
+          width: 90%;
+          max-width: 500px;
+          box-shadow: var(--shadow-lg);
+        "
+      >
+        <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
+          Add Clinical Note
+        </h3>
+
+        <div class="form-group" style="margin-bottom: 16px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Patient</label
+          >
+          <select
+            id="notePatientSelect"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+          ></select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Note Details</label
+          >
+          <textarea
+            id="noteContent"
+            rows="5"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+            placeholder="Enter patient assessment, diagnosis, or general notes..."
+          ></textarea>
+        </div>
+
+        <div style="display: flex; gap: 16px; justify-content: flex-end">
+          <button class="btn btn-outline-lavender" onclick="closeModals()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveNote()">
+            Save Note
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Script Modal -->
+    <div
+      id="scriptModal"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: white;
+          padding: 32px;
+          border-radius: 12px;
+          width: 90%;
+          max-width: 500px;
+          box-shadow: var(--shadow-lg);
+        "
+      >
+        <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
+          Write Prescription
+        </h3>
+
+        <div class="form-group" style="margin-bottom: 16px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Patient</label
+          >
+          <select
+            id="scriptPatientSelect"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+          ></select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Medication</label
+          >
+          <input
+            type="text"
+            id="scriptMedication"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+            placeholder="e.g. Amoxicillin 500mg"
+          />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Dosage</label
+          >
+          <input
+            type="text"
+            id="scriptDosage"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+            placeholder="e.g. Twice a day"
+          />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Instructions</label
+          >
+          <textarea
+            id="scriptInstructions"
+            rows="3"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+            placeholder="Take after meals..."
+          ></textarea>
+        </div>
+
+        <div style="display: flex; gap: 16px; justify-content: flex-end">
+          <button class="btn btn-outline-lavender" onclick="closeModals()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveScript()">
+            Save Prescription
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Action Modal -->
+    <div
+      id="viewActionModal"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: white;
+          padding: 32px;
+          border-radius: 12px;
+          width: 90%;
+          max-width: 800px;
+          box-shadow: var(--shadow-lg);
+          max-height: 90vh;
+          overflow-y: auto;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+          "
+        >
+          <h3 style="color: var(--medical-blue); margin: 0">
+            <i class="fas fa-user-md" style="margin-right: 8px"></i> Clinical
+            History: <span id="viewPatientName">Patient</span>
+          </h3>
+          <button
+            onclick="closeModals()"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.5rem;
+              cursor: pointer;
+              color: var(--text-muted);
+            "
+          >
+            &times;
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px">
+          <!-- Notes Column -->
+          <div>
+            <h4
+              style="
+                color: var(--text-main);
+                margin-bottom: 16px;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 8px;
+              "
+            >
+              <i
+                class="fas fa-sticky-note"
+                style="color: var(--sunshine-yellow); margin-right: 8px"
+              ></i>
+              Clinical Notes
+            </h4>
+            <div
+              id="viewActionNotes"
+              style="display: flex; flex-direction: column; gap: 16px"
+            >
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Prescriptions Column -->
+          <div>
+            <h4
+              style="
+                color: var(--text-main);
+                margin-bottom: 16px;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 8px;
+              "
+            >
+              <i
+                class="fas fa-prescription-bottle-alt"
+                style="color: var(--hope-green); margin-right: 8px"
+              ></i>
+              Prescriptions
+            </h4>
+            <div
+              id="viewActionPrescriptions"
+              style="display: flex; flex-direction: column; gap: 16px"
+            >
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+          "
+        >
+          <button class="btn btn-outline-lavender" onclick="closeModals()">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
 
     <script src="../static/js/app.js"></script>

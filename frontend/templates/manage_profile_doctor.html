@@ -145,17 +145,17 @@
                   font-size: 0.95rem;
                 "
               >
-                Dr. John Smith
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Cardiologist
+                ...
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--medical-blue); color: white"
             >
-              JS
+              ...
             </div>
           </div>
         </header>
@@ -202,7 +202,7 @@
                       box-shadow: 0 10px 25px rgba(45, 74, 138, 0.15);
                     "
                   >
-                    JS
+                    ...
                   </div>
                   <div
                     style="
@@ -228,13 +228,14 @@
                   >
                     <div>
                       <h1
+                        id="view-name"
                         style="
                           font-size: 2.2rem;
                           color: var(--medical-blue);
                           margin-bottom: 8px;
                         "
                       >
-                        Dr. John Smith
+                        ...
                       </h1>
                       <div
                         style="
@@ -244,7 +245,7 @@
                           margin-bottom: 16px;
                         "
                       >
-                        Interventional Cardiologist • MD, FACC
+                        ...
                       </div>
                       <div
                         style="display: flex; gap: 12px; margin-bottom: 24px"
@@ -304,7 +305,10 @@
                       >
                         Email
                       </div>
-                      <div style="font-weight: 600; color: var(--text-main)">
+                      <div
+                        id="view-email"
+                        style="font-weight: 600; color: var(--text-main)"
+                      >
                         john.smith@marutha.health
                       </div>
                     </div>
@@ -355,7 +359,7 @@
                     in the cath lab."
                   </p>
                 </div>
-                <div class="card" style="padding: 32px">
+                <div class="card" style="padding: 32px; display: none">
                   <h3 style="margin-bottom: 24px; color: var(--medical-blue)">
                     Performance Overview
                   </h3>
@@ -436,7 +440,7 @@
                 </div>
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 32px">
+              <div style="display: none; flex-direction: column; gap: 32px">
                 <div class="card" style="padding: 32px">
                   <div
                     style="
@@ -570,7 +574,6 @@
             </div>
           </div>
 
-          <!-- TAB 2: EDIT PROFILE -->
           <div id="content-edit" class="tab-content">
             <div
               class="card fade-in"
@@ -587,40 +590,6 @@
                 Edit Your Profile
               </h3>
               <form onsubmit="saveProfile(event)">
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    gap: 24px;
-                    margin-bottom: 32px;
-                  "
-                >
-                  <div
-                    class="profile-pic"
-                    style="
-                      width: 80px;
-                      height: 80px;
-                      font-size: 1.5rem;
-                      background: var(--medical-blue);
-                      color: white;
-                    "
-                  >
-                    JS
-                  </div>
-                  <div>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-lavender"
-                      style="margin-bottom: 8px"
-                    >
-                      Change Photo
-                    </button>
-                    <div style="font-size: 0.8rem; color: var(--text-muted)">
-                      Recommended: Square JPG, PNG
-                    </div>
-                  </div>
-                </div>
-
                 <div
                   style="
                     display: grid;
@@ -640,7 +609,9 @@
                     >
                     <input
                       type="text"
-                      value="Dr. John Smith"
+                      id="name"
+                      name="name"
+                      placeholder="Dr. John Smith"
                       style="
                         width: 100%;
                         padding: 12px;
@@ -662,7 +633,9 @@
                     >
                     <input
                       type="text"
-                      value="Cardiologist"
+                      id="specialty"
+                      name="specialty"
+                      placeholder="e.g. Palliative Care"
                       style="
                         width: 100%;
                         padding: 12px;
@@ -680,19 +653,67 @@
                         color: var(--text-main);
                         font-weight: 500;
                       "
-                      >Email Address</label
+                      >Years of Experience</label
                     >
                     <input
-                      type="email"
-                      value="john.smith@marutha.health"
+                      type="number"
+                      id="experience"
+                      name="experience"
+                      min="0"
+                      max="60"
+                      placeholder="e.g. 10"
                       style="
                         width: 100%;
                         padding: 12px;
                         border: 1px solid var(--medical-blue-light);
                         border-radius: 8px;
-                        background: #f9fafb;
                       "
-                      readonly
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label
+                      style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                      "
+                      >Qualification</label
+                    >
+                    <input
+                      type="text"
+                      id="qualification"
+                      name="qualification"
+                      placeholder="e.g. MBBS, MD"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid var(--medical-blue-light);
+                        border-radius: 8px;
+                      "
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label
+                      style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                      "
+                      >Phone Number</label
+                    >
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      placeholder="e.g. +91 98765 43210"
+                      style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid var(--medical-blue-light);
+                        border-radius: 8px;
+                      "
                     />
                   </div>
                   <div class="form-group">
@@ -707,7 +728,9 @@
                     >
                     <input
                       type="text"
-                      value="MED-8832-NY"
+                      id="license_id"
+                      name="license_id"
+                      placeholder="e.g. MED-1234-TN"
                       style="
                         width: 100%;
                         padding: 12px;
@@ -726,10 +749,13 @@
                       color: var(--text-main);
                       font-weight: 500;
                     "
-                    >Bio / Description</label
+                    >About / Bio</label
                   >
                   <textarea
+                    id="bio"
+                    name="bio"
                     rows="4"
+                    placeholder="Write about yourself, your expertise, and your approach to patient care..."
                     style="
                       width: 100%;
                       padding: 12px;
@@ -737,9 +763,7 @@
                       border-radius: 8px;
                       resize: vertical;
                     "
-                  >
-Experienced Interventional Cardiologist with 15+ years of practice...</textarea
-                  >
+                  ></textarea>
                 </div>
 
                 <div
@@ -758,6 +782,7 @@ Experienced Interventional Cardiologist with 15+ years of practice...</textarea
                     Cancel
                   </button>
                   <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save" style="margin-right: 8px"></i>
                     Save Changes
                   </button>
                 </div>

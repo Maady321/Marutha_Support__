@@ -165,19 +165,43 @@ function renderRequests(requests, container) {
     });
 }
 
+let currentAcceptId = null;
+
 /**
- * Accept a request
+ * Accept a request (Opens Modals)
  */
-async function acceptRequest(requestId) {
-    if (!confirm('Are you sure you want to accept this consultation request?')) return;
+function acceptRequest(requestId) {
+    currentAcceptId = requestId;
+    document.getElementById('acceptRequestModal').style.display = 'flex';
+}
+
+function closeAcceptModal() {
+    document.getElementById('acceptRequestModal').style.display = 'none';
+    currentAcceptId = null;
+}
+
+async function confirmAcceptRequest() {
+    if (!currentAcceptId) return;
+    
+    const inputDate = document.getElementById('acceptDate').value;
+    const inputTime = document.getElementById('acceptTime').value;
+    
+    if (!inputDate || !inputTime) {
+        alert("Please set a date and time for the consultation.");
+        return;
+    }
+    
+    const appointmentTime = `${inputDate}T${inputTime}:00`;
 
     try {
-        const response = await apiFetch(`/doctors/requests/${requestId}/accept`, {
-            method: 'POST'
+        const response = await apiFetch(`/doctors/requests/${currentAcceptId}/accept`, {
+            method: 'POST',
+            body: JSON.stringify({ appointment_time: appointmentTime })
         });
 
         if (response.ok) {
-            alert('Request accepted successfully!');
+            alert('Request accepted successfully and scheduled!');
+            closeAcceptModal();
             loadRequests(); // Reload list
         } else {
             const data = await response.json();
@@ -190,4 +214,6 @@ async function acceptRequest(requestId) {
 
 // Global shims
 window.acceptRequest = acceptRequest;
+window.closeAcceptModal = closeAcceptModal;
+window.confirmAcceptRequest = confirmAcceptRequest;
 window.toggleOnlineStatus = toggleOnlineStatus;

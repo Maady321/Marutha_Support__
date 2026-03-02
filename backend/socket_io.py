@@ -1,16 +1,14 @@
 import socketio
-from backend.database import SessionLocal
-from backend.models import UserAccount
+from database import SessionLocal
+from models import UserAccount
 import logging
 
 # Set up logging for Socket.io
 logger = logging.getLogger("socketio")
 
 # Create a Socket.io AsyncServer
-sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
-
-# Wrap with an ASGI application
-sio_app = socketio.ASGIApp(sio, socketio_path='/socket.io')
+# Create a Socket.io AsyncServer with specific CORS allowed origins
+sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins=['http://127.0.0.1:5505', 'http://localhost:5505', 'http://127.0.0.1:5500', 'http://localhost:5500'])
 
 # Keep track of user IDs and their associated SIDs
 user_sessions = {}

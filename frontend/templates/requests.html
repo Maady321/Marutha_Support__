@@ -38,6 +38,109 @@
         opacity: 1;
         bottom: 50px;
       }
+
+      /* Calendar Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(30, 58, 138, 0.4);
+        backdrop-filter: blur(4px);
+      }
+      .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 32px;
+        border-radius: var(--radius-lg);
+        width: 90%;
+        max-width: 800px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .close-modal {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        color: #94a3b8;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .close-modal:hover {
+        color: var(--danger);
+      }
+      .calendar-day {
+        min-height: 80px;
+        padding: 8px;
+        background-color: #fff;
+        border: 1px solid var(--lavender-soft);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        position: relative;
+        text-align: right;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+      }
+      .calendar-day:hover {
+        background-color: var(--lavender-soft);
+        border-color: var(--medical-blue);
+      }
+      .calendar-day.empty {
+        background-color: #f8fafc;
+        border: 1px dotted var(--lavender-soft);
+        cursor: default;
+      }
+      .calendar-day.empty:hover {
+        background-color: #f8fafc;
+        border-color: var(--lavender-soft);
+      }
+      .calendar-day.today {
+        background-color: #eff6ff;
+        border: 2px solid var(--medical-blue);
+        font-weight: 700;
+        color: var(--medical-blue);
+      }
+      .calendar-day.has-events .event-dot {
+        width: 6px;
+        height: 6px;
+        background-color: var(--medical-blue);
+        border-radius: 50%;
+        display: inline-block;
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .calendar-day.has-events .event-count {
+        position: absolute;
+        bottom: 24px;
+        left: 5px;
+        right: 5px;
+        background-color: #e0e7ff;
+        color: #4338ca;
+        font-size: 0.7rem;
+        padding: 2px;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: 600;
+      }
     </style>
   </head>
   <body>
@@ -140,17 +243,17 @@
                   font-size: 0.95rem;
                 "
               >
-                Dr. John Smith
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Cardiologist
+                ...
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--medical-blue); color: white"
             >
-              JS
+              ...
             </div>
           </div>
         </header>
@@ -235,9 +338,12 @@
                   Confirmed appointments.
                 </p>
               </div>
-              <a href="requests.html" class="btn btn-sm btn-outline-lavender"
-                >View Calendar</a
+              <button
+                class="btn btn-sm btn-outline-lavender"
+                onclick="openCalendarModal(event)"
               >
+                View Calendar
+              </button>
             </div>
 
             <div class="table-container">
@@ -263,6 +369,186 @@
 
     <!-- Toast Notification -->
     <div id="toast" class="toast">Action completed successfully</div>
+
+    <!-- Calendar Modal -->
+    <div id="calendarModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeCalendarModal()">&times;</span>
+        <h2
+          style="
+            color: var(--medical-blue);
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <i class="fas fa-calendar-alt"></i> Appointment Calendar
+        </h2>
+
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <button
+            class="btn btn-sm btn-outline-lavender"
+            onclick="changeMonth(-1)"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <h3
+            id="calendarMonthYear"
+            style="margin: 0; color: var(--text-main); font-size: 1.2rem"
+          >
+            Month Year
+          </h3>
+          <button
+            class="btn btn-sm btn-outline-lavender"
+            onclick="changeMonth(1)"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+          "
+        >
+          <div>Sun</div>
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+        </div>
+
+        <div
+          id="calendarGrid"
+          style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px"
+        >
+          <!-- Days will be generated by JS -->
+        </div>
+
+        <!-- Day Events Detail Section -->
+        <div
+          id="calendarDetails"
+          style="
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--lavender-soft);
+            border-radius: var(--radius-md);
+            border: 1px solid #e2e8f0;
+            display: none;
+          "
+        >
+          <h4
+            id="selectedDateTitle"
+            style="
+              color: var(--medical-blue);
+              margin-top: 0;
+              margin-bottom: 16px;
+              font-size: 1.1rem;
+              border-bottom: 1px solid #cbd5e1;
+              padding-bottom: 8px;
+            "
+          >
+            Selected Date
+          </h4>
+          <div
+            id="selectedDateEvents"
+            style="display: flex; flex-direction: column; gap: 12px"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accept Request Modal -->
+    <div
+      id="acceptRequestModal"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: white;
+          padding: 32px;
+          border-radius: 12px;
+          width: 90%;
+          max-width: 400px;
+          box-shadow: var(--shadow-lg);
+        "
+      >
+        <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
+          Schedule Consultation
+        </h3>
+
+        <div class="form-group" style="margin-bottom: 16px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Select Date</label
+          >
+          <input
+            type="date"
+            id="acceptDate"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+          />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500"
+            >Select Time</label
+          >
+          <input
+            type="time"
+            id="acceptTime"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            "
+          />
+        </div>
+
+        <div style="display: flex; gap: 16px; justify-content: flex-end">
+          <button class="btn btn-outline-lavender" onclick="closeAcceptModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="confirmAcceptRequest()">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="../static/js/app.js"></script>
     <script src="../static/js/appointments.js"></script>

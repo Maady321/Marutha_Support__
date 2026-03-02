@@ -70,8 +70,8 @@ function initTaskActions() {
             const taskName = taskHeader.innerText;
             if (btn.innerText.includes('View')) {
                 console.log(`Viewing details for: ${taskName}`);
-            } else if (btn.innerText.includes('Call')) {
-                alert(`Starting call with patient...`);
+            } else if (btn.innerText.includes('Chat')) {
+                window.location.href = 'chat_volunteer.html';
             }
         });
     });

@@ -127,17 +127,17 @@
                   font-size: 0.95rem;
                 "
               >
-                Jane Smith
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Senior Volunteer
+                ...
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--hope-green); color: white"
             >
-              JS
+              ...
             </div>
           </div>
         </header>
@@ -183,7 +183,7 @@
                       box-shadow: 0 10px 25px rgba(66, 191, 157, 0.15);
                     "
                   >
-                    JS
+                    ...
                   </div>
                   <div
                     style="
@@ -209,13 +209,14 @@
                   >
                     <div>
                       <h1
+                        id="view-name"
                         style="
                           font-size: 2.2rem;
                           color: var(--hope-green);
                           margin-bottom: 8px;
                         "
                       >
-                        Jane Smith
+                        ...
                       </h1>
                       <div
                         style="
@@ -225,7 +226,7 @@
                           margin-bottom: 16px;
                         "
                       >
-                        Senior Volunteer • Palliative Care
+                        ...
                       </div>
                       <div
                         style="display: flex; gap: 12px; margin-bottom: 24px"
@@ -282,7 +283,10 @@
                       >
                         Email
                       </div>
-                      <div style="font-weight: 600; color: var(--text-main)">
+                      <div
+                        id="view-email"
+                        style="font-weight: 600; color: var(--text-main)"
+                      >
                         jane.smith@volunteer.org
                       </div>
                     </div>
@@ -309,7 +313,7 @@
               class="dashboard-grid"
               style="padding: 0; gap: 32px; grid-template-columns: 2fr 1fr"
             >
-              <div style="display: flex; flex-direction: column; gap: 32px">
+              <div style="display: none; flex-direction: column; gap: 32px">
                 <div class="card" style="padding: 32px">
                   <h3 style="margin-bottom: 16px; color: var(--hope-green)">
                     Skills & Certifications
@@ -401,7 +405,7 @@
                 </div>
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 32px">
+              <div style="display: none; flex-direction: column; gap: 32px">
                 <div class="card" style="padding: 32px">
                   <h3 style="margin-bottom: 16px; color: var(--hope-green)">
                     Availability
@@ -547,7 +551,9 @@
                         >
                         <input
                           type="text"
-                          value="Jane Smith"
+                          id="name"
+                          name="name"
+                          value=""
                           required
                           style="
                             width: 100%;
@@ -591,6 +597,8 @@
                         >
                         <input
                           type="email"
+                          id="email"
+                          name="email"
                           value="jane.smith@volunteer.org"
                           readonly
                           style="

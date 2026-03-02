@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 import secrets
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from backend import database, models, schemas
+import database, models, schemas
 
 # Initialize password hashing context with bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

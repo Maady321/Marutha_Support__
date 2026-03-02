@@ -1,88 +1,101 @@
 /**
- * chat.js
- * Integration for real-time messaging using Socket.io
- * Specifically designed for Marutha Support Platform
+ * chat.js — WhatsApp-style Chat for Marutha Support
+ * Works across patient, doctor, and volunteer chat pages.
+ * Uses Socket.io for real-time messaging.
  */
 
 class ChatInterface {
     constructor() {
         this.socket = null;
-        this.currentUser = JSON.parse(localStorage.getItem('userData')) || {};
+        this.currentUser = null;
         this.activeRecipientId = null;
-        // Use CONFIG if available, otherwise fallback
-        this.baseUrl = typeof CONFIG !== 'undefined' ? CONFIG.API_BASE_URL : 'http://localhost:8001';
-        
-        // DOM Elements
-        this.chatForm = document.getElementById('chatForm') || document.getElementById('doctorChatForm');
-        this.messageInput = document.getElementById('messageInput') || document.getElementById('msgInput');
-        this.chatContainer = document.querySelector('.chat-messages'); // Corrected selector for chat messages
-        this.chatListItems = document.querySelectorAll('.chat-item');
-        
+        this.baseUrl = typeof CONFIG !== 'undefined' ? CONFIG.API_BASE_URL : 'http://localhost:8009';
+        this.contacts = [];
+        this.lastRenderedDate = null; // for date separators
+
+        // DOM Elements (new unified IDs)
+        this.messageInput = document.getElementById('messageInput');
+        this.sendBtn = document.getElementById('chatSendBtn');
+        this.messagesArea = document.getElementById('chatMessagesArea');
+        this.inputBar = document.getElementById('chatInputBar');
+        this.headerName = document.getElementById('chatHeaderName');
+        this.headerAvatar = document.getElementById('chatHeaderAvatar');
+        this.headerStatus = document.getElementById('chatHeaderStatus');
+        this.contactListContainer = document.getElementById('chatListContainer');
+        this.searchInput = document.getElementById('chatSearchInput');
+
         this.init();
     }
 
     async init() {
-        // If userData isn't loaded yet, try to fetch it
-        if (!this.currentUser.id) {
-            try {
-                const response = await apiFetch('/users/me');
-                if (response.ok) {
-                    this.currentUser = await response.json();
-                    localStorage.setItem('userData', JSON.stringify(this.currentUser));
-                }
-            } catch (err) {
-                console.error('Chat init: User not logged in or API unreachable');
+        // Fetch current user data
+        try {
+            const response = await apiFetch('/users/me');
+            if (response.ok) {
+                this.currentUser = await response.json();
+                localStorage.setItem('userData', JSON.stringify(this.currentUser));
+            } else {
+                console.error('Chat: Not logged in');
                 return;
             }
+        } catch (err) {
+            console.error('Chat init: API unreachable', err);
+            return;
         }
 
         this.connectSocket();
         this.setupEventListeners();
-        this.loadInitialData();
+        await this.loadContacts();
     }
+
+    // ─── Socket.io Connection ───────────────────────────────
 
     connectSocket() {
         const token = localStorage.getItem('authToken');
-        
-        // Initialize Socket.io connection
+        if (!token) return;
+
         this.socket = io(this.baseUrl, {
-            auth: {
-                token: token
-            }
+            path: '/socket.io',
+            auth: { token: token }
         });
 
         this.socket.on('connect', () => {
-            console.log('Connected to chat server');
-            this.updateOnlineStatus(true);
+            console.log('✅ Connected to chat server');
+            if (this.headerStatus) this.headerStatus.textContent = 'Online';
         });
 
         this.socket.on('disconnect', () => {
-            console.log('Disconnected from chat server');
-            this.updateOnlineStatus(false);
+            console.log('❌ Disconnected from chat server');
         });
 
         // Listen for incoming messages
         this.socket.on('receive_message', (data) => {
-            // Only append if it belongs to the active conversation
-            // Or if we are the sender (for sync)
-            if (data.sender_id == this.activeRecipientId || data.sender_id == this.currentUser.id) {
-                this.appendMessage(data, data.sender_id == this.currentUser.id ? 'sent' : 'received');
+            // Only show in active conversation
+            if (this.activeRecipientId &&
+                (String(data.sender_id) === String(this.activeRecipientId) ||
+                 String(data.sender_id) === String(this.currentUser.id))) {
+                this.appendMessage(data);
+                this.scrollToBottom();
             }
+
+            // Update contact list preview
+            this.updateContactPreview(data);
         });
 
         this.socket.on('connect_error', (error) => {
-            console.error('Socket connection error:', error);
+            console.error('Socket connection error:', error.message);
         });
     }
 
+    // ─── Event Listeners ────────────────────────────────────
+
     setupEventListeners() {
-        if (this.chatForm) {
-            this.chatForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.sendMessage();
-            });
+        // Send button
+        if (this.sendBtn) {
+            this.sendBtn.addEventListener('click', () => this.sendMessage());
         }
 
+        // Enter key to send
         if (this.messageInput) {
             this.messageInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -92,147 +105,283 @@ class ChatInterface {
             });
         }
 
-        // Sidebar items
-        if (this.chatListItems.length > 0) {
-            this.chatListItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // Extract ID from custom logic if needed 
-                    // In your current UI items have names. We need IDs.
-                    const recipientId = item.dataset.recipientId; 
-                    const name = item.querySelector('h4')?.innerText;
-                    if (recipientId) {
-                        this.switchChat(recipientId, item);
-                    }
+        // Search contacts
+        if (this.searchInput) {
+            this.searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const items = this.contactListContainer.querySelectorAll('.chat-contact');
+                items.forEach(item => {
+                    const name = item.querySelector('.contact-name')?.textContent.toLowerCase() || '';
+                    item.style.display = name.includes(query) ? 'flex' : 'none';
                 });
             });
         }
     }
 
-    async sendMessage() {
-        const messageText = this.messageInput.value.trim();
-        if (!messageText || !this.activeRecipientId) return;
+    // ─── Send Message ───────────────────────────────────────
 
-        const messageData = {
-            recipient_id: parseInt(this.activeRecipientId),
-            message: messageText,
-            timestamp: new Date().toISOString()
-        };
+    async sendMessage() {
+        const text = this.messageInput?.value.trim();
+        if (!text || !this.activeRecipientId) return;
+
+        // Clear input immediately
+        this.messageInput.value = '';
+        this.messageInput.focus();
 
         try {
-            // Emit message via socket (it will come back via receive_message)
-            this.socket.emit('send_message', messageData);
-
-            // Clear input
-            this.messageInput.value = '';
-            this.messageInput.focus();
-
-            // Store in DB via API (optional if Socket.io handles broadcast)
-            // But good for history
-            await apiFetch('/chats/', {
+            const response = await apiFetch('/chats/', {
                 method: 'POST',
                 body: JSON.stringify({
                     recipient_id: parseInt(this.activeRecipientId),
-                    message: messageText
+                    message: text
                 })
             });
 
+            if (!response.ok) {
+                console.error('Failed to send message');
+            }
         } catch (error) {
-            console.error('Failed to send message:', error);
+            console.error('Send message error:', error);
         }
     }
 
-    async switchChat(recipientId, element) {
-        this.activeRecipientId = recipientId;
-        
-        // Update UI active state
-        this.chatListItems.forEach(i => i.classList.remove('active'));
+    // ─── Load Contacts ──────────────────────────────────────
+
+    async loadContacts() {
+        if (!this.contactListContainer) return;
+
+        try {
+            const response = await apiFetch('/chats/contacts');
+            if (!response.ok) {
+                this.contactListContainer.innerHTML = `
+                    <div class="chat-empty-state" style="padding: 40px 24px">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Failed to load contacts</p>
+                    </div>`;
+                return;
+            }
+
+            this.contacts = await response.json();
+
+            if (this.contacts.length === 0) {
+                this.contactListContainer.innerHTML = `
+                    <div class="chat-empty-state" style="padding: 40px 24px">
+                        <i class="fas fa-user-friends"></i>
+                        <p>No contacts yet. Contacts appear after a doctor accepts your consultation request.</p>
+                    </div>`;
+                return;
+            }
+
+            this.renderContacts();
+            this.autoSelectContact();
+
+        } catch (error) {
+            console.error('Failed to load contacts:', error);
+            this.contactListContainer.innerHTML = `
+                <div class="chat-empty-state" style="padding: 40px 24px">
+                    <i class="fas fa-wifi" style="color: var(--danger)"></i>
+                    <p>Connection error</p>
+                </div>`;
+        }
+    }
+
+    renderContacts() {
+        this.contactListContainer.innerHTML = '';
+
+        this.contacts.forEach(contact => {
+            const initials = contact.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            const el = document.createElement('div');
+            el.className = 'chat-contact';
+            el.dataset.userId = contact.user_id;
+
+            const avatarBg = contact.role === 'doctor' ? 'var(--lavender-soft)' :
+                             contact.role === 'volunteer' ? '#ecfdf5' : '#eff6ff';
+            const avatarColor = contact.role === 'doctor' ? 'var(--medical-blue)' :
+                                contact.role === 'volunteer' ? '#047857' : '#1e40af';
+
+            el.innerHTML = `
+                <div class="contact-avatar" style="background: ${avatarBg}; color: ${avatarColor}">${initials}</div>
+                <div class="contact-info">
+                    <div class="contact-name">${contact.name}</div>
+                    <div class="contact-role">${contact.role}</div>
+                </div>
+            `;
+
+            el.addEventListener('click', () => this.selectContact(contact, el));
+            this.contactListContainer.appendChild(el);
+        });
+    }
+
+    autoSelectContact() {
+        // Check URL param first
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetId = urlParams.get('userId');
+
+        if (targetId) {
+            const contact = this.contacts.find(c => String(c.user_id) === String(targetId));
+            const el = this.contactListContainer.querySelector(`[data-user-id="${targetId}"]`);
+            if (contact && el) {
+                this.selectContact(contact, el);
+                return;
+            }
+        }
+
+        // Default to first contact
+        if (this.contacts.length > 0) {
+            const firstEl = this.contactListContainer.querySelector('.chat-contact');
+            this.selectContact(this.contacts[0], firstEl);
+        }
+    }
+
+    // ─── Select Contact & Load History ──────────────────────
+
+    async selectContact(contact, element) {
+        this.activeRecipientId = contact.user_id;
+        this.lastRenderedDate = null;
+
+        // Update sidebar active state
+        this.contactListContainer.querySelectorAll('.chat-contact').forEach(c => c.classList.remove('active'));
         if (element) element.classList.add('active');
 
-        // Clear and load history
-        if (this.chatContainer) {
-            this.chatContainer.innerHTML = '<div class="text-center p-4">Loading messages...</div>';
-            await this.loadChatHistory(recipientId);
+        // Update header
+        const initials = contact.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        if (this.headerName) this.headerName.textContent = contact.name;
+        if (this.headerAvatar) this.headerAvatar.textContent = initials;
+        if (this.headerStatus) this.headerStatus.textContent = contact.role;
+
+        // Show input bar
+        if (this.inputBar) this.inputBar.style.display = 'flex';
+
+        // Load history
+        if (this.messagesArea) {
+            this.messagesArea.innerHTML = `
+                <div class="chat-empty-state">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem"></i>
+                    <p>Loading messages...</p>
+                </div>`;
         }
+
+        await this.loadChatHistory(contact.user_id);
     }
 
     async loadChatHistory(friendId) {
         try {
             const response = await apiFetch(`/chats/history/${friendId}`);
-            if (response.ok) {
-                const history = await response.json();
-                
-                this.chatContainer.innerHTML = '';
-                history.forEach(msg => {
-                    const type = msg.sender_id == this.currentUser.id ? 'sent' : 'received';
-                    this.appendMessage(msg, type);
-                });
-                
-                this.scrollToBottom();
+            if (!response.ok) {
+                this.messagesArea.innerHTML = `
+                    <div class="chat-empty-state">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--danger)"></i>
+                        <p>Failed to load messages</p>
+                    </div>`;
+                return;
             }
+
+            const history = await response.json();
+            this.messagesArea.innerHTML = '';
+            this.lastRenderedDate = null;
+
+            if (history.length === 0) {
+                this.messagesArea.innerHTML = `
+                    <div class="chat-empty-state">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <p>No messages yet. Say hello! 👋</p>
+                    </div>`;
+                return;
+            }
+
+            history.forEach(msg => this.appendMessage(msg));
+            this.scrollToBottom();
+
         } catch (error) {
-            console.error('Error loading history:', error);
-            this.chatContainer.innerHTML = '<div class="text-center p-4 text-danger">Failed to load messages</div>';
+            console.error('Error loading chat history:', error);
+            this.messagesArea.innerHTML = `
+                <div class="chat-empty-state">
+                    <i class="fas fa-wifi" style="color: var(--danger)"></i>
+                    <p>Connection error</p>
+                </div>`;
         }
     }
 
-    appendMessage(data, type) {
-        if (!this.chatContainer) return;
+    // ─── Render Messages (WhatsApp Style) ───────────────────
 
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${type} fade-in`;
-        
-        // Match the CSS classes from your chat.css: message sent / message received
-        
-        const timestampStr = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
-        
-        msgDiv.innerHTML = `
-            <div class="message-content">${data.message}</div>
-            <span class="message-time">${timestampStr}</span>
+    appendMessage(data) {
+        if (!this.messagesArea) return;
+
+        // Remove empty state if present
+        const emptyState = this.messagesArea.querySelector('.chat-empty-state');
+        if (emptyState) emptyState.remove();
+
+        const isSent = String(data.sender_id) === String(this.currentUser.id);
+        const timestamp = data.timestamp ? new Date(data.timestamp) : new Date();
+
+        // Date separator
+        const dateStr = timestamp.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+        if (dateStr !== this.lastRenderedDate) {
+            this.lastRenderedDate = dateStr;
+            const sep = document.createElement('div');
+            sep.className = 'msg-date-sep';
+
+            // Show "Today" or "Yesterday" if applicable  
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            let displayDate = dateStr;
+            if (timestamp.toDateString() === today.toDateString()) displayDate = 'Today';
+            else if (timestamp.toDateString() === yesterday.toDateString()) displayDate = 'Yesterday';
+
+            sep.innerHTML = `<span>${displayDate}</span>`;
+            this.messagesArea.appendChild(sep);
+        }
+
+        // Message bubble
+        const row = document.createElement('div');
+        row.className = `msg-row ${isSent ? 'sent' : 'received'}`;
+
+        const timeStr = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        row.innerHTML = `
+            <div class="msg-bubble">
+                <div class="msg-text">${this.escapeHtml(data.message)}</div>
+                <span class="msg-time">${timeStr}</span>
+            </div>
         `;
-        
-        this.chatContainer.appendChild(msgDiv);
-        this.scrollToBottom();
+
+        this.messagesArea.appendChild(row);
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     scrollToBottom() {
-        if (this.chatContainer) {
-            // Some containers might be nested, handle accordingly
-            const parent = this.chatContainer.parentElement;
-            if (parent && parent.classList.contains('chat-main')) {
-                parent.scrollTop = parent.scrollHeight;
-            } else {
-                this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
-            }
+        if (this.messagesArea) {
+            requestAnimationFrame(() => {
+                this.messagesArea.scrollTop = this.messagesArea.scrollHeight;
+            });
         }
     }
 
-    updateOnlineStatus(isOnline) {
-        const indicator = document.getElementById('online-indicator');
-        if (indicator) {
-            indicator.className = `status-icon ${isOnline ? 'online' : 'offline'}`;
-        }
-    }
+    // ─── Contact List Updates ───────────────────────────────
 
-    loadInitialData() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const recipientId = urlParams.get('userId');
-        
-        if (recipientId) {
-            this.switchChat(recipientId);
-        } else if (this.chatListItems.length > 0) {
-            // Optionally auto-select first item
-            // const firstItem = this.chatListItems[0];
-            // const firstId = firstItem.dataset.recipientId;
-            // if (firstId) this.switchChat(firstId, firstItem);
+    updateContactPreview(data) {
+        // Could update last message preview in Contact list
+        // For now, just visually nudge if not active
+        const contactEl = this.contactListContainer?.querySelector(`[data-user-id="${data.sender_id}"]`);
+        if (contactEl && !contactEl.classList.contains('active')) {
+            contactEl.style.background = 'rgba(45, 74, 138, 0.06)';
         }
     }
 }
 
-// Initialize when DOM is ready
+// ─── Initialize ─────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Only init if Socket.io library is loaded
     if (typeof io !== 'undefined') {
         window.chatApp = new ChatInterface();
     } else {
-        console.warn('Socket.io not found.');
+        console.warn('Socket.io library not found. Chat disabled.');
     }
 });

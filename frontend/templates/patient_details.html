@@ -111,17 +111,17 @@
                   font-size: 0.95rem;
                 "
               >
-                Dr. John Smith
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Cardiologist
+                ...
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--medical-blue); color: white"
             >
-              JS
+              ...
             </div>
           </div>
         </header>
@@ -158,7 +158,7 @@
                     box-shadow: 0 10px 25px rgba(52, 211, 153, 0.25);
                   "
                 >
-                  JD
+                  ...
                 </div>
                 <div>
                   <h1
@@ -169,7 +169,7 @@
                       font-size: 2rem;
                     "
                   >
-                    John Doe
+                    --
                   </h1>
                   <div
                     style="
@@ -184,21 +184,21 @@
                         class="fas fa-id-card-alt"
                         style="margin-right: 6px"
                       ></i>
-                      ID: <span id="patient-id-display">#883920</span></span
+                      ID: <span id="patient-id-display">--</span></span
                     >
                     <span
                       ><i
                         class="fas fa-birthday-cake"
                         style="margin-right: 6px"
                       ></i>
-                      <span id="patient-age">65</span> Years</span
+                      <span id="patient-age">--</span> Years</span
                     >
                     <span
                       ><i
                         class="fas fa-venus-mars"
                         style="margin-right: 6px"
                       ></i>
-                      Male</span
+                      ...</span
                     >
                   </div>
                   <div id="patient-badges" style="display: flex; gap: 12px">
@@ -211,7 +211,7 @@
                         border: 1px solid #a7f3d0;
                       "
                     >
-                      Stage 2 Recovery
+                      ...
                     </span>
                     <span
                       class="badge"
@@ -221,7 +221,7 @@
                         border: 1px solid #bfdbfe;
                       "
                     >
-                      Palliative Care
+                      ...
                     </span>
                   </div>
                 </div>
@@ -256,11 +256,15 @@
               style="border-left: 4px solid var(--medical-blue)"
             >
               <div class="stat-title">Total Visits</div>
-              <div class="stat-value" style="color: var(--medical-blue)">
-                24
+              <div
+                id="stat-visits"
+                class="stat-value"
+                style="color: var(--medical-blue)"
+              >
+                0
               </div>
               <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i> 2 this month
+                <i class="fas fa-arrow-up"></i> 0 this month
               </div>
             </div>
             <div
@@ -268,21 +272,25 @@
               style="border-left: 4px solid var(--hope-green)"
             >
               <div class="stat-title">Pain Level (Last)</div>
-              <div class="stat-value" style="color: var(--hope-green)">
-                3<span style="font-size: 1.2rem; color: var(--text-muted)"
+              <div
+                id="stat-pain"
+                class="stat-value"
+                style="color: var(--hope-green)"
+              >
+                0<span style="font-size: 1.2rem; color: var(--text-muted)"
                   >/10</span
                 >
               </div>
-              <div class="stat-change positive">
-                <i class="fas fa-arrow-down"></i> Improved
-              </div>
+              <div class="stat-change positive">--</div>
             </div>
             <div
               class="card stat-card fade-in"
               style="border-left: 4px solid var(--sunshine-yellow)"
             >
               <div class="stat-title">Active Meds</div>
-              <div class="stat-value" style="color: #b45309">5</div>
+              <div id="stat-meds" class="stat-value" style="color: #b45309">
+                0
+              </div>
               <div
                 style="
                   font-size: 0.8rem;
@@ -290,7 +298,7 @@
                   margin-top: 8px;
                 "
               >
-                Adherence: 95%
+                Adherence: --%
               </div>
             </div>
             <div
@@ -298,8 +306,12 @@
               style="border-left: 4px solid #6366f1"
             >
               <div class="stat-title">Next Appointment</div>
-              <div class="stat-value" style="color: #4338ca; font-size: 1.5rem">
-                Jan 30
+              <div
+                id="stat-next"
+                class="stat-value"
+                style="color: #4338ca; font-size: 1.5rem"
+              >
+                --
               </div>
               <div
                 style="
@@ -308,7 +320,7 @@
                   margin-top: 8px;
                 "
               >
-                10:00 AM • Consult
+                No upcoming visits
               </div>
             </div>
           </div>
@@ -393,71 +405,13 @@
                         <th>Notes</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="logs-history-body">
                       <tr>
-                        <td>
-                          <div style="font-weight: 600">Today</div>
-                          <div
-                            style="font-size: 0.8rem; color: var(--text-light)"
-                          >
-                            10:00 AM
-                          </div>
-                        </td>
-                        <td>
-                          <span
-                            class="badge"
-                            style="background: #ecfdf5; color: #047857"
-                            >Happy</span
-                          >
-                        </td>
-                        <td><span style="font-weight: 700">3</span>/10</td>
-                        <td style="color: var(--text-muted); font-size: 0.9rem">
-                          Feeling lighter today, pain reduced significantly
-                          after therapy.
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div style="font-weight: 600">Yesterday</div>
-                          <div
-                            style="font-size: 0.8rem; color: var(--text-light)"
-                          >
-                            09:30 AM
-                          </div>
-                        </td>
-                        <td>
-                          <span
-                            class="badge"
-                            style="background: #f3f4f6; color: #4b5563"
-                            >Neutral</span
-                          >
-                        </td>
-                        <td><span style="font-weight: 700">5</span>/10</td>
-                        <td style="color: var(--text-muted); font-size: 0.9rem">
-                          Moderate pain, took prescribed medication. Appetite
-                          normal.
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div style="font-weight: 600">Jan 25</div>
-                          <div
-                            style="font-size: 0.8rem; color: var(--text-light)"
-                          >
-                            08:00 AM
-                          </div>
-                        </td>
-                        <td>
-                          <span
-                            class="badge"
-                            style="background: #fef2f2; color: #dc2626"
-                            >Anxious</span
-                          >
-                        </td>
-                        <td><span style="font-weight: 700">7</span>/10</td>
-                        <td style="color: var(--text-muted); font-size: 0.9rem">
-                          High pain level reported early morning. Difficulty
-                          sleeping.
+                        <td
+                          colspan="4"
+                          style="text-align: center; color: var(--text-muted)"
+                        >
+                          No logs available
                         </td>
                       </tr>
                     </tbody>
@@ -543,15 +497,16 @@
                   <div style="font-size: 0.8rem; color: var(--text-muted)">
                     Phone
                   </div>
-                  <div style="font-weight: 500">+1 (555) 123-4567</div>
+                  <div id="contact-phone" style="font-weight: 500">--</div>
                 </div>
                 <div style="margin-bottom: 12px">
                   <div style="font-size: 0.8rem; color: var(--text-muted)">
                     Email
                   </div>
-                  <div style="font-weight: 500">john.doe@example.com</div>
+                  <div id="contact-email" style="font-weight: 500">--</div>
                 </div>
-                <div>
+                <!-- Hide dummy emergency contact for now -->
+                <div style="display: none">
                   <div style="font-size: 0.8rem; color: var(--text-muted)">
                     Emergency Contact
                   </div>

@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Profile - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <style>
+      .doc-hero {
+        padding: 48px;
+        border-top: 6px solid var(--medical-blue);
+        background: linear-gradient(
+          135deg,
+          #f0f4ff 0%,
+          #ffffff 50%,
+          #fdf2f8 100%
+        );
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+      }
+      .doc-hero::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(45, 74, 138, 0.06),
+          transparent
+        );
+        border-radius: 50%;
+      }
+      .doc-hero-content {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+        position: relative;
+        z-index: 1;
+      }
+      .doc-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+      }
+      .doc-avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: var(--medical-blue);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.2rem;
+        font-weight: 700;
+        border: 5px solid white;
+        box-shadow: 0 10px 30px rgba(45, 74, 138, 0.2);
+      }
+      .doc-status-dot {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 4px solid white;
+        background: #94a3b8;
+      }
+      .doc-status-dot.online {
+        background: #10b981;
+      }
+      .doc-info {
+        flex: 1;
+      }
+      .doc-info h1 {
+        font-size: 2rem;
+        color: var(--medical-blue);
+        margin-bottom: 4px;
+      }
+      .doc-info .doc-specialty {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-bottom: 16px;
+      }
+      .doc-badges {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+      }
+      .doc-badges .badge {
+        padding: 6px 16px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border-radius: 20px;
+      }
+      .doc-stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(45, 74, 138, 0.08);
+      }
+      .doc-stat-item {
+        text-align: center;
+        padding: 16px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      }
+      .doc-stat-item .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .doc-stat-item .stat-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--medical-blue);
+      }
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 32px;
+      }
+      .info-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+        border: 1px solid rgba(45, 74, 138, 0.05);
+        padding: 32px;
+        margin-bottom: 32px;
+      }
+      .info-card h3 {
+        color: var(--medical-blue);
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--lavender-soft);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .info-card h3 i {
+        font-size: 1rem;
+        opacity: 0.7;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      }
+      .info-row:last-child {
+        border-bottom: none;
+      }
+      .info-row .label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .info-row .value {
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      .bio-text {
+        color: var(--text-main);
+        line-height: 1.8;
+        font-size: 0.95rem;
+      }
+      .action-card {
+        background: linear-gradient(135deg, var(--medical-blue), #1e3a6e);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        color: white;
+        text-align: center;
+      }
+      .action-card h3 {
+        color: white;
+        margin-bottom: 12px;
+        border: none;
+        padding: 0;
+      }
+      .action-card p {
+        opacity: 0.85;
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+        line-height: 1.6;
+      }
+      .action-card .btn {
+        background: white;
+        color: var(--medical-blue);
+        font-weight: 700;
+        border: none;
+        width: 100%;
+        padding: 14px;
+      }
+      .action-card .btn:hover {
+        background: #f0f4ff;
+      }
+
+      /* Loading skeleton */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 400% 100%;
+        animation: shimmer 1.5s ease infinite;
+        border-radius: 8px;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 100% 0;
+        }
+        100% {
+          background-position: -100% 0;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .doc-hero-content {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+        .doc-stats-row {
+          grid-template-columns: 1fr;
+        }
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+        .doc-badges {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar — Patient sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_patient.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+        <nav class="sidebar-nav">
+          <a href="dashboard_patient.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i> Dashboard
+          </a>
+          <a
+            href="manage_health_patient.html#appointments"
+            class="sidebar-link"
+          >
+            <i class="fas fa-calendar-alt"></i> Appointments
+          </a>
+          <a
+            href="manage_health_patient.html#find-doctor"
+            class="sidebar-link active"
+          >
+            <i class="fas fa-user-md"></i> Find Doctor
+          </a>
+          <a href="chat.html" class="sidebar-link">
+            <i class="fas fa-comment-medical"></i> Messages
+          </a>
+          <div style="flex-grow: 1"></div>
+          <a href="manage_profile_patient.html#view" class="sidebar-link">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a
+            href="login.html"
+            class="sidebar-link"
+            style="color: var(--danger)"
+            onclick="localStorage.clear()"
+          >
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header">
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
+            >
+              <i
+                class="fas fa-user-md"
+                style="color: var(--medical-blue); font-size: 1.8rem"
+              ></i>
+              Doctor Profile
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              View detailed information about your care provider
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                ...
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                ...
+              </div>
+            </div>
+            <div class="profile-pic">...</div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 48px 48px; max-width: 1200px">
+          <!-- Hero Section -->
+          <div class="doc-hero fade-in" id="docHero">
+            <div class="doc-hero-content">
+              <div class="doc-avatar-wrap">
+                <div class="doc-avatar" id="docAvatar">
+                  <i class="fas fa-spinner fa-spin" style="font-size: 2rem"></i>
+                </div>
+                <div class="doc-status-dot" id="docStatusDot"></div>
+              </div>
+              <div class="doc-info">
+                <h1 id="docName">Loading...</h1>
+                <div class="doc-specialty" id="docSpecialty">...</div>
+                <div class="doc-badges" id="docBadges"></div>
+                <div class="doc-stats-row" id="docStats">
+                  <div class="doc-stat-item">
+                    <div class="stat-label">Experience</div>
+                    <div class="stat-value" id="docExperience">—</div>
+                  </div>
+                  <div class="doc-stat-item">
+                    <div class="stat-label">Qualification</div>
+                    <div class="stat-value" id="docQualification">—</div>
+                  </div>
+                  <div class="doc-stat-item">
+                    <div class="stat-label">License</div>
+                    <div
+                      class="stat-value"
+                      id="docLicense"
+                      style="font-size: 0.95rem"
+                    >
+                      —
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detail Grid -->
+          <div class="detail-grid">
+            <!-- Left Column -->
+            <div>
+              <!-- About -->
+              <div class="info-card fade-in" id="bioCard">
+                <h3><i class="fas fa-user"></i> About</h3>
+                <div class="bio-text" id="docBio">
+                  <div
+                    class="skeleton"
+                    style="height: 20px; width: 100%; margin-bottom: 12px"
+                  ></div>
+                  <div class="skeleton" style="height: 20px; width: 80%"></div>
+                </div>
+              </div>
+
+              <!-- Contact Information -->
+              <div class="info-card fade-in">
+                <h3><i class="fas fa-address-card"></i> Contact Information</h3>
+                <div class="info-row">
+                  <span class="label"
+                    ><i class="fas fa-envelope"></i> Email</span
+                  >
+                  <span class="value" id="docEmail">—</span>
+                </div>
+                <div class="info-row">
+                  <span class="label"><i class="fas fa-phone"></i> Phone</span>
+                  <span class="value" id="docPhone">—</span>
+                </div>
+                <div class="info-row">
+                  <span class="label"
+                    ><i class="fas fa-id-card"></i> License ID</span
+                  >
+                  <span class="value" id="docLicense2">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+              <!-- Request Consultation -->
+              <div class="action-card fade-in" id="requestCard">
+                <h3>
+                  <i class="fas fa-calendar-plus" style="margin-right: 8px"></i>
+                  Book Consultation
+                </h3>
+                <p>
+                  Send a consultation request to this doctor. They will review
+                  and schedule an appointment.
+                </p>
+                <button
+                  class="btn"
+                  id="requestBtn"
+                  onclick="requestThisDoctor()"
+                >
+                  <i class="fas fa-paper-plane" style="margin-right: 8px"></i>
+                  Send Request
+                </button>
+              </div>
+
+              <!-- Chat -->
+              <div
+                class="info-card fade-in"
+                style="margin-top: 32px; text-align: center; padding: 32px"
+              >
+                <h3 style="border: none; justify-content: center">
+                  <i class="fas fa-comment-dots"></i> Have a Question?
+                </h3>
+                <p
+                  style="
+                    color: var(--text-muted);
+                    font-size: 0.9rem;
+                    margin-bottom: 20px;
+                  "
+                >
+                  Chat directly with this doctor after your consultation is
+                  accepted.
+                </p>
+                <a
+                  id="chatLink"
+                  href="#"
+                  class="btn btn-outline-lavender"
+                  style="width: 100%"
+                >
+                  <i class="fas fa-comment" style="margin-right: 8px"></i> Open
+                  Chat
+                </a>
+              </div>
+
+              <!-- Back Button -->
+              <div style="margin-top: 24px; text-align: center">
+                <a
+                  href="manage_health_patient.html#find-doctor"
+                  class="btn btn-outline-lavender"
+                  style="width: 100%"
+                >
+                  <i class="fas fa-arrow-left" style="margin-right: 8px"></i>
+                  Back to Doctors List
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/doctor_profile.js"></script>
+  </body>
+</html>

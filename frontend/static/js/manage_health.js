@@ -86,7 +86,7 @@ async function submitLog(e) {
     };
 
     try {
-        const response = await apiFetch('/clinical/vitals/', {
+        const response = await apiFetch('/vitals/', {
             method: 'POST',
             body: JSON.stringify(payload)
         });
@@ -220,8 +220,10 @@ function renderAppointments(appointments, container) {
                 General Consultation
             </p>
             <div style="display: flex; gap: 8px">
-                <button class="btn btn-sm btn-outline-lavender" onclick="alert('Viewing details...')">View Details</button>
-                ${appt.status === 'accepted' ? '<button class="btn btn-sm btn-primary">Join Call</button>' : ''}
+                <button class="btn btn-sm btn-outline-lavender" onclick="window.location.href='doctor_profile.html?id=${appt.doctor_id}'">View Details</button>
+                <button class="btn btn-sm btn-outline-medical" onclick="window.location.href='chat.html?userId=${appt.doctor_user_id}'">
+                    <i class="fas fa-comment"></i> Chat
+                </button>
             </div>
         `;
         container.appendChild(card);
@@ -275,7 +277,7 @@ function renderDoctors(doctors, container) {
             </p>
             <div style="display: flex; gap: 8px; justify-content: center">
                 <button class="btn btn-sm btn-primary" onclick="requestDoctor(${doc.id})">Request Now</button>
-                <button class="btn btn-sm btn-outline-lavender">View Profile</button>
+                <button class="btn btn-sm btn-outline-lavender" onclick="window.location.href='doctor_profile.html?id=${doc.id}'">View Profile</button>
             </div>
         `;
         container.appendChild(card);

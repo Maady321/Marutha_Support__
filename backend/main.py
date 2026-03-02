@@ -1,9 +1,10 @@
 from fastapi import FastAPI  # Import FastAPI framework to create the API
 from fastapi.staticfiles import StaticFiles  # Import StaticFiles for serving static files
 from fastapi.middleware.cors import CORSMiddleware  # Import CORSMiddleware for handling Cross-Origin Resource Sharing
-from backend import auth, database, models  # Import application modules: auth, database, and models
-from backend.routers import users, clinical, chats  # Import router modules from the backend.routers package
-from backend.socket_io import sio_app  # Import Socket.io application
+import auth, database, models  # Import application modules: auth, database, and models
+from routers import users, clinical, chats  # Import router modules from the backend.routers package
+import socketio
+from socket_io import sio  # Import Socket.io server instance
 
 # Create all database tables defined in models using the database engine
 models.Base.metadata.create_all(bind=database.engine)
@@ -11,19 +12,11 @@ models.Base.metadata.create_all(bind=database.engine)
 # Initialize the FastAPI application with a custom title
 app = FastAPI(title="Marutha Support API")
 
-# Mount Socket.io app
-app.mount("/socket.io", sio_app)
+# Socket.io is now handled by wrapping the FastAPI app at the end of this file.
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5505",
-        "http://localhost:5505",
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:8000",
-        "http://localhost:8000",
-    ],
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500", "http://127.0.0.1:5505", "http://localhost:5505"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,9 +64,17 @@ app.include_router(clinical.vitals_router)
 app.include_router(clinical.reports_router)
 # Include the chat router
 app.include_router(chats.chat_router)
+# Include new notes and prescriptions routers
+app.include_router(clinical.notes_router)
+app.include_router(clinical.prescriptions_router)
 
 # Define the root endpoint for the API
 @app.get("/")
 def home():
     # Return a JSON response confirming the API is running
     return {"message": "Marutha Support API is running!"}
+
+# Wrap the FastAPI application with the Socket.io ASGI app.
+# This ensures that requests to /socket.io are handled by Socket.io directly,
+# preventing CORS duplication issues from FastAPI middleware.
+app = socketio.ASGIApp(sio, other_asgi_app=app, socketio_path='/socket.io')

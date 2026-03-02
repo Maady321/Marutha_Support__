@@ -114,6 +114,7 @@ async function loadUpcomingSchedule() {
         const response = await apiFetch('/doctors/appointments');
         if (response.ok) {
             const appointments = await response.json();
+            window.globalAppointments = appointments; // store globally for calendar
             renderSchedule(appointments, tbody);
         } else {
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red; padding:20px">Failed to load schedule</td></tr>';
@@ -152,7 +153,7 @@ function renderSchedule(appointments, tbody) {
                     <span class="badge" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">Confirmed</span>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-sm btn-outline-lavender" onclick="alert('Viewing specific details...')">Details</a>
+                    <button class="btn btn-sm btn-outline-lavender" onclick="window.location.href='patient_details.html?id=${appt.patient_id}'">Details</button>
                 </td>
             </tr>
         `;
@@ -163,58 +164,120 @@ function renderSchedule(appointments, tbody) {
 /**
  * Handle Request Action
  */
+let currentAcceptId = null;
+let currentAcceptBtn = null;
+
 async function handleRequest(action, requestId, btn) {
+    if (action === 'accept') {
+        currentAcceptId = requestId;
+        currentAcceptBtn = btn;
+        document.getElementById('acceptRequestModal').style.display = 'flex';
+        return;
+    }
+
     if (!confirm(`Are you sure you want to ${action} this request?`)) return;
 
-    const row = document.getElementById(`req-${requestId}`);
-    
-    // UI Loading state
+    // Decline logic
     const originalContent = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     btn.disabled = true;
 
     try {
-        let response;
-        if (action === 'accept') {
-            response = await apiFetch(`/doctors/requests/${requestId}/accept`, { method: 'POST' });
-        } else {
-            // Decline not implemented in backend yet? Assuming simulation or I need to add decline endpoint.
-            // For now, if decline, we just hide it (client-side only?) -> User asked for REAL data.
-            // If backend doesn't support decline, I should alert user "Not implemented".
-            alert("Decline feature not yet implemented in backend.");
-            btn.innerHTML = originalContent;
-            btn.disabled = false;
-            return;
-        }
+        const response = await apiFetch(`/doctors/requests/${requestId}/decline`, {
+            method: 'POST'
+        });
 
         if (response && response.ok) {
-            // Animate removal
+            const row = document.getElementById(`req-${requestId}`);
             if (row) {
                  row.style.transition = "all 0.3s ease";
                  row.style.opacity = "0";
                  row.style.transform = "translateX(20px)";
                  setTimeout(() => {
-                     // Reload full list to update badge and ensure consistency
                      loadPendingRequests();
-
-                     // Refresh upcoming schedule if accepted
-                     if (action === 'accept') {
-                         loadUpcomingSchedule();
-                     }
                  }, 300);
+            } else {
+                 loadPendingRequests();
             }
-            showToast(action === "accept" ? "Appointment Confirmed!" : "Request Declined");
+            if (typeof showToast === "function") showToast("Request Declined");
+            else alert("Request Declined");
         } else {
-            const data = await response.json();
-            alert(`Error: ${data.detail || 'Failed'}`);
+            const data = await response.json().catch(() => ({}));
+            alert(`Error: ${data.detail || 'Failed to decline request'}`);
             btn.innerHTML = originalContent;
             btn.disabled = false;
         }
     } catch (error) {
-        console.error("Error handling request:", error);
+        console.error("Error declining request:", error);
         alert("Action failed.");
         btn.innerHTML = originalContent;
         btn.disabled = false;
+    }
+}
+
+function closeAcceptModal() {
+    document.getElementById('acceptRequestModal').style.display = 'none';
+    currentAcceptId = null;
+    currentAcceptBtn = null;
+}
+
+async function confirmAcceptRequest() {
+    if (!currentAcceptId) return;
+
+    const inputDate = document.getElementById('acceptDate').value;
+    const inputTime = document.getElementById('acceptTime').value;
+
+    if (!inputDate || !inputTime) {
+        alert("Please set a date and time for the consultation.");
+        return;
+    }
+
+    const appointmentTime = `${inputDate}T${inputTime}:00`;
+    
+    // UI Loading state
+    const originalContent = currentAcceptBtn ? currentAcceptBtn.innerHTML : 'Accept';
+    if (currentAcceptBtn) {
+        currentAcceptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        currentAcceptBtn.disabled = true;
+    }
+
+    try {
+        const response = await apiFetch(`/doctors/requests/${currentAcceptId}/accept`, {
+            method: 'POST',
+            body: JSON.stringify({ appointment_time: appointmentTime })
+        });
+
+        if (response && response.ok) {
+            closeAcceptModal();
+            const row = document.getElementById(`req-${currentAcceptId}`);
+            if (row) {
+                 row.style.transition = "all 0.3s ease";
+                 row.style.opacity = "0";
+                 row.style.transform = "translateX(20px)";
+                 setTimeout(() => {
+                     loadPendingRequests();
+                     loadUpcomingSchedule();
+                 }, 300);
+            } else {
+                 loadPendingRequests();
+                 loadUpcomingSchedule();
+            }
+            showToast("Appointment Confirmed!");
+        } else {
+            const data = await response.json();
+            alert(`Error: ${data.detail || 'Failed'}`);
+            if (currentAcceptBtn) {
+                currentAcceptBtn.innerHTML = originalContent;
+                currentAcceptBtn.disabled = false;
+            }
+        }
+    } catch (error) {
+        console.error("Error handling request:", error);
+        alert("Action failed.");
+        if (currentAcceptBtn) {
+            currentAcceptBtn.innerHTML = originalContent;
+            currentAcceptBtn.disabled = false;
+        }
     }
 }
 
@@ -241,3 +304,139 @@ function showToast(message) {
 // Global scope
 window.handleRequest = handleRequest;
 window.showToast = showToast;
+window.closeAcceptModal = closeAcceptModal;
+window.confirmAcceptRequest = confirmAcceptRequest;
+
+/**
+ * Calendar Logic
+ */
+let currentCalendarDate = new Date();
+window.globalAppointments = []; // Default empty
+
+window.openCalendarModal = function(e) {
+    if (e) e.preventDefault();
+    document.getElementById('calendarModal').style.display = 'block';
+    document.getElementById('calendarDetails').style.display = 'none';
+    currentCalendarDate = new Date(); // reset to current month
+    renderCalendar();
+};
+
+window.closeCalendarModal = function() {
+    document.getElementById('calendarModal').style.display = 'none';
+};
+
+// Close modal if user clicks outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('calendarModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+window.changeMonth = function(delta) {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+    renderCalendar();
+    document.getElementById('calendarDetails').style.display = 'none';
+};
+
+function renderCalendar() {
+    const year = currentCalendarDate.getFullYear();
+    const month = currentCalendarDate.getMonth();
+    
+    // Update Header
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    document.getElementById('calendarMonthYear').innerText = `${monthNames[month]} ${year}`;
+    
+    // Get first day of month and total days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const grid = document.getElementById('calendarGrid');
+    grid.innerHTML = '';
+    
+    const today = new Date();
+    
+    // Empty prefix cells
+    for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'calendar-day empty';
+        grid.appendChild(emptyCell);
+    }
+    
+    // Days of month
+    for (let i = 1; i <= daysInMonth; i++) {
+        const cellDate = new Date(year, month, i);
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day';
+        cell.innerText = i;
+        
+        // Highlight today
+        if (cellDate.getDate() === today.getDate() && 
+            cellDate.getMonth() === today.getMonth() && 
+            cellDate.getFullYear() === today.getFullYear()) {
+            cell.classList.add('today');
+        }
+        
+        // Get events for this day
+        const dayEvents = (window.globalAppointments || []).filter(appt => {
+            if (!appt.appointment_time) return false;
+            const aDate = new Date(appt.appointment_time);
+            return aDate.getDate() === i && 
+                   aDate.getMonth() === month && 
+                   aDate.getFullYear() === year;
+        });
+        
+        if (dayEvents.length > 0) {
+            cell.classList.add('has-events');
+            const dot = document.createElement('span');
+            dot.className = 'event-dot';
+            cell.appendChild(dot);
+            
+            if (dayEvents.length > 1) {
+                const numStr = document.createElement('span');
+                numStr.className = 'event-count';
+                numStr.innerText = `${dayEvents.length} Appts`;
+                cell.appendChild(numStr);
+            }
+        }
+        
+        // click event to show details
+        cell.onclick = () => showDateDetails(cellDate, dayEvents);
+        
+        grid.appendChild(cell);
+    }
+}
+
+function showDateDetails(date, events) {
+    const detailBox = document.getElementById('calendarDetails');
+    const title = document.getElementById('selectedDateTitle');
+    const eventsContainer = document.getElementById('selectedDateEvents');
+    
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    title.innerText = date.toLocaleDateString(undefined, options);
+    
+    eventsContainer.innerHTML = '';
+    
+    if (!events || events.length === 0) {
+        eventsContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 0.95rem;">No appointments scheduled for this day.</div>';
+    } else {
+        events.forEach(evt => {
+            const timeStr = evt.appointment_time ? new Date(evt.appointment_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
+            eventsContainer.innerHTML += `
+                <div style="background: #fff; border-left: 4px solid var(--medical-blue); padding: 12px 16px; border-radius: var(--radius-sm); box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600; color: var(--medical-blue); margin-bottom: 4px;">${evt.patient_name || 'Patient'}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);"><i class="fas fa-notes-medical" style="margin-right: 4px;"></i>${evt.notes || 'Check-up'}</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                        <span style="font-weight: 700; color: var(--text-main);">${timeStr}</span>
+                        <span class="badge" style="background: #ecfdf5; color: #047857; margin-top: 6px; font-size: 0.65rem;">Confirmed</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    detailBox.style.display = 'block';
+    detailBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}

@@ -240,6 +240,14 @@ function renderAppointments(appointments, container) {
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
                 <span class="${badgeClass}" style="text-transform: capitalize">${appt.status}</span>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-sm btn-outline-lavender" title="View Profile" onclick="window.location.href='doctor_profile.html?id=${appt.doctor_id}'">
+                        <i class="fas fa-user-md"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-medical" title="Start Chat" onclick="window.location.href='chat.html?userId=${appt.doctor_user_id}'">
+                        <i class="fas fa-comment"></i>
+                    </button>
+                </div>
             </div>
         `;
         container.appendChild(card);

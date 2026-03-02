@@ -94,7 +94,7 @@
               Volunteer Dashboard
             </h2>
             <p style="color: var(--text-muted); font-weight: 500">
-              Welcome back, Jane. Thank you for your service today.
+              Welcome back.
             </p>
           </div>
           <div class="profile-snippet">
@@ -106,17 +106,17 @@
                   font-size: 0.95rem;
                 "
               >
-                Jane Smith
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Senior Volunteer
+                ...
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--hope-green); color: white"
             >
-              JS
+              ...
             </div>
           </div>
         </header>
@@ -129,17 +129,14 @@
               style="animation-delay: 0.1s"
             >
               <div class="stat-title">Assigned Patients</div>
-              <div class="stat-value text-green">5</div>
+              <div id="stat-patients" class="stat-value text-green">0</div>
               <div
                 style="
                   margin-top: 8px;
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
-              >
-                <i class="fas fa-user-check" style="margin-right: 4px"></i>
-                Active cases
-              </div>
+              ></div>
             </div>
             <div
               class="card stat-card fade-in"
@@ -149,32 +146,40 @@
               "
             >
               <div class="stat-title">Tasks Completed</div>
-              <div class="stat-value" style="color: #b45309">23</div>
+              <div
+                id="stat-tasks-completed"
+                class="stat-value"
+                style="color: #b45309"
+              >
+                0
+              </div>
               <div
                 style="
                   margin-top: 8px;
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
-              >
-                This month
-              </div>
+              ></div>
             </div>
             <div
               class="card stat-card fade-in"
               style="animation-delay: 0.3s; border-left: 4px solid #ef4444"
             >
               <div class="stat-title">Pending Tasks</div>
-              <div class="stat-value" style="color: #dc2626">3</div>
+              <div
+                id="stat-tasks-pending"
+                class="stat-value"
+                style="color: #dc2626"
+              >
+                0
+              </div>
               <div
                 style="
                   margin-top: 8px;
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
-              >
-                Due today
-              </div>
+              ></div>
             </div>
             <div
               class="card stat-card fade-in"
@@ -184,8 +189,12 @@
               "
             >
               <div class="stat-title">Volunteer Hours</div>
-              <div class="stat-value" style="color: var(--medical-blue)">
-                42
+              <div
+                id="stat-hours"
+                class="stat-value"
+                style="color: var(--medical-blue)"
+              >
+                0
               </div>
               <div
                 style="
@@ -193,10 +202,7 @@
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
-              >
-                <i class="fas fa-clock" style="margin-right: 4px"></i> Total
-                logged
-              </div>
+              ></div>
             </div>
           </div>
 
@@ -224,92 +230,13 @@
                 >
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 16px">
-                <div
-                  class="card"
-                  style="
-                    padding: 16px;
-                    border: 1px solid rgba(0, 0, 0, 0.05);
-                    display: flex;
-                    gap: 16px;
-                    align-items: center;
-                  "
-                >
-                  <div
-                    style="
-                      width: 50px;
-                      height: 50px;
-                      background: #f0fdf4;
-                      border-radius: 12px;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      color: var(--hope-green);
-                      font-size: 1.2rem;
-                      flex-shrink: 0;
-                    "
-                  >
-                    <i class="fas fa-home"></i>
-                  </div>
-                  <div style="flex: 1">
-                    <div
-                      style="
-                        font-weight: 600;
-                        color: var(--text-main);
-                        margin-bottom: 4px;
-                      "
-                    >
-                      Home Visit: John Doe
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted)">
-                      10:00 AM - 11:30 AM • Vitals Check & Support
-                    </div>
-                  </div>
-                  <button class="btn btn-sm btn-outline-lavender">View</button>
-                </div>
-
-                <div
-                  class="card"
-                  style="
-                    padding: 16px;
-                    border: 1px solid rgba(0, 0, 0, 0.05);
-                    display: flex;
-                    gap: 16px;
-                    align-items: center;
-                  "
-                >
-                  <div
-                    style="
-                      width: 50px;
-                      height: 50px;
-                      background: #fffbeb;
-                      border-radius: 12px;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      color: #b45309;
-                      font-size: 1.2rem;
-                      flex-shrink: 0;
-                    "
-                  >
-                    <i class="fas fa-phone-alt"></i>
-                  </div>
-                  <div style="flex: 1">
-                    <div
-                      style="
-                        font-weight: 600;
-                        color: var(--text-main);
-                        margin-bottom: 4px;
-                      "
-                    >
-                      Call: Sarah Lee
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted)">
-                      2:00 PM • Weekly Follow-up
-                    </div>
-                  </div>
-                  <button class="btn btn-sm btn-outline-lavender">Call</button>
-                </div>
+              <div
+                id="todays-schedule-container"
+                style="display: flex; flex-direction: column; gap: 16px"
+              >
+                <p style="color: var(--text-muted); font-size: 0.9rem">
+                  No upcoming tasks.
+                </p>
               </div>
             </div>
 
@@ -371,38 +298,21 @@
                 </h3>
                 <div class="table-container">
                   <table class="custom-table" style="font-size: 0.9rem">
-                    <tbody>
+                    <tbody id="recent-activity-body">
+                      <!-- Populated dynamically -->
                       <tr>
-                        <td>
-                          <div style="font-weight: 600">John Doe</div>
-                          <div
-                            style="font-size: 0.8rem; color: var(--text-muted)"
-                          >
-                            Vitals Check
-                          </div>
-                        </td>
-                        <td style="text-align: right">
-                          <span class="badge bg-green-soft">Completed</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div style="font-weight: 600">Sarah Lee</div>
-                          <div
-                            style="font-size: 0.8rem; color: var(--text-muted)"
-                          >
-                            Med Reminder
-                          </div>
-                        </td>
-                        <td style="text-align: right">
-                          <span class="badge bg-green-soft">Completed</span>
+                        <td
+                          colspan="2"
+                          style="color: var(--text-muted); text-align: center"
+                        >
+                          No activity found
                         </td>
                       </tr>
                     </tbody>
                   </table>
                   <div style="text-align: center; margin-top: 16px">
                     <a
-                      href="#"
+                      href="volunteer_activities.html#reports"
                       style="
                         font-size: 0.85rem;
                         color: var(--medical-blue);

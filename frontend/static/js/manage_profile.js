@@ -34,34 +34,69 @@ async function loadExistingProfile(role) {
     if (role === 'volunteer') endpoint = '/volunteers/me';
 
     try {
-        const response = await apiFetch(endpoint);
-        if (response.ok) {
-            const profile = await response.json();
-            populateProfileUI(profile);
+        const [profRes, userRes] = await Promise.all([
+             apiFetch(endpoint).catch(() => null),
+             apiFetch('/users/me').catch(() => null)
+        ]);
+
+        let profile = {};
+        let user = null;
+
+        if (profRes && profRes.ok) {
+             profile = await profRes.json();
         }
+        
+        if (userRes && userRes.ok) {
+             user = await userRes.json();
+             // Ensure name exists if only user account is found
+             if (user.name && !profile.name) {
+                  profile.name = user.name;
+             }
+        }
+
+        populateProfileUI(profile, user);
     } catch (err) {
-        console.log("No existing profile found to load.");
+        console.log("Error loading profile", err);
     }
 }
 
-function populateProfileUI(p) {
-    // View Tab
+function populateProfileUI(p, user) {
+    // View Tab — generic fields
     const nameView = document.getElementById('view-name');
     const ageView = document.getElementById('view-age');
     const stageView = document.getElementById('view-stage');
+    const emailView = document.getElementById('view-email');
     
-    if (nameView) nameView.textContent = p.name;
-    if (ageView) ageView.textContent = p.age + " Years";
-    if (stageView) stageView.textContent = p.stage;
+    if (nameView) nameView.textContent = p.name || 'Set Name';
+    if (ageView && p.age) ageView.textContent = p.age + " Years";
+    if (stageView && p.stage) stageView.textContent = p.stage;
+    if (emailView && user) emailView.textContent = user.email;
 
-    // Edit Tab
+    // Edit Tab — generic fields
     const nameInput = document.getElementById('name');
     const ageInput = document.getElementById('age');
     const stageInput = document.getElementById('stage');
+    const emailInput = document.getElementById('email');
 
-    if (nameInput) nameInput.value = p.name;
-    if (ageInput) ageInput.value = p.age;
-    if (stageInput) stageInput.value = p.stage;
+    if (nameInput) nameInput.value = p.name || '';
+    if (ageInput && p.age) ageInput.value = p.age;
+    if (stageInput && p.stage) stageInput.value = p.stage;
+    if (emailInput && user) emailInput.value = user.email;
+
+    // Doctor-specific fields (edit form)
+    const specialtyInput = document.getElementById('specialty');
+    const experienceInput = document.getElementById('experience');
+    const qualificationInput = document.getElementById('qualification');
+    const bioInput = document.getElementById('bio');
+    const phoneInput = document.getElementById('phone');
+    const licenseInput = document.getElementById('license_id');
+
+    if (specialtyInput) specialtyInput.value = p.specialty || '';
+    if (experienceInput && p.experience) experienceInput.value = p.experience;
+    if (qualificationInput) qualificationInput.value = p.qualification || '';
+    if (bioInput) bioInput.value = p.bio || '';
+    if (phoneInput) phoneInput.value = p.phone || '';
+    if (licenseInput) licenseInput.value = p.license_id || '';
 }
 
 /**
@@ -78,30 +113,30 @@ async function handleProfileSave(e, role) {
     const formData = new FormData(e.target);
     const payload = Object.fromEntries(formData.entries());
     
-    // Conver age to int if present
+    // Convert numeric fields to int
     if (payload.age) payload.age = parseInt(payload.age);
+    if (payload.experience) payload.experience = parseInt(payload.experience);
 
-    let endpoint = '/patients/';
-    if (role === 'doctor') endpoint = '/doctors/';
-    if (role === 'volunteer') endpoint = '/volunteers/';
+    let endpoint = '/patients/me';
+    if (role === 'doctor') endpoint = '/doctors/me';
+    if (role === 'volunteer') endpoint = '/volunteers/me';
 
     try {
         const response = await apiFetch(endpoint, {
-            method: 'POST',
+            method: 'PUT',
             body: JSON.stringify(payload)
         });
 
         if (response.ok) {
-            const updatedProfile = await response.json();
-            alert('Profile saved successfully!');
-            populateProfileUI(updatedProfile);
+            showNotification('Profile saved successfully!', 'success');
+            await loadExistingProfile(role);
             switchTab('view');
         } else {
             const data = await response.json();
-            alert(`Error: ${data.detail || 'Could not save profile'}`);
+            showNotification(`Error: ${data.detail || 'Could not save profile'}`, 'error');
         }
     } catch (error) {
-        alert('An error occurred while saving profile.');
+        showNotification('An error occurred while saving profile.', 'error');
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;

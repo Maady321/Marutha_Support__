@@ -50,14 +50,19 @@ class DoctorDetails(BaseModel):
     name: Optional[str] = None
     specialty: Optional[str] = "General"
     is_online: Optional[bool] = False
+    experience: Optional[int] = None
+    qualification: Optional[str] = None
+    bio: Optional[str] = None
+    phone: Optional[str] = None
+    license_id: Optional[str] = None
     class Config:
         from_attributes = True
 
 # Model for volunteer details
 class VolunteerDetails(BaseModel):
-    id: int  # Unique identifier for the volunteer profile
-    user_id: int  # ID of the user associated with this profile
-    name: str  # Volunteer's name
+    id: Optional[int] = None  # Unique identifier for the volunteer profile
+    user_id: Optional[int] = None  # ID of the user associated with this profile
+    name: Optional[str] = None  # Volunteer's name
     class Config:
         from_attributes = True  # Enable ORM mode
 
@@ -82,6 +87,9 @@ class DoctorRequestSetup(BaseModel):
     notes: Optional[str] = None  # Optional notes for the request
     appointment_time: Optional[datetime] = None  # Optional appointment time
 
+class AcceptRequestPayload(BaseModel):
+    appointment_time: datetime
+
 # Detailed doctor request model
 class DoctorRequestDetails(DoctorRequestSetup):
     id: int  # Unique identifier for the request
@@ -89,6 +97,8 @@ class DoctorRequestDetails(DoctorRequestSetup):
     patient_name: Optional[str] = None
     patient_stage: Optional[str] = None
     doctor_name: Optional[str] = None
+    patient_user_id: Optional[int] = None
+    doctor_user_id: Optional[int] = None
     status: str  # Status of the request (e.g., pending, accepted)
     created_at: datetime  # Timestamp when the request was created
     class Config:
@@ -115,3 +125,73 @@ class MedicalReportDetails(BaseModel):
     file_path: str  # Path to the report file
     class Config:
         from_attributes = True  # Enable ORM mode
+
+class MedicalNoteCreate(BaseModel):
+    patient_id: int
+    note_content: str
+
+class MedicalNoteDetails(BaseModel):
+    id: int
+    doctor_id: int
+    patient_id: int
+    patient_name: Optional[str] = None
+    doctor_name: Optional[str] = None
+    note_content: str
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class PrescriptionCreate(BaseModel):
+    patient_id: int
+    medication: str
+    dosage: str
+    instructions: Optional[str] = None
+
+class PrescriptionDetails(BaseModel):
+    id: int
+    doctor_id: int
+    patient_id: int
+    patient_name: Optional[str] = None
+    doctor_name: Optional[str] = None
+    medication: str
+    dosage: str
+    instructions: Optional[str] = None
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class ChatContact(BaseModel):
+    user_id: int
+    name: str
+    role: str
+    class Config:
+        from_attributes = True
+
+class VolunteerTaskCreate(BaseModel):
+    task_name: str
+    patient_name: Optional[str] = None
+
+class VolunteerTaskDetails(BaseModel):
+    id: int
+    volunteer_id: int
+    task_name: str
+    patient_name: Optional[str] = None
+    is_completed: bool
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class VolunteerReportCreate(BaseModel):
+    patient_name: str
+    activity_type: str
+    notes: Optional[str] = None
+
+class VolunteerReportDetails(BaseModel):
+    id: int
+    volunteer_id: int
+    patient_name: str
+    activity_type: str
+    notes: Optional[str] = None
+    created_at: datetime
+    class Config:
+        from_attributes = True

@@ -152,17 +152,17 @@
                   font-size: 0.95rem;
                 "
               >
-                Dr. John Smith
+                ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                Cardiologist
+                ...
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--medical-blue); color: white"
             >
-              JS
+              ...
             </div>
           </div>
         </header>
@@ -178,16 +178,16 @@
               "
             >
               <div class="stat-title">Today's Appointments</div>
-              <div class="stat-value" style="color: var(--medical-blue)">8</div>
+              <div id="stat-appointments" class="stat-value" style="color: var(--medical-blue)">0</div>
               <div
+                id="stat-appointments-hint"
                 style="
                   margin-top: 8px;
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
               >
-                <i class="fas fa-clock" style="margin-right: 4px"></i> Next at
-                10:00 AM
+                <!-- Dynamically loaded -->
               </div>
             </div>
             <div
@@ -198,19 +198,15 @@
               "
             >
               <div class="stat-title">Active Patients</div>
-              <div class="stat-value" style="color: #b45309">152</div>
+              <div id="stat-patients" class="stat-value" style="color: #b45309">0</div>
               <div
+                id="stat-patients-hint"
                 style="
                   margin-top: 8px;
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
               >
-                <i
-                  class="fas fa-arrow-up"
-                  style="margin-right: 4px; color: var(--hope-green)"
-                ></i>
-                +3 this week
               </div>
             </div>
             <div
@@ -221,17 +217,17 @@
               "
             >
               <div class="stat-title">Pending Reports</div>
-              <div class="stat-value" style="color: var(--hope-green-hover)">
-                5
+              <div id="stat-reports" class="stat-value" style="color: var(--hope-green-hover)">
+                0
               </div>
               <div
+                id="stat-reports-hint"
                 style="
                   margin-top: 8px;
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
               >
-                Needs review
               </div>
             </div>
             <div
@@ -239,15 +235,15 @@
               style="animation-delay: 0.4s; border-left: 4px solid #a855f7"
             >
               <div class="stat-title">Online Consults</div>
-              <div class="stat-value" style="color: #9333ea">3</div>
+              <div id="stat-consults" class="stat-value" style="color: #9333ea">0</div>
               <div
+                id="stat-consults-hint"
                 style="
                   margin-top: 8px;
                   font-size: 0.85rem;
                   color: var(--text-muted);
                 "
               >
-                Scheduled today
               </div>
             </div>
           </div>
@@ -386,55 +382,9 @@
                   class="notification-list"
                   style="display: flex; flex-direction: column; gap: 16px"
                 >
-                  <div style="display: flex; gap: 12px; align-items: start">
-                    <div
-                      style="
-                        width: 32px;
-                        height: 32px;
-                        background: var(--lavender-soft);
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: var(--medical-blue);
-                        flex-shrink: 0;
-                      "
-                    >
-                      <i class="fas fa-file-medical"></i>
-                    </div>
-                    <div>
-                      <p style="font-size: 0.9rem; margin-bottom: 4px">
-                        <strong>Lab Report Available</strong> for Sarah Connor
-                      </p>
-                      <span style="font-size: 0.8rem; color: var(--text-light)"
-                        >10 mins ago</span
-                      >
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 12px; align-items: start">
-                    <div
-                      style="
-                        width: 32px;
-                        height: 32px;
-                        background: #fffbeb;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: #b45309;
-                        flex-shrink: 0;
-                      "
-                    >
-                      <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <div>
-                      <p style="font-size: 0.9rem; margin-bottom: 4px">
-                        <strong>Urgent Request</strong> from Patient #8832
-                      </p>
-                      <span style="font-size: 0.8rem; color: var(--text-light)"
-                        >1 hour ago</span
-                      >
-                    </div>
+                  <div id="recent-activity-list" style="display: flex; flex-direction: column; gap: 16px">
+                      <!-- Populated dynamically -->
+                      <p style="color: var(--text-muted); font-size: 0.9rem;">No recent activity.</p>
                   </div>
                 </div>
               </div>
@@ -442,6 +392,28 @@
           </div>
         </div>
       </main>
+    </div>
+
+    <!-- Accept Request Modal -->
+    <div id="acceptRequestModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+      <div class="modal-content" style="background: white; padding: 32px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: var(--shadow-lg);">
+        <h3 style="margin-bottom: 20px; color: var(--medical-blue);">Schedule Consultation</h3>
+        
+        <div class="form-group" style="margin-bottom: 16px;">
+           <label style="display: block; margin-bottom: 8px; font-weight: 500;">Select Date</label>
+           <input type="date" id="acceptDate" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;" />
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 24px;">
+           <label style="display: block; margin-bottom: 8px; font-weight: 500;">Select Time</label>
+           <input type="time" id="acceptTime" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;" />
+        </div>
+
+        <div style="display: flex; gap: 16px; justify-content: flex-end;">
+           <button class="btn btn-outline-lavender" onclick="closeAcceptModal()">Cancel</button>
+           <button class="btn btn-primary" onclick="confirmAcceptRequest()">Confirm</button>
+        </div>
+      </div>
     </div>
 
     <script src="../static/js/app.js"></script>
