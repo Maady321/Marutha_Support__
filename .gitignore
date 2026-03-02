@@ -157,3 +157,10 @@ docker-compose.override.yml
 dmypy.json
 .pyre/
 .pytype/
+
+# ============================================
+# LOCAL DEV TOOLS (not for deployment)
+# ============================================
+backend/crash_log.txt
+crash_log.txt
+auto_push.ps1

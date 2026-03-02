@@ -14,10 +14,25 @@ app = FastAPI(title="Marutha Support API")
 
 # Socket.io is now handled by wrapping the FastAPI app at the end of this file.
 
+import os as _os
+
+# On Vercel, the frontend and API are on the same origin so we can open CORS.
+# Locally we keep the tight allow-list for security.
+_ALLOWED_ORIGINS = (
+    ["*"]
+    if _os.getenv("VERCEL")
+    else [
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "http://127.0.0.1:5505",
+        "http://localhost:5505",
+    ]
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500", "http://127.0.0.1:5505", "http://localhost:5505"],
-    allow_credentials=True,
+    allow_origins=_ALLOWED_ORIGINS,
+    allow_credentials=not _os.getenv("VERCEL"),  # credentials + wildcard origin is invalid; disable on Vercel
     allow_methods=["*"],
     allow_headers=["*"],
 )
