@@ -164,3 +164,19 @@ dmypy.json
 backend/crash_log.txt
 crash_log.txt
 auto_push.ps1
+
+# ============================================
+# SECRETS & CREDENTIALS — NEVER COMMIT THESE
+# ============================================
+.env
+.env.local
+.env.production
+.env.*.local
+
+# ============================================
+# LOCAL DATABASE FILES
+# ============================================
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
