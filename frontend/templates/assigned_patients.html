@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Assigned Patients - Marutha Support</title>
+    <title>My Patients – Volunteer | Marutha Support</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -12,20 +12,401 @@
     <link rel="stylesheet" href="../static/css/components.css" />
     <link rel="stylesheet" href="../static/css/dashboard.css" />
     <style>
-      .patient-card {
-        transition: all 0.3s ease;
+      .page-body {
+        padding: 24px 36px 60px;
+      }
+
+      /* Patient tabs navigation */
+      .patient-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        margin-bottom: 24px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .patient-tab {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        border-radius: 50px;
+        border: 1.5px solid var(--border-color);
+        background: white;
         cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--text-muted);
       }
-      .patient-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      .patient-tab.active {
+        background: var(--medical-blue);
+        border-color: var(--medical-blue);
+        color: white;
       }
-      .text-green {
+      .patient-tab:hover:not(.active) {
+        border-color: var(--medical-blue);
+        color: var(--medical-blue);
+      }
+      .patient-tab .tab-count {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 1px 8px;
+        font-size: 0.75rem;
+      }
+      .patient-tab:not(.active) .tab-count {
+        background: var(--border-color);
+        color: var(--text-muted);
+      }
+
+      /* Patient detail card */
+      .patient-detail-panel {
+        display: none;
+        animation: fadeInUp 0.3s ease;
+      }
+      .patient-detail-panel.active {
+        display: block;
+      }
+
+      /* Profile header */
+      .patient-profile-header {
+        background: linear-gradient(135deg, var(--medical-blue), #3b6fbf);
+        border-radius: 20px;
+        padding: 28px 32px;
+        color: white;
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .patient-big-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: 3px solid rgba(255, 255, 255, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        flex-shrink: 0;
+      }
+      .patient-bio h2 {
+        color: white;
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+      }
+      .patient-bio p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.88rem;
+      }
+      .patient-meta-chips {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .meta-chip {
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        color: white;
+        font-weight: 600;
+      }
+      .patient-header-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      /* Detail sections grid */
+      .detail-sections {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .detail-section {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-soft);
+        overflow: hidden;
+      }
+      .detail-section.wide {
+        grid-column: span 2;
+      }
+      .section-head {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fafbff;
+      }
+      .section-head i {
+        color: var(--medical-blue);
+        font-size: 1rem;
+      }
+      .section-head h3 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      .section-head .count-badge {
+        margin-left: auto;
+        background: var(--medical-blue-light);
+        color: var(--medical-blue);
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .section-body {
+        padding: 16px 20px;
+      }
+
+      /* Vitals */
+      .vitals-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .vital-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #f9fafb;
+        border: 1px solid #f3f4f6;
+      }
+      .vital-pain {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1rem;
+        flex-shrink: 0;
+      }
+      .pain-low {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .pain-mid {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .pain-high {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .vital-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .vital-mood {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      .vital-notes {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .vital-time {
+        font-size: 0.72rem;
+        color: var(--text-light);
+        white-space: nowrap;
+      }
+
+      /* Prescriptions */
+      .rx-item {
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        margin-bottom: 10px;
+      }
+      .rx-item:last-child {
+        margin-bottom: 0;
+      }
+      .rx-name {
+        font-weight: 700;
         color: var(--hope-green);
+        font-size: 0.95rem;
       }
-      .bg-green-soft {
-        background-color: #f0fdf4;
-        color: #15803d;
+      .rx-dosage {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin-top: 3px;
+      }
+      .rx-instructions {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+        font-style: italic;
+      }
+
+      /* Doctor Notes */
+      .note-item {
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #eff6ff;
+        border-left: 4px solid var(--medical-blue);
+        margin-bottom: 10px;
+      }
+      .note-item:last-child {
+        margin-bottom: 0;
+      }
+      .note-text {
+        font-size: 0.88rem;
+        color: var(--text-main);
+        line-height: 1.5;
+      }
+      .note-date {
+        font-size: 0.73rem;
+        color: var(--text-light);
+        margin-top: 6px;
+      }
+
+      /* Reports */
+      .report-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 8px;
+        background: #fafafa;
+      }
+      .report-item:last-child {
+        margin-bottom: 0;
+      }
+      .report-icon {
+        width: 38px;
+        height: 38px;
+        background: var(--lavender-soft);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--medical-blue);
+        flex-shrink: 0;
+      }
+
+      /* Doctor info card */
+      .doctor-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px;
+        border-radius: 12px;
+        background: var(--medical-blue-light);
+        border: 1px solid var(--lavender-warm);
+      }
+      .doc-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--medical-blue);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      /* Empty state */
+      .mini-empty {
+        text-align: center;
+        padding: 24px;
+        color: var(--text-light);
+        font-size: 0.88rem;
+      }
+      .mini-empty i {
+        display: block;
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+        opacity: 0.4;
+      }
+
+      /* No patients assigned */
+      .no-patients {
+        text-align: center;
+        padding: 80px 24px;
+        color: var(--text-light);
+      }
+      .no-patients i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+        opacity: 0.2;
+      }
+      .no-patients h3 {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+
+      /* Chat button floating */
+      .chat-fab {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        z-index: 100;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--medical-blue);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        box-shadow: 0 6px 20px rgba(45, 74, 138, 0.35);
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+      .chat-fab:hover {
+        transform: scale(1.1);
+        background: #1e3a8a;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .page-body {
+          padding: 16px;
+        }
+        .detail-sections {
+          grid-template-columns: 1fr;
+        }
+        .detail-section.wide {
+          grid-column: span 1;
+        }
+        .patient-profile-header {
+          flex-direction: column;
+          text-align: center;
+        }
+        .patient-header-actions {
+          margin: 0 auto;
+        }
       }
     </style>
   </head>
@@ -37,65 +418,52 @@
           <img src="../static/images/logo.png" alt="Marutha Support Logo" />
           <span class="brand-text">Marutha Support</span>
         </a>
-
         <nav class="sidebar-nav">
-          <a href="dashboard_volunteer.html" class="sidebar-link">
-            <i class="fas fa-th-large"></i>
-            Dashboard
-          </a>
-          <a href="assigned_patients.html" class="sidebar-link active">
-            <i class="fas fa-hands-helping"></i>
-            Assigned Patients
-          </a>
-          <a href="volunteer_activities.html#tasks" class="sidebar-link">
-            <i class="fas fa-tasks"></i>
-            My Tasks
-          </a>
-          <a href="volunteer_activities.html#reports" class="sidebar-link">
-            <i class="fas fa-file-alt"></i>
-            Reports
-          </a>
-          <a href="chat_volunteer.html" class="sidebar-link">
-            <i class="fas fa-comments"></i>
-            Messages
-          </a>
-          <div style="flex-grow: 1"></div>
-          <a href="manage_profile_volunteer.html#view" class="sidebar-link">
-            <i class="fas fa-user-circle"></i>
-            My Profile
-          </a>
-          <a
-            href="login.html"
-            class="sidebar-link"
-            style="color: var(--danger)"
+          <a href="dashboard_volunteer.html" class="sidebar-link"
+            ><i class="fas fa-th-large"></i> Dashboard</a
           >
-            <i class="fas fa-sign-out-alt"></i>
-            Logout
-          </a>
+          <a href="assigned_patients.html" class="sidebar-link active"
+            ><i class="fas fa-user-injured"></i> My Patients</a
+          >
+          <a href="volunteer_activities.html#tasks" class="sidebar-link"
+            ><i class="fas fa-tasks"></i> My Tasks</a
+          >
+          <a href="volunteer_activities.html#reports" class="sidebar-link"
+            ><i class="fas fa-file-alt"></i> Reports</a
+          >
+          <a href="chat_volunteer.html" class="sidebar-link"
+            ><i class="fas fa-comments"></i> Messages</a
+          >
+          <div style="flex-grow: 1"></div>
+          <a href="manage_profile_volunteer.html#view" class="sidebar-link"
+            ><i class="fas fa-user-circle"></i> My Profile</a
+          >
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
         </nav>
       </aside>
 
-      <!-- Main Content Area -->
+      <!-- Main Content -->
       <main class="main-content">
         <header class="top-header">
           <div>
-            <h2
+            <h2>
+              <i
+                class="fas fa-user-injured"
+                style="color: var(--hope-green)"
+              ></i>
+              My Assigned Patients
+            </h2>
+            <p
+              id="subTitle"
               style="
-                font-size: 2rem;
-                margin-bottom: 8px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
+                color: var(--text-muted);
+                font-size: 0.88rem;
+                margin-top: 4px;
               "
             >
-              <i
-                class="fas fa-users-cog"
-                style="color: var(--hope-green); font-size: 1.8rem"
-              ></i>
-              Assigned Patients
-            </h2>
-            <p style="color: var(--text-muted); font-weight: 500">
-              Directly manage and support the patients entrusted to your care.
+              Loading your patients...
             </p>
           </div>
           <div class="profile-snippet">
@@ -104,109 +472,309 @@
                 style="
                   font-weight: 700;
                   color: var(--medical-blue);
-                  font-size: 0.95rem;
+                  font-size: 0.9rem;
                 "
+                id="volName"
               >
                 ...
               </div>
               <div style="font-size: 0.75rem; color: var(--text-light)">
-                ...
+                Volunteer
               </div>
             </div>
             <div
               class="profile-pic"
               style="background: var(--hope-green); color: white"
+              id="volInitial"
             >
-              ...
+              V
             </div>
           </div>
         </header>
 
-        <div class="container" style="padding: 0 64px 64px; max-width: 1400px">
-          <!-- Search and Filter Bar -->
-          <div
-            class="card fade-in"
-            style="
-              padding: 16px;
-              margin-bottom: 32px;
-              display: flex;
-              gap: 16px;
-              align-items: center;
-            "
-          >
-            <div style="position: relative; flex: 1">
-              <i
-                class="fas fa-search"
-                style="
-                  position: absolute;
-                  left: 16px;
-                  top: 12px;
-                  color: var(--text-light);
-                "
-              ></i>
-              <input
-                type="text"
-                placeholder="Search by name, ID, or condition..."
-                style="
-                  width: 100%;
-                  padding: 10px 10px 10px 42px;
-                  border: 1px solid var(--border-color);
-                  border-radius: 8px;
-                  outline: none;
-                "
-              />
+        <div class="page-body">
+          <!-- Patient selector tabs -->
+          <div class="patient-tabs" id="patientTabs">
+            <div style="color: var(--text-light); padding: 10px">
+              Loading...
             </div>
-            <select
-              style="
-                padding: 10px 16px;
-                border: 1px solid var(--border-color);
-                border-radius: 8px;
-                outline: none;
-                color: var(--text-main);
-              "
-            >
-              <option value="all">Check All Statuses</option>
-              <option value="normal">Stable</option>
-              <option value="monitor">Needs Monitoring</option>
-              <option value="urgent">Urgent</option>
-            </select>
-            <button
-              class="btn btn-primary"
-              style="
-                background: var(--hope-green);
-                border-color: var(--hope-green);
-              "
-            >
-              <i class="fas fa-filter" style="margin-right: 8px"></i> Filter
-            </button>
           </div>
 
-          <!-- Patient Grid -->
-          <div
-            id="assigned-patients-grid"
-            class="dashboard-grid"
-            style="
-              grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-              padding: 0;
-              gap: 24px;
-            "
-          >
-            <!-- Data will be loaded dynamically -->
-            <div
-              style="
-                grid-column: 1 / -1;
-                text-align: center;
-                color: var(--text-muted);
-                padding: 40px;
-              "
-            >
-              No patients assigned yet.
-            </div>
-          </div>
+          <!-- Patient detail panels (injected by JS) -->
+          <div id="patientPanels"></div>
         </div>
       </main>
     </div>
+
+    <!-- Chat FAB - will be updated dynamically -->
+    <a
+      href="chat_volunteer.html"
+      class="chat-fab"
+      id="chatFab"
+      title="Open Chat"
+    >
+      <i class="fas fa-comment-dots"></i>
+    </a>
+
     <script src="../static/js/app.js"></script>
-    <script src="../static/js/assigned_patients.js"></script>
+    <script>
+      let patientsData = [];
+
+      async function loadPatients() {
+        const token = localStorage.getItem("auth_token");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        // Load volunteer profile
+        fetch(`${CONFIG.API_BASE_URL}/volunteers/me`, { headers })
+          .then((r) => r.json())
+          .then((v) => {
+            document.getElementById("volName").textContent =
+              v.name || "Volunteer";
+            document.getElementById("volInitial").textContent = (v.name ||
+              "V")[0].toUpperCase();
+          })
+          .catch(() => {});
+
+        // Load full patient data
+        const r = await fetch(
+          `${CONFIG.API_BASE_URL}/volunteers/my-patients/full`,
+          { headers },
+        );
+        if (!r.ok) {
+          document.getElementById("patientTabs").innerHTML =
+            `<div style="color:var(--danger)">Failed to load patients.</div>`;
+          return;
+        }
+        patientsData = await r.json();
+
+        const count = patientsData.length;
+        document.getElementById("subTitle").textContent =
+          count === 0
+            ? "No patients assigned yet"
+            : `${count} patient${count > 1 ? "s" : ""} assigned to you (max 3)`;
+
+        if (count === 0) {
+          document.getElementById("patientTabs").innerHTML = "";
+          document.getElementById("patientPanels").innerHTML = `
+            <div class="no-patients">
+              <i class="fas fa-user-clock"></i>
+              <h3>No Patients Assigned Yet</h3>
+              <p>Your doctor will assign patients to you soon.</p>
+            </div>`;
+          return;
+        }
+
+        renderTabs();
+        renderPanels();
+        activateTab(0);
+      }
+
+      function renderTabs() {
+        const tabs = document.getElementById("patientTabs");
+        tabs.innerHTML = patientsData
+          .map(
+            (p, i) => `
+          <button class="patient-tab ${i === 0 ? "active" : ""}" onclick="activateTab(${i})" id="tab-${i}">
+            <i class="fas fa-user-circle"></i>
+            ${p.name}
+            <span class="tab-count">${p.vitals.length} logs</span>
+          </button>`,
+          )
+          .join("");
+      }
+
+      function activateTab(i) {
+        document
+          .querySelectorAll(".patient-tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".patient-detail-panel")
+          .forEach((p) => p.classList.remove("active"));
+        const tab = document.getElementById(`tab-${i}`);
+        const panel = document.getElementById(`panel-${i}`);
+        if (tab) tab.classList.add("active");
+        if (panel) panel.classList.add("active");
+        // Update chat FAB for this patient
+        if (patientsData[i]) {
+          document.getElementById("chatFab").href =
+            `chat_volunteer.html?user_id=${patientsData[i].user_id}`;
+        }
+      }
+
+      function renderPanels() {
+        const container = document.getElementById("patientPanels");
+        container.innerHTML = patientsData
+          .map((p, i) => renderPanel(p, i))
+          .join("");
+      }
+
+      function renderPanel(p, i) {
+        const stageColors = {
+          Early: "#D1FAE5",
+          Moderate: "#FEF3C7",
+          Advanced: "#FEE2E2",
+          Terminal: "#F3F4F6",
+        };
+        const bg = stageColors[p.stage] || "#EEF2FF";
+        const docHtml = p.doctor
+          ? `
+          <div class="doctor-card">
+            <div class="doc-avatar">${p.doctor.name[0].toUpperCase()}</div>
+            <div>
+              <div style="font-weight:700;color:var(--medical-blue)">Dr. ${p.doctor.name}</div>
+              <div style="font-size:0.8rem;color:var(--text-muted)">${p.doctor.specialty || "General"}</div>
+            </div>
+            <a href="chat_volunteer.html?user_id=${p.doctor.user_id}" class="btn btn-sm btn-outline-lavender" style="margin-left:auto">
+              <i class="fas fa-comment"></i> Chat
+            </a>
+          </div>`
+          : `<div class="mini-empty"><i class="fas fa-user-md"></i>No doctor assigned</div>`;
+
+        const vitalsHtml = p.vitals.length
+          ? p.vitals
+              .map((v) => {
+                const painCls =
+                  v.pain_level <= 3
+                    ? "pain-low"
+                    : v.pain_level <= 6
+                      ? "pain-mid"
+                      : "pain-high";
+                const d = new Date(v.timestamp);
+                return `<div class="vital-item">
+            <div class="vital-pain ${painCls}">${v.pain_level}</div>
+            <div class="vital-info">
+              <div class="vital-mood"><i class="fas fa-smile" style="margin-right:4px;opacity:0.6"></i>${v.mood || "–"}</div>
+              <div class="vital-notes">${v.notes || "No notes"}</div>
+            </div>
+            <div class="vital-time">${d.toLocaleDateString()}<br>${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
+          </div>`;
+              })
+              .join("")
+          : `<div class="mini-empty"><i class="fas fa-heartbeat"></i>No health logs yet</div>`;
+
+        const rxHtml = p.prescriptions.length
+          ? p.prescriptions
+              .map(
+                (rx) => `
+          <div class="rx-item">
+            <div class="rx-name"><i class="fas fa-pills" style="margin-right:6px"></i>${rx.medication}</div>
+            <div class="rx-dosage">Dosage: ${rx.dosage}</div>
+            ${rx.instructions ? `<div class="rx-instructions">${rx.instructions}</div>` : ""}
+            <div style="font-size:0.73rem;color:var(--text-light);margin-top:6px">${new Date(rx.created_at).toLocaleDateString()}</div>
+          </div>`,
+              )
+              .join("")
+          : `<div class="mini-empty"><i class="fas fa-prescription-bottle"></i>No prescriptions</div>`;
+
+        const notesHtml = p.doctor_notes.length
+          ? p.doctor_notes
+              .map(
+                (n) => `
+          <div class="note-item">
+            <div class="note-text">${n.note_content}</div>
+            <div class="note-date"><i class="fas fa-calendar-alt" style="margin-right:4px"></i>${new Date(n.created_at).toLocaleDateString()}</div>
+          </div>`,
+              )
+              .join("")
+          : `<div class="mini-empty"><i class="fas fa-notes-medical"></i>No doctor notes yet</div>`;
+
+        const reportsHtml = p.reports.length
+          ? p.reports
+              .map(
+                (r) => `
+          <div class="report-item">
+            <div class="report-icon"><i class="fas fa-file-medical"></i></div>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem">${r.title}</div>
+              <div style="font-size:0.75rem;color:var(--text-light)">${new Date(r.created_at).toLocaleDateString()}</div>
+            </div>
+          </div>`,
+              )
+              .join("")
+          : `<div class="mini-empty"><i class="fas fa-folder-open"></i>No reports uploaded</div>`;
+
+        return `
+          <div class="patient-detail-panel" id="panel-${i}">
+            <!-- Patient Profile Header -->
+            <div class="patient-profile-header">
+              <div class="patient-big-avatar">${p.name[0].toUpperCase()}</div>
+              <div class="patient-bio">
+                <h2>${p.name}</h2>
+                <p>${p.age} years old</p>
+                <div class="patient-meta-chips">
+                  <span class="meta-chip"><i class="fas fa-layer-group" style="margin-right:4px"></i>Stage: ${p.stage}</span>
+                  <span class="meta-chip"><i class="fas fa-heartbeat" style="margin-right:4px"></i>${p.vitals.length} Health Logs</span>
+                  <span class="meta-chip"><i class="fas fa-pills" style="margin-right:4px"></i>${p.prescriptions.length} Prescriptions</span>
+                </div>
+              </div>
+              <div class="patient-header-actions">
+                <a href="chat_volunteer.html?user_id=${p.user_id}" class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4)">
+                  <i class="fas fa-comment-dots"></i> Chat
+                </a>
+              </div>
+            </div>
+
+            <!-- Detail Sections -->
+            <div class="detail-sections">
+              <!-- Assigned Doctor -->
+              <div class="detail-section">
+                <div class="section-head">
+                  <i class="fas fa-user-md"></i>
+                  <h3>Assigned Doctor</h3>
+                </div>
+                <div class="section-body">${docHtml}</div>
+              </div>
+
+              <!-- Latest Vitals -->
+              <div class="detail-section">
+                <div class="section-head">
+                  <i class="fas fa-heartbeat"></i>
+                  <h3>Daily Health Logs</h3>
+                  <span class="count-badge">${p.vitals.length}</span>
+                </div>
+                <div class="section-body">
+                  <div class="vitals-list">${vitalsHtml}</div>
+                </div>
+              </div>
+
+              <!-- Prescriptions -->
+              <div class="detail-section">
+                <div class="section-head">
+                  <i class="fas fa-pills"></i>
+                  <h3>Prescriptions</h3>
+                  <span class="count-badge">${p.prescriptions.length}</span>
+                </div>
+                <div class="section-body">${rxHtml}</div>
+              </div>
+
+              <!-- Doctor Notes / Reviews -->
+              <div class="detail-section">
+                <div class="section-head">
+                  <i class="fas fa-notes-medical"></i>
+                  <h3>Doctor's Reviews & Notes</h3>
+                  <span class="count-badge">${p.doctor_notes.length}</span>
+                </div>
+                <div class="section-body">${notesHtml}</div>
+              </div>
+
+              <!-- Medical Reports -->
+              <div class="detail-section wide">
+                <div class="section-head">
+                  <i class="fas fa-file-medical-alt"></i>
+                  <h3>Medical Reports</h3>
+                  <span class="count-badge">${p.reports.length}</span>
+                </div>
+                <div class="section-body">
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+                    ${reportsHtml}
+                  </div>
+                </div>
+              </div>
+            </div><!-- /detail-sections -->
+          </div>`;
+      }
+
+      document.addEventListener("DOMContentLoaded", loadPatients);
+    </script>
   </body>
 </html>
