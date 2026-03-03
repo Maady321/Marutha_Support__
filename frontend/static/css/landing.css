@@ -1,31 +1,63 @@
-/* --- Hero Section --- */
+/* ─────────────────────────────────────────────
+   HERO
+───────────────────────────────────────────── */
 .hero {
     background: var(--bg-gradient);
-    padding: 100px 0;
+}
+
+.landing-hero {
+    padding: 80px 0 100px;
+}
+
+.landing-hero-inner {
     display: flex;
     align-items: center;
-    gap: 60px;
+    gap: 64px;
 }
 
 .hero-content {
     flex: 1;
+    min-width: 0;
 }
 
-.hero-content h1 {
-    font-size: 3.5rem;
-    line-height: 1.2;
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--lavender-soft);
+    color: var(--medical-blue);
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    font-weight: 600;
     margin-bottom: 24px;
 }
 
-.hero-content p {
-    font-size: 1.25rem;
+.hero-title {
+    font-size: 3.2rem;
+    line-height: 1.12;
+    margin-bottom: 20px;
+    color: var(--text-main);
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
     color: var(--text-muted);
-    margin-bottom: 40px;
+    margin-bottom: 36px;
+    line-height: 1.7;
     max-width: 500px;
+}
+
+.cta-group {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .hero-image {
     flex: 1;
+    min-width: 0;
 }
 
 .hero-image img {
@@ -34,20 +66,24 @@
     box-shadow: var(--shadow-soft);
 }
 
-.cta-group {
+.trust-bar {
+    margin-top: 48px;
     display: flex;
+    align-items: center;
     gap: 16px;
 }
 
-/* --- Content Sections --- */
+/* ─────────────────────────────────────────────
+   CONTENT SECTIONS
+───────────────────────────────────────────── */
 .section {
-    padding: 100px 0;
+    padding: 80px 0;
 }
 
 .about-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
+    gap: 64px;
     align-items: center;
 }
 
@@ -61,55 +97,35 @@
     align-items: flex-start;
     gap: 16px;
     margin-bottom: 20px;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .icon-list li i {
     color: var(--hope-green);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-top: 4px;
+    flex-shrink: 0;
 }
 
+/* ─────────────────────────────────────────────
+   SERVICES GRID
+───────────────────────────────────────────── */
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
 }
 
 .service-card i {
     font-size: 2rem;
     color: var(--medical-blue);
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     display: block;
 }
 
-/* --- Team --- */
-.team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 40px;
-}
-
-.team-card {
-    text-align: center;
-}
-
-.team-image {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    margin: 0 auto 24px;
-    overflow: hidden;
-    box-shadow: var(--shadow-soft);
-}
-
-.team-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* --- Testimonials --- */
+/* ─────────────────────────────────────────────
+   TESTIMONIAL
+───────────────────────────────────────────── */
 .testimonial-card {
     background: var(--lavender-soft);
     padding: 48px;
@@ -117,51 +133,57 @@
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
 }
 
 .testimonial-card i {
     font-size: 2.5rem;
     color: var(--medical-blue);
-    opacity: 0.2;
+    opacity: 0.15;
     margin-bottom: 24px;
 }
 
-/* --- Emergency --- */
+/* ─────────────────────────────────────────────
+   EMERGENCY STRIP
+───────────────────────────────────────────── */
 .emergency {
     background-color: var(--medical-blue-light);
     border-radius: var(--radius-lg);
-    padding: 60px;
+    padding: 48px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 40px;
-    margin-top: 60px;
+    gap: 32px;
+    flex-wrap: wrap;
 }
 
 .phone-number {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2.2rem;
+    font-weight: 800;
     color: var(--medical-blue);
 }
 
-/* --- Footer --- */
+/* ─────────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────────── */
 footer {
-    background-color: var(--medical-blue);
-    padding: 80px 0 40px;
+    background: var(--medical-blue);
+    padding: 64px 0 32px;
     color: white;
-    margin-top: 100px;
+    margin-top: 80px;
 }
 
 .footer-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 40px;
-    margin-bottom: 60px;
+    margin-bottom: 48px;
 }
 
 .footer-col h4 {
     color: white;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    font-size: 1rem;
 }
 
 .footer-links {
@@ -169,12 +191,13 @@ footer {
 }
 
 .footer-links li {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .footer-links a {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255,255,255,0.65);
     text-decoration: none;
+    font-size: 0.9rem;
     transition: var(--transition);
 }
 
@@ -183,19 +206,109 @@ footer {
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
     text-align: center;
-    color: rgba(255,255,255,0.5);
-    font-size: 0.9rem;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.85rem;
 }
 
+/* ─────────────────────────────────────────────
+   RESPONSIVE — TABLET (≤ 968px)
+───────────────────────────────────────────── */
 @media (max-width: 968px) {
-    .hero, .about-grid, .emergency {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+    .emergency {
         flex-direction: column;
         text-align: center;
     }
-    .hero-content h1 { font-size: 2.5rem; }
-    .cta-group { justify-content: center; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .phone-number { font-size: 1.8rem; }
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE — MOBILE (≤ 768px)
+───────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* Hero */
+    .landing-hero {
+        padding: 32px 0 56px;
+    }
+    .landing-hero-inner {
+        flex-direction: column;
+        gap: 0;
+    }
+    .hero-image {
+        display: none; /* hide on mobile */
+    }
+    .hero-title {
+        font-size: 2rem;
+    }
+    .hero-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 24px;
+    }
+    .hero-pill {
+        font-size: 0.82rem;
+        padding: 6px 14px;
+        margin-bottom: 16px;
+    }
+    /* Stack CTA buttons full-width */
+    .cta-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .cta-group .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .trust-bar {
+        margin-top: 28px;
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    /* Sections */
+    .section { padding: 48px 0; }
+
+    /* Services */
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Testimonial */
+    .testimonial-card {
+        padding: 28px 20px;
+    }
+
+    /* Emergency */
+    .emergency {
+        padding: 28px 20px;
+        flex-direction: column;
+    }
+    .phone-number { font-size: 1.6rem; }
+
+    /* Footer */
+    footer { padding: 48px 0 24px; margin-top: 48px; }
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE — SMALL MOBILE (≤ 480px)
+───────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .hero-title { font-size: 1.75rem; }
+    .landing-hero { padding: 24px 0 40px; }
+    .section { padding: 36px 0; }
 }
