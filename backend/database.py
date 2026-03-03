@@ -1,41 +1,68 @@
-from sqlalchemy import create_engine  # Import create_engine to establish a database connection
-from sqlalchemy.orm import sessionmaker, declarative_base  # Import sessionmaker and declarative_base
-import os  # Import os to interact with the operating system environment variables
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 from pathlib import Path
-from dotenv import load_dotenv  # Import load_dotenv to load environment variables from a .env file
+from dotenv import load_dotenv
 
-# Load .env from current dir or parent dir (project root)
-env_path = Path('.env')
-if not env_path.exists():
-    env_path = Path('..') / '.env'
-load_dotenv(dotenv_path=env_path)
+# Load .env from backend dir, then project root
+for env_path in [Path('.env'), Path('..') / '.env']:
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
+        break
 
-# Define the database URL, retrieving it from environment variables or using a default local SQLite database
-DATABASE_URL = os.getenv("DATABASE_URL")
+# ────────────────────────────────────────────
+# Resolve DATABASE_URL
+# ────────────────────────────────────────────
+DATABASE_URL = os.getenv("DATABASE_URL", "")
+
+# Fix for Heroku / some cloud providers that give "postgres://" (deprecated)
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Fallback if no URL is set at all
 if not DATABASE_URL:
-    # If running on Vercel's serverless environment, local files are read-only, so write to /tmp
     if os.getenv("VERCEL"):
-        DATABASE_URL = "sqlite:////tmp/test.db"
+        # Vercel serverless — use /tmp SQLite as emergency fallback
+        DATABASE_URL = "sqlite:////tmp/marutha.db"
+        print("⚠️  WARNING: No DATABASE_URL set. Using temporary SQLite in /tmp — data will NOT persist!")
     else:
-        DATABASE_URL = "sqlite:///./test.db"
+        # Local development fallback
+        DATABASE_URL = "sqlite:///./marutha.db"
+        print("⚠️  WARNING: No DATABASE_URL set. Falling back to local SQLite.")
 
-# Create the SQLAlchemy engine using the defined database URL
-# For SQLite, check_same_thread is set to False for compatibility with FastAPI
+print(f"✅ Database: {DATABASE_URL.split('@')[-1] if '@' in DATABASE_URL else DATABASE_URL}")
+
+# ────────────────────────────────────────────
+# Create Engine
+# ────────────────────────────────────────────
 if DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+    # SQLite — needs check_same_thread=False for FastAPI
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        echo=False,
+    )
 else:
-    engine = create_engine(DATABASE_URL)
+    # PostgreSQL / any other DB — use connection pooling
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,       # Test connections before using them
+        pool_recycle=300,         # Recycle connections every 5 min
+        pool_size=5,              # Keep 5 connections in pool
+        max_overflow=10,          # Allow 10 extra connections under load
+        echo=False,
+    )
 
-# Create a customized SessionLocal class, disabling autocommit and autoflush, and binding it to the engine
+# ────────────────────────────────────────────
+# Session & Base
+# ────────────────────────────────────────────
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create a Base class for the ORM models to inherit from
 Base = declarative_base()
 
-# Define a dependency function to get a database session
 def get_database_session():
-    db = SessionLocal()  # Create a new database session
+    """FastAPI dependency: yields a DB session and closes it after each request."""
+    db = SessionLocal()
     try:
-        yield db  # Yield the session to the caller
+        yield db
     finally:
-        db.close()  # Close the session after the request is finished
+        db.close()
