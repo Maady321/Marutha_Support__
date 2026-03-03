@@ -288,6 +288,57 @@ def get_volunteer_me(
         raise HTTPException(status_code=404, detail="Volunteer profile not found.")
     return volunteer
 
+# Endpoint to get volunteer's assigned patients with FULL details
+@volunteers_router.get("/my-patients/full")
+def get_my_patients_full(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    volunteer = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
+    if not volunteer:
+        raise HTTPException(status_code=404, detail="Volunteer profile not found.")
+    patients = db.query(models.PatientProfile).filter_by(volunteer_id=volunteer.id).all()
+    result = []
+    for p in patients:
+        # Get doctor info
+        doctor = db.query(models.DoctorProfile).filter_by(id=p.doctor_id).first() if p.doctor_id else None
+        # Get latest 5 health logs
+        vitals = db.query(models.HealthLog).filter_by(patient_id=p.id).order_by(models.HealthLog.timestamp.desc()).limit(5).all()
+        # Get prescriptions
+        prescriptions = db.query(models.Prescription).filter_by(patient_id=p.id).order_by(models.Prescription.created_at.desc()).all()
+        # Get doctor notes
+        notes = db.query(models.MedicalNote).filter_by(patient_id=p.id).order_by(models.MedicalNote.created_at.desc()).all()
+        # Get reports
+        reports = db.query(models.MedicalReport).filter_by(patient_id=p.id).order_by(models.MedicalReport.created_at.desc()).all()
+        result.append({
+            "id": p.id,
+            "user_id": p.user_id,
+            "name": p.name,
+            "age": p.age,
+            "stage": p.stage,
+            "doctor": {"id": doctor.id, "name": doctor.name, "specialty": doctor.specialty, "user_id": doctor.user_id} if doctor else None,
+            "vitals": [{"id": v.id, "pain_level": v.pain_level, "mood": v.mood, "notes": v.notes, "timestamp": v.timestamp.isoformat()} for v in vitals],
+            "prescriptions": [{"id": pr.id, "medication": pr.medication, "dosage": pr.dosage, "instructions": pr.instructions, "created_at": pr.created_at.isoformat()} for pr in prescriptions],
+            "doctor_notes": [{"id": n.id, "note_content": n.note_content, "created_at": n.created_at.isoformat()} for n in notes],
+            "reports": [{"id": r.id, "title": r.title, "file_path": r.file_path, "created_at": r.created_at.isoformat()} for r in reports],
+        })
+    return result
+
+# Patient: get my assigned volunteer info
+@patients_router.get("/me/volunteer")
+def get_my_volunteer(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    patient = db.query(models.PatientProfile).filter_by(user_id=user.id).first()
+    if not patient or not patient.volunteer_id:
+        return None
+    vol = db.query(models.VolunteerProfile).filter_by(id=patient.volunteer_id).first()
+    if not vol:
+        return None
+    return {"id": vol.id, "user_id": vol.user_id, "name": vol.name}
+
+
 # Endpoint to update the current volunteer's profile
 @volunteers_router.put("/me", response_model=schemas.VolunteerDetails)
 def update_volunteer_me(
@@ -304,20 +355,40 @@ def update_volunteer_me(
     db.refresh(volunteer)
     return volunteer
 
-# Endpoint to get list of all volunteers (for doctor assignment)
+# Endpoint to get list of all volunteers with patient assignment summary (for doctor)
+@doctors_router.get("/volunteers-summary")
+def get_volunteers_summary(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    volunteers = db.query(models.VolunteerProfile).all()
+    result = []
+    for vol in volunteers:
+        assigned_patients = db.query(models.PatientProfile).filter_by(volunteer_id=vol.id).all()
+        result.append({
+            "id": vol.id,
+            "user_id": vol.user_id,
+            "name": vol.name,
+            "patient_count": len(assigned_patients),
+            "max_patients": 3,
+            "is_available": len(assigned_patients) < 3,
+            "patients": [
+                {"id": p.id, "name": p.name, "age": p.age, "stage": p.stage, "user_id": p.user_id}
+                for p in assigned_patients
+            ]
+        })
+    return result
+
+# Endpoint to get list of all volunteers (for doctor)
 @doctors_router.get("/volunteers", response_model=List[schemas.VolunteerDetails])
 def get_all_volunteers(
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user)
 ):
-    # Optional: Verify user is doctor
-    # if user.role != "doctor":
-    #      raise HTTPException(status_code=403, detail="Only doctors can view volunteer list.")
-         
     volunteers = db.query(models.VolunteerProfile).all()
     return volunteers
 
-# Endpoint to assign a volunteer to a patient
+# Endpoint to assign a volunteer to a patient (enforces 3-patient limit)
 @doctors_router.post("/patients/{patient_id}/assign/{volunteer_id}")
 def assign_patient_volunteer(
     patient_id: int,
@@ -325,9 +396,6 @@ def assign_patient_volunteer(
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user)
 ):
-    # if user.role != "doctor":
-    #      raise HTTPException(status_code=403, detail="Only doctors can assign volunteers.")
-
     patient = db.query(models.PatientProfile).filter_by(id=patient_id).first()
     if not patient:
          raise HTTPException(status_code=404, detail="Patient not found.")
@@ -335,11 +403,31 @@ def assign_patient_volunteer(
     volunteer = db.query(models.VolunteerProfile).filter_by(id=volunteer_id).first()
     if not volunteer:
          raise HTTPException(status_code=404, detail="Volunteer not found.")
+
+    # Enforce 3-patient maximum per volunteer
+    current_count = db.query(models.PatientProfile).filter_by(volunteer_id=volunteer_id).count()
+    if current_count >= 3 and patient.volunteer_id != volunteer_id:
+        raise HTTPException(status_code=400, detail="This volunteer already has 3 patients assigned (maximum limit).")
          
     patient.volunteer_id = volunteer.id
     db.commit()
     
     return {"message": f"Patient {patient.name} assigned to volunteer {volunteer.name}"}
+
+# Endpoint to unassign a volunteer from a patient
+@doctors_router.post("/patients/{patient_id}/unassign")
+def unassign_patient_volunteer(
+    patient_id: int,
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    patient = db.query(models.PatientProfile).filter_by(id=patient_id).first()
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found.")
+    patient.volunteer_id = None
+    db.commit()
+    return {"message": f"Volunteer unassigned from {patient.name}"}
+
 
 # Endpoint to get a specific doctor's details
 @doctors_router.get("/{doctor_id}", response_model=schemas.DoctorDetails)
