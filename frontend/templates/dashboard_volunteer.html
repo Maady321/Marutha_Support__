@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Volunteer Dashboard - Marutha Support</title>
+    <meta
+      name="description"
+      content="Volunteer dashboard – manage assigned patients, tasks, and activity at Marutha Support."
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -11,24 +15,26 @@
     <link rel="stylesheet" href="../static/css/base.css" />
     <link rel="stylesheet" href="../static/css/components.css" />
     <link rel="stylesheet" href="../static/css/dashboard.css" />
-    <style>
-      /* Specific Volunteer Dashboard Styles override or addition */
-      .volunteer-header-icon {
-        color: var(--hope-green);
-      }
-      .stat-card.volunteer-accent {
-        border-left: 4px solid var(--hope-green);
-      }
-      .text-green {
-        color: var(--hope-green);
-      }
-      .bg-green-soft {
-        background-color: #f0fdf4;
-        color: #15803d;
-      }
-    </style>
   </head>
   <body>
+    <!-- Mobile Sidebar Toggle -->
+    <button
+      class="sidebar-toggle"
+      onclick="
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+      "
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div
+      class="sidebar-overlay"
+      onclick="
+        document.querySelector('.sidebar').classList.remove('open');
+        this.classList.remove('active');
+      "
+    ></div>
+
     <div class="dashboard-container">
       <!-- Volunteer Sidebar -->
       <aside class="sidebar">
@@ -77,250 +83,206 @@
       <!-- Main Content Area -->
       <main class="main-content">
         <header class="top-header">
-          <div>
-            <h2
-              style="
-                font-size: 2rem;
-                margin-bottom: 8px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-              "
-            >
-              <i
-                class="fas fa-hand-holding-heart volunteer-header-icon"
-                style="font-size: 1.8rem"
-              ></i>
-              Volunteer Dashboard
-            </h2>
-            <p style="color: var(--text-muted); font-weight: 500">
-              Welcome back.
-            </p>
-          </div>
-          <div class="profile-snippet">
-            <div style="text-align: right">
-              <div
-                style="
-                  font-weight: 700;
-                  color: var(--medical-blue);
-                  font-size: 0.95rem;
-                "
-              >
-                ...
-              </div>
-              <div style="font-size: 0.75rem; color: var(--text-light)">
-                ...
-              </div>
+          <div
+            style="
+              display: flex;
+              gap: 16px;
+              align-items: center;
+              width: 100%;
+              justify-content: space-between;
+            "
+          >
+            <div>
+              <h2>
+                <i
+                  class="fas fa-hand-holding-heart"
+                  style="color: var(--hope-green); font-size: 1.5rem"
+                ></i>
+                Volunteer Dashboard
+              </h2>
+              <p class="header-subtitle">
+                Welcome back. Here's your activity overview.
+              </p>
             </div>
-            <div
-              class="profile-pic"
-              style="background: var(--hope-green); color: white"
-            >
-              ...
+
+            <div style="display: flex; align-items: center; gap: 24px">
+              <button
+                id="workTimerBtn"
+                onclick="toggleWorkTimer()"
+                class="btn btn-outline-lavender"
+                style="display: flex; align-items: center; gap: 8px"
+              >
+                <i class="fas fa-play"></i> Start Shift
+              </button>
+
+              <div class="profile-snippet">
+                <div style="text-align: right">
+                  <div id="user-name-display" class="profile-name">...</div>
+                  <div class="profile-role">Volunteer</div>
+                </div>
+                <div
+                  class="profile-pic"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #047857,
+                      var(--hope-green)
+                    );
+                  "
+                >
+                  ...
+                </div>
+              </div>
             </div>
           </div>
         </header>
 
-        <div class="container" style="padding: 0 64px 64px">
+        <!-- Dashboard Body -->
+        <div class="dashboard-body">
           <!-- Stats Grid -->
-          <div class="stats-grid" style="padding: 0; margin-bottom: 40px">
-            <div
-              class="card stat-card fade-in volunteer-accent"
-              style="animation-delay: 0.1s"
-            >
-              <div class="stat-title">Assigned Patients</div>
-              <div id="stat-patients" class="stat-value text-green">0</div>
-              <div
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              ></div>
-            </div>
-            <div
-              class="card stat-card fade-in"
-              style="
-                animation-delay: 0.2s;
-                border-left: 4px solid var(--sunshine-yellow);
-              "
-            >
-              <div class="stat-title">Tasks Completed</div>
-              <div
-                id="stat-tasks-completed"
-                class="stat-value"
-                style="color: #b45309"
-              >
-                0
+          <section class="stats-grid fade-in-stagger">
+            <div class="stat-card accent-green">
+              <div class="stat-card-header">
+                <div class="stat-title">Assigned Patients</div>
+                <div class="stat-icon green">
+                  <i class="fas fa-users"></i>
+                </div>
               </div>
-              <div
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              ></div>
+              <div class="stat-value" id="stat-patients">0</div>
+              <div class="stat-hint">Currently under care</div>
             </div>
-            <div
-              class="card stat-card fade-in"
-              style="animation-delay: 0.3s; border-left: 4px solid #ef4444"
-            >
-              <div class="stat-title">Pending Tasks</div>
-              <div
-                id="stat-tasks-pending"
-                class="stat-value"
-                style="color: #dc2626"
-              >
-                0
+
+            <div class="stat-card accent-amber">
+              <div class="stat-card-header">
+                <div class="stat-title">Tasks Completed</div>
+                <div class="stat-icon amber">
+                  <i class="fas fa-check-circle"></i>
+                </div>
               </div>
-              <div
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              ></div>
+              <div class="stat-value" id="stat-tasks-completed">0</div>
+              <div class="stat-hint">This month</div>
             </div>
-            <div
-              class="card stat-card fade-in"
-              style="
-                animation-delay: 0.4s;
-                border-left: 4px solid var(--medical-blue);
-              "
-            >
-              <div class="stat-title">Volunteer Hours</div>
-              <div
-                id="stat-hours"
-                class="stat-value"
-                style="color: var(--medical-blue)"
-              >
-                0
+
+            <div class="stat-card accent-red">
+              <div class="stat-card-header">
+                <div class="stat-title">Pending Tasks</div>
+                <div class="stat-icon red">
+                  <i class="fas fa-exclamation-circle"></i>
+                </div>
               </div>
-              <div
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              ></div>
+              <div class="stat-value" id="stat-tasks-pending">0</div>
+              <div class="stat-hint">Requires attention</div>
             </div>
-          </div>
+
+            <div class="stat-card accent-blue">
+              <div class="stat-card-header">
+                <div class="stat-title">Volunteer Hours</div>
+                <div class="stat-icon blue">
+                  <i class="fas fa-clock"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-hours">0</div>
+              <div class="stat-hint">Total logged hours</div>
+            </div>
+          </section>
 
           <!-- Main Layout Grid -->
-          <div
-            class="dashboard-grid"
-            style="padding: 0; gap: 32px; grid-template-columns: 2fr 1fr"
-          >
+          <div class="dashboard-grid wide-left">
             <!-- Today's Schedule -->
-            <div class="card fade-in" style="padding: 32px">
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 24px;
-                "
-              >
-                <h3 style="color: var(--medical-blue)">Today's Schedule</h3>
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <div>
+                  <div class="dash-card-title">
+                    <i class="fas fa-calendar-day"></i>
+                    Today's Schedule
+                  </div>
+                  <div class="dash-card-subtitle">
+                    Your tasks and visits for today
+                  </div>
+                </div>
                 <a
                   href="volunteer_activities.html#tasks"
-                  class="btn btn-outline-lavender"
-                  style="padding: 8px 16px; font-size: 0.9rem"
+                  class="btn btn-outline-lavender btn-sm"
                   >View All</a
                 >
               </div>
 
               <div
                 id="todays-schedule-container"
-                style="display: flex; flex-direction: column; gap: 16px"
+                class="fade-in-stagger"
+                style="display: flex; flex-direction: column; gap: 14px"
               >
-                <p style="color: var(--text-muted); font-size: 0.9rem">
-                  No upcoming tasks.
-                </p>
+                <div class="dash-empty">
+                  <i class="fas fa-calendar-check"></i>
+                  <p>No upcoming tasks.</p>
+                  <a href="volunteer_activities.html#tasks">View all tasks</a>
+                </div>
               </div>
             </div>
 
             <!-- Quick Actions & Notifications -->
-            <div style="display: flex; flex-direction: column; gap: 32px">
+            <div class="dash-column">
               <!-- Quick Actions -->
-              <div
-                class="card"
-                style="
-                  padding: 32px;
-                  background: linear-gradient(
-                    135deg,
-                    var(--hope-green),
-                    #10b981
-                  );
-                  color: white;
-                "
-              >
-                <h3 style="margin-bottom: 16px; color: white">Quick Actions</h3>
-                <div
-                  style="display: grid; grid-template-columns: 1fr; gap: 12px"
-                >
+              <div class="quick-actions-card green-gradient">
+                <div class="quick-actions-title">Quick Actions</div>
+                <div class="quick-actions-grid single-col">
                   <a
                     href="volunteer_activities.html#reports"
-                    class="btn"
-                    style="
-                      background: rgba(255, 255, 255, 0.2);
-                      color: white;
-                      border: 1px solid rgba(255, 255, 255, 0.3);
-                      justify-content: flex-start;
-                    "
+                    class="quick-action-btn"
                   >
-                    <i
-                      class="fas fa-plus-circle"
-                      style="margin-right: 12px"
-                    ></i>
+                    <i class="fas fa-plus-circle"></i>
                     Log Activity / Report
                   </a>
-                  <a
-                    href="assigned_patients.html"
-                    class="btn"
-                    style="
-                      background: rgba(255, 255, 255, 0.2);
-                      color: white;
-                      border: 1px solid rgba(255, 255, 255, 0.3);
-                      justify-content: flex-start;
-                    "
-                  >
-                    <i class="fas fa-user-plus" style="margin-right: 12px"></i>
-                    View New Patients
+                  <a href="assigned_patients.html" class="quick-action-btn">
+                    <i class="fas fa-user-friends"></i>
+                    View Patients
+                  </a>
+                  <a href="chat_volunteer.html" class="quick-action-btn">
+                    <i class="fas fa-comment-dots"></i>
+                    Message Team
                   </a>
                 </div>
               </div>
 
               <!-- Recent Activity Feed -->
-              <div class="card" style="padding: 32px">
-                <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
-                  Recent Activity
-                </h3>
-                <div class="table-container">
-                  <table class="custom-table" style="font-size: 0.9rem">
+              <div class="dash-card">
+                <div class="dash-card-header">
+                  <div class="dash-card-title">
+                    <i class="fas fa-history"></i>
+                    Recent Activity
+                  </div>
+                </div>
+                <div
+                  class="table-container"
+                  style="margin-top: 0; border: none; box-shadow: none"
+                >
+                  <table
+                    class="custom-table"
+                    style="font-size: 0.88rem; min-width: auto"
+                  >
                     <tbody id="recent-activity-body">
-                      <!-- Populated dynamically -->
                       <tr>
-                        <td
-                          colspan="2"
-                          style="color: var(--text-muted); text-align: center"
-                        >
-                          No activity found
+                        <td colspan="2" style="text-align: center">
+                          <div class="dash-empty" style="padding: 24px 16px">
+                            <i class="fas fa-inbox"></i>
+                            <p>No activity found</p>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
                   </table>
-                  <div style="text-align: center; margin-top: 16px">
-                    <a
-                      href="volunteer_activities.html#reports"
-                      style="
-                        font-size: 0.85rem;
-                        color: var(--medical-blue);
-                        font-weight: 500;
-                      "
-                      >View History</a
-                    >
-                  </div>
+                </div>
+                <div style="text-align: center; margin-top: 12px">
+                  <a
+                    href="volunteer_activities.html#reports"
+                    style="
+                      font-size: 0.82rem;
+                      color: var(--medical-blue-mid);
+                      font-weight: 600;
+                    "
+                  >
+                    View Full History →
+                  </a>
                 </div>
               </div>
             </div>
@@ -328,6 +290,7 @@
         </div>
       </main>
     </div>
+
     <script src="../static/js/app.js"></script>
     <script src="../static/js/dashboard_volunteer.js"></script>
   </body>

@@ -19,13 +19,13 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px 0;
+        padding: 14px 0;
         position: sticky;
         top: 0;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(14px);
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
         z-index: 1000;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid var(--border-color);
       }
       .landing-nav .nav-links {
         display: flex;
@@ -36,7 +36,7 @@
         text-decoration: none;
         color: var(--text-muted);
         font-weight: 500;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         transition: color 0.2s;
       }
       .landing-nav .nav-links a:hover {
@@ -45,10 +45,10 @@
       .nav-hamburger {
         display: none;
         background: none;
-        border: 2px solid var(--border-color);
-        border-radius: 10px;
-        width: 42px;
-        height: 42px;
+        border: 1.5px solid var(--border-color);
+        border-radius: 8px;
+        width: 40px;
+        height: 40px;
         align-items: center;
         justify-content: center;
         font-size: 1.1rem;
@@ -65,8 +65,8 @@
         display: none;
         flex-direction: column;
         background: white;
-        border-radius: 0 0 16px 16px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         border: 1px solid var(--border-color);
         border-top: none;
         overflow: hidden;
@@ -76,12 +76,13 @@
         display: flex;
       }
       .landing-mobile-menu a {
-        padding: 15px 20px;
+        padding: 14px 20px;
         text-decoration: none;
         color: var(--text-main);
         font-weight: 500;
         border-bottom: 1px solid var(--border-color);
         transition: background 0.2s;
+        font-size: 0.92rem;
       }
       .landing-mobile-menu a:last-child {
         border-bottom: none;
@@ -94,7 +95,7 @@
       @keyframes slideDown {
         from {
           opacity: 0;
-          transform: translateY(-8px);
+          transform: translateY(-6px);
         }
         to {
           opacity: 1;
@@ -104,7 +105,7 @@
 
       /* ── Hero ── */
       .landing-hero {
-        padding: 80px 0 100px;
+        padding: 60px 0 80px;
       }
       .landing-hero-inner {
         display: flex;
@@ -118,37 +119,37 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: var(--lavender-soft);
+        background: var(--medical-blue-light);
         color: var(--medical-blue);
-        padding: 8px 18px;
+        padding: 6px 16px;
         border-radius: 50px;
-        font-size: 0.88rem;
+        font-size: 0.85rem;
         font-weight: 600;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
+        border: 1px solid var(--reassuring-blue);
       }
       .hero-title {
-        font-size: 3.2rem;
-        line-height: 1.12;
-        margin-bottom: 20px;
+        font-size: 3rem;
+        line-height: 1.15;
+        margin-bottom: 16px;
         color: var(--text-main);
+        letter-spacing: -0.03em;
       }
       .hero-subtitle {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: var(--text-muted);
-        margin-bottom: 36px;
+        margin-bottom: 32px;
         line-height: 1.7;
       }
       .cta-group {
         display: flex;
-        gap: 14px;
+        gap: 12px;
         flex-wrap: wrap;
       }
 
       /* Role cards */
       .role-card {
-        transition:
-          transform 0.3s ease,
-          box-shadow 0.3s ease;
+        transition: all 0.2s ease;
         background: white;
         border: 1px solid var(--border-color);
         border-radius: var(--radius-lg);
@@ -160,51 +161,64 @@
         align-items: center;
       }
       .role-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-md);
-        border-color: var(--lavender-warm);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--medical-blue-mid);
       }
       .role-icon {
-        width: 80px;
-        height: 80px;
+        width: 72px;
+        height: 72px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        margin-bottom: 24px;
-        transition: transform 0.3s ease;
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+        transition: all 0.2s ease;
       }
       .role-card:hover .role-icon {
-        transform: scale(1.1);
+        transform: scale(1.05);
       }
 
-      /* ── RESPONSIVE ── */
+      /* Section headers */
+      .section-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .section-header h2 {
+        margin-bottom: 12px;
+        color: var(--medical-blue);
+      }
+      .section-header p {
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto;
+        font-size: 1rem;
+      }
+
+      /* ── Responsive ── */
       @media (max-width: 768px) {
-        /* Hamburger shows, nav-links hide */
-        .landing-nav .nav-links {
-          display: none !important;
-        }
         .nav-hamburger {
           display: flex;
         }
-
-        /* Hero stacks vertically */
+        .landing-nav .nav-links {
+          display: none !important;
+        }
         .landing-hero {
-          padding: 40px 0 60px;
+          padding: 32px 0 48px;
         }
         .landing-hero-inner {
           flex-direction: column;
-          gap: 32px;
+          gap: 24px;
         }
         .hero-image {
           display: none;
-        } /* hide image on mobile */
+        }
         .hero-title {
-          font-size: 2.2rem;
+          font-size: 2rem;
         }
         .hero-subtitle {
-          font-size: 1rem;
+          font-size: 0.95rem;
         }
         .cta-group {
           flex-direction: column;
@@ -213,8 +227,6 @@
           width: 100%;
           text-align: center;
         }
-
-        /* Trust bar */
         .trust-bar {
           flex-direction: column;
           gap: 8px;
@@ -223,10 +235,10 @@
 
       @media (max-width: 480px) {
         .hero-title {
-          font-size: 1.85rem;
+          font-size: 1.75rem;
         }
         .landing-hero {
-          padding: 28px 0 48px;
+          padding: 24px 0 36px;
         }
       }
     </style>
@@ -237,7 +249,7 @@
       <nav class="landing-nav">
         <a href="/" class="logo">
           <i class="fas fa-hand-holding-heart" style="font-size: 1.8rem"></i>
-          <span>Marutha Palliative</span>
+          <span>Marutha Support</span>
         </a>
         <!-- Desktop Nav -->
         <div class="nav-links">
@@ -252,7 +264,7 @@
           <a
             href="register.html"
             class="btn btn-primary"
-            style="padding: 10px 22px; border-radius: 50px; font-size: 0.9rem"
+            style="padding: 8px 20px; font-size: 0.88rem"
             >Get Started</a
           >
         </div>
@@ -274,7 +286,7 @@
         <a
           href="register.html"
           class="btn btn-primary"
-          style="margin: 8px 12px; border-radius: 50px; text-align: center"
+          style="margin: 8px 12px; text-align: center"
           >Get Started</a
         >
       </div>
@@ -297,16 +309,13 @@
             are not alone.
           </p>
           <div class="cta-group">
-            <a
-              href="register.html"
-              class="btn btn-primary btn-lg"
-              style="border-radius: 50px"
+            <a href="register.html" class="btn btn-primary btn-lg"
               >Book Consultation</a
             >
             <a
               href="#about"
               class="btn btn-outline-lavender btn-lg"
-              style="border-radius: 50px; background: white"
+              style="background: white"
               >Learn More</a
             >
           </div>
@@ -387,9 +396,9 @@
               right: -20px;
               width: 100px;
               height: 100px;
-              background: var(--sunshine-yellow);
+              background: var(--reassuring-blue);
               border-radius: 50%;
-              opacity: 0.2;
+              opacity: 0.3;
               z-index: -1;
             "
           ></div>
@@ -423,7 +432,7 @@
     <section
       id="roles"
       class="section"
-      style="background: #fcfcfd; padding: 100px 0"
+      style="background: var(--bg-warm); padding: 80px 0"
     >
       <div class="container">
         <div
@@ -432,14 +441,14 @@
         >
           <h2
             style="
-              font-size: 2.5rem;
-              margin-bottom: 16px;
+              font-size: 2.2rem;
+              margin-bottom: 12px;
               color: var(--medical-blue);
             "
           >
             Dedicated Portals for Everyone
           </h2>
-          <p style="font-size: 1.1rem; color: var(--text-muted)">
+          <p style="font-size: 1rem; color: var(--text-muted)">
             Whether you are seeking care, providing medical expertise, or
             volunteering your time, we have a tailored experience for you.
           </p>
@@ -448,8 +457,9 @@
         <div
           class="dashboard-grid"
           style="
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            padding: 0;
           "
         >
           <!-- Patient Card -->
@@ -457,7 +467,7 @@
             <div
               class="role-icon"
               style="
-                background: var(--lavender-soft);
+                background: var(--medical-blue-light);
                 color: var(--medical-blue);
               "
             >
@@ -480,7 +490,13 @@
 
           <!-- Doctor Card -->
           <div class="role-card fade-in" style="animation-delay: 0.2s">
-            <div class="role-icon" style="background: #eff6ff; color: #1e40af">
+            <div
+              class="role-icon"
+              style="
+                background: var(--medical-blue-light);
+                color: var(--medical-blue-mid);
+              "
+            >
               <i class="fas fa-user-md"></i>
             </div>
             <h3 style="margin-bottom: 12px; color: var(--text-main)">
@@ -493,19 +509,20 @@
             <a
               href="login.html"
               class="btn btn-primary"
-              style="
-                width: 100%;
-                justify-content: center;
-                background: #1e40af;
-                border-color: #1e40af;
-              "
+              style="width: 100%; justify-content: center"
               >Doctor Login</a
             >
           </div>
 
           <!-- Volunteer Card -->
           <div class="role-card fade-in" style="animation-delay: 0.3s">
-            <div class="role-icon" style="background: #f0fdf4; color: #15803d">
+            <div
+              class="role-icon"
+              style="
+                background: var(--hope-green-light);
+                color: var(--hope-green);
+              "
+            >
               <i class="fas fa-hand-holding-heart"></i>
             </div>
             <h3 style="margin-bottom: 12px; color: var(--text-main)">
@@ -517,13 +534,8 @@
             </p>
             <a
               href="login.html"
-              class="btn btn-primary"
-              style="
-                width: 100%;
-                justify-content: center;
-                background: #15803d;
-                border-color: #15803d;
-              "
+              class="btn btn-success"
+              style="width: 100%; justify-content: center"
               >Volunteer Login</a
             >
           </div>
@@ -532,7 +544,7 @@
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="section services" style="padding: 100px 0">
+    <section id="services" class="section services" style="padding: 80px 0">
       <div class="container">
         <div
           class="section-header"

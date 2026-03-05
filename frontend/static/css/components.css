@@ -8,11 +8,11 @@ nav {
     padding: 16px 0;
     position: sticky;
     top: 0;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     z-index: 1000;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .logo {
@@ -20,7 +20,7 @@ nav {
     align-items: center;
     gap: 10px;
     font-family: 'Poppins', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--medical-blue);
     text-decoration: none;
@@ -36,14 +36,14 @@ nav {
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 28px;
 }
 
 .nav-links a {
     text-decoration: none;
     color: var(--text-muted);
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     transition: var(--transition);
 }
 
@@ -53,12 +53,19 @@ nav {
 .nav-toggle {
     display: none;
     background: none;
-    border: none;
-    font-size: 1.4rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 1.2rem;
     color: var(--medical-blue);
     cursor: pointer;
-    padding: 4px;
+    padding: 6px 8px;
     line-height: 1;
+    transition: var(--transition);
+}
+
+.nav-toggle:hover {
+    background: var(--medical-blue-light);
+    border-color: var(--medical-blue);
 }
 
 /* Mobile nav drawer */
@@ -78,7 +85,7 @@ nav {
     text-decoration: none;
     color: var(--text-main);
     font-weight: 500;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-light);
     transition: var(--transition);
 }
 
@@ -86,13 +93,13 @@ nav {
 .nav-mobile a:hover { background: var(--medical-blue-light); color: var(--medical-blue); }
 
 /* ─────────────────────────────────────────────
-   BUTTONS
+   BUTTONS — Clean, professional
 ───────────────────────────────────────────── */
 .btn {
-    padding: 12px 24px;
-    border-radius: var(--radius-md);
+    padding: 11px 24px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -100,29 +107,43 @@ nav {
     gap: 8px;
     transition: var(--transition);
     cursor: pointer;
-    border: 2px solid transparent;
+    border: 1.5px solid transparent;
     letter-spacing: 0.01em;
     white-space: nowrap;
     font-family: inherit;
+    line-height: 1.4;
 }
 
 .btn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--hope-green), #34D399);
+    background: var(--medical-blue-mid);
     color: white;
-    border-color: transparent;
-    box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+    border-color: var(--medical-blue-mid);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--hope-green-hover), var(--hope-green));
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(5,150,105,0.35);
+    background: var(--medical-blue-hover);
+    border-color: var(--medical-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-success {
+    background: var(--hope-green);
+    color: white;
+    border-color: var(--hope-green);
+}
+
+.btn-success:hover:not(:disabled) {
+    background: var(--hope-green-hover);
+    border-color: var(--hope-green-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
 }
 
 .btn-outline-lavender {
@@ -133,35 +154,47 @@ nav {
 
 .btn-outline-lavender:hover:not(:disabled) {
     background: var(--medical-blue-light);
-    border-color: var(--medical-blue);
+    border-color: var(--medical-blue-mid);
+    color: var(--medical-blue-mid);
+}
+
+.btn-outline-medical {
+    background: transparent;
+    color: var(--medical-blue-mid);
+    border-color: var(--reassuring-blue);
+}
+
+.btn-outline-medical:hover:not(:disabled) {
+    background: var(--medical-blue-light);
+    border-color: var(--medical-blue-mid);
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, var(--danger), #F87171);
+    background: var(--danger);
     color: white;
-    border-color: transparent;
-    box-shadow: 0 2px 8px rgba(239,68,68,0.2);
+    border-color: var(--danger);
 }
 
 .btn-danger:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(239,68,68,0.3);
+    background: #B91C1C;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 .btn-sm {
-    padding: 8px 14px;
+    padding: 7px 14px;
     font-size: 0.82rem;
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
 }
 
 .btn-lg {
-    padding: 16px 36px;
-    font-size: 1.05rem;
-    border-radius: var(--radius-lg);
+    padding: 14px 32px;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
 }
 
 /* ─────────────────────────────────────────────
-   CARDS
+   CARDS — Professional, clean
 ───────────────────────────────────────────── */
 .card, .stat-card {
     background: white;
@@ -174,21 +207,21 @@ nav {
 
 .card:hover {
     box-shadow: var(--shadow-hover);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 /* Flat card - no hover lift */
-.card-flat { transform: none !important; }
+.card-flat { transform: none !important; box-shadow: var(--shadow-soft) !important; }
 
 /* ─────────────────────────────────────────────
-   BADGES
+   BADGES — Refined
 ───────────────────────────────────────────── */
 .badge {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    border-radius: 20px;
+    border-radius: 6px;
     font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -196,12 +229,12 @@ nav {
 }
 
 .badge-active    { background: var(--hope-green-light); color: #065F46; }
-.badge-pending   { background: #FEF3C7; color: #92400E; }
+.badge-pending   { background: var(--amber-soft); color: #92400E; }
 .badge-declined  { background: var(--danger-light); color: #991B1B; }
 .badge-info      { background: var(--medical-blue-light); color: var(--medical-blue); }
 
 /* ─────────────────────────────────────────────
-   FORM ELEMENTS
+   FORM ELEMENTS — Clean, modern
 ───────────────────────────────────────────── */
 .form-group {
     margin-bottom: 20px;
@@ -209,11 +242,10 @@ nav {
 
 .form-group label {
     display: block;
-    margin-bottom: 7px;
+    margin-bottom: 6px;
     font-weight: 600;
     color: var(--text-main);
-    font-size: 0.88rem;
-    letter-spacing: 0.01em;
+    font-size: 0.875rem;
 }
 
 input[type="text"],
@@ -226,14 +258,14 @@ input[type="tel"],
 select,
 textarea {
     width: 100%;
-    padding: 12px 16px;
-    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
     border: 1.5px solid var(--border-color);
     font-family: inherit;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: var(--transition);
     outline: none;
-    background: #FAFAFA;
+    background: white;
     color: var(--text-main);
     -webkit-appearance: none;
     appearance: none;
@@ -242,9 +274,8 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-    border-color: var(--medical-blue);
-    background: white;
-    box-shadow: 0 0 0 3px rgba(45,74,138,0.08);
+    border-color: var(--medical-blue-mid);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 textarea { resize: vertical; min-height: 100px; }
@@ -267,7 +298,6 @@ select {
     border: 1px solid var(--border-color);
     overflow: hidden;
     margin-top: 20px;
-    /* Allow horizontal scroll on mobile */
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -276,25 +306,25 @@ select {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    min-width: 560px; /* Force horizontal scroll before collapsing */
+    min-width: 560px;
 }
 
 .custom-table th {
-    background: linear-gradient(to right, #F8F9FE, #EEF2FF);
-    color: var(--medical-blue);
-    font-weight: 700;
-    padding: 14px 20px;
-    font-size: 0.78rem;
+    background: var(--bg-warm);
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 12px 20px;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.6px;
     white-space: nowrap;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .custom-table td {
     padding: 14px 20px;
-    border-bottom: 1px solid #F3F4F6;
-    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-secondary);
     font-size: 0.9rem;
     vertical-align: middle;
 }
@@ -306,7 +336,7 @@ select {
 }
 
 .custom-table tbody tr:hover {
-    background: #FAFBFF;
+    background: var(--bg-warm);
 }
 
 /* ─────────────────────────────────────────────
@@ -315,7 +345,7 @@ select {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(15, 23, 42, 0.5);
     backdrop-filter: blur(4px);
     z-index: 500;
     display: flex;
@@ -333,7 +363,7 @@ select {
     max-width: 520px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-lg);
     animation: fadeInUp 0.3s ease;
 }
 
@@ -381,14 +411,14 @@ select {
 }
 
 .empty-state i {
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin-bottom: 16px;
-    opacity: 0.4;
+    opacity: 0.3;
     display: block;
 }
 
 .empty-state p {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
 }
 
 /* ─────────────────────────────────────────────
@@ -397,10 +427,10 @@ select {
 @media (max-width: 768px) {
     nav { padding: 12px 0; }
 
-    .nav-links { display: none; } /* hide desktop nav, show toggle */
+    .nav-links { display: none; }
     .nav-toggle { display: block; }
 
-    .btn { padding: 11px 20px; font-size: 0.9rem; }
+    .btn { padding: 10px 18px; font-size: 0.88rem; }
     .btn-sm { padding: 7px 12px; font-size: 0.8rem; }
 
     .card, .stat-card { padding: 18px; }
@@ -414,5 +444,5 @@ select {
 }
 
 @media (max-width: 480px) {
-    .btn-lg { padding: 14px 28px; font-size: 1rem; }
+    .btn-lg { padding: 12px 24px; font-size: 0.95rem; }
 }

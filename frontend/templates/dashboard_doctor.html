@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Doctor Dashboard - Marutha Support</title>
+    <meta
+      name="description"
+      content="Doctor dashboard – manage patients, appointments, and consultations at Marutha Support."
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -13,6 +17,24 @@
     <link rel="stylesheet" href="../static/css/dashboard.css" />
   </head>
   <body>
+    <!-- Mobile Sidebar Toggle -->
+    <button
+      class="sidebar-toggle"
+      onclick="
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+      "
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div
+      class="sidebar-overlay"
+      onclick="
+        document.querySelector('.sidebar').classList.remove('open');
+        this.classList.remove('active');
+      "
+    ></div>
+
     <div class="dashboard-container">
       <!-- Sidebar -->
       <aside class="sidebar">
@@ -37,6 +59,10 @@
           <a href="volunteer_management.html" class="sidebar-link">
             <i class="fas fa-user-tag"></i>
             Volunteer Mgmt
+          </a>
+          <a href="volunteer_details.html" class="sidebar-link">
+            <i class="fas fa-id-card"></i>
+            Volunteer Details
           </a>
           <a
             href="manage_records_doctor.html#consultations"
@@ -85,200 +111,133 @@
         <!-- Header -->
         <header class="top-header">
           <div>
-            <h2
-              style="
-                font-size: 2rem;
-                margin-bottom: 8px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-              "
-            >
+            <h2>
               <i
-                class="fas fa-sun"
-                style="color: var(--sunshine-yellow); font-size: 1.8rem"
+                class="fas fa-user-md"
+                style="color: var(--medical-blue-mid); font-size: 1.5rem"
               ></i>
-              Welcome back, Dr. Smith
+              Welcome back, <span id="doctor-greeting-name">Doctor</span>
             </h2>
-            <p style="color: var(--text-muted); font-weight: 500">
+            <p class="header-subtitle">
               Here is your daily overview and patient updates.
             </p>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 24px">
+          <div style="display: flex; align-items: center; gap: 20px">
             <!-- Online Status Toggle -->
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 10px 20px;
-                background: white;
-                border-radius: 50px;
-                box-shadow: var(--shadow-sm);
-                border: 1px solid var(--border-color);
-              "
-            >
-              <div
-                id="status-dot"
-                style="
-                  width: 12px;
-                  height: 12px;
-                  border-radius: 50%;
-                  background: #94a3b8;
-                "
-              ></div>
-              <span
-                id="status-text"
-                style="
-                  font-weight: 600;
-                  font-size: 0.9rem;
-                  color: var(--text-muted);
-                "
-                >Offline</span
-              >
+            <div class="status-toggle">
+              <div id="status-dot" class="status-dot"></div>
+              <span id="status-text" class="status-label">Offline</span>
               <button
                 id="toggle-status-btn"
                 onclick="toggleOnlineStatus()"
                 class="btn btn-sm btn-outline-lavender"
-                style="padding: 6px 16px; border-radius: 20px"
+                style="border-radius: 20px"
               >
                 Go Online
               </button>
             </div>
 
+            <!-- Profile -->
             <div class="profile-snippet">
-            <div style="text-align: right">
+              <div style="text-align: right">
+                <div id="user-name-display" class="profile-name">...</div>
+                <div class="profile-role">Doctor</div>
+              </div>
               <div
+                class="profile-pic"
                 style="
-                  font-weight: 700;
-                  color: var(--medical-blue);
-                  font-size: 0.95rem;
+                  background: linear-gradient(
+                    135deg,
+                    var(--medical-blue),
+                    var(--medical-blue-mid)
+                  );
                 "
               >
                 ...
               </div>
-              <div style="font-size: 0.75rem; color: var(--text-light)">
-                ...
-              </div>
-            </div>
-            <div
-              class="profile-pic"
-              style="background: var(--medical-blue); color: white"
-            >
-              ...
             </div>
           </div>
         </header>
 
-        <div class="container" style="padding: 0 64px 64px">
+        <!-- Dashboard Body -->
+        <div class="dashboard-body">
           <!-- Stats Grid -->
-          <div class="stats-grid" style="padding: 0; margin-bottom: 40px">
-            <div
-              class="card stat-card fade-in"
-              style="
-                animation-delay: 0.1s;
-                border-left: 4px solid var(--medical-blue);
-              "
-            >
-              <div class="stat-title">Today's Appointments</div>
-              <div id="stat-appointments" class="stat-value" style="color: var(--medical-blue)">0</div>
-              <div
-                id="stat-appointments-hint"
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              >
-                <!-- Dynamically loaded -->
+          <section class="stats-grid fade-in-stagger">
+            <div class="stat-card accent-blue">
+              <div class="stat-card-header">
+                <div class="stat-title">Today's Appointments</div>
+                <div class="stat-icon blue">
+                  <i class="fas fa-calendar-day"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-appointments">0</div>
+              <div class="stat-hint" id="stat-appointments-hint">
+                Scheduled today
               </div>
             </div>
-            <div
-              class="card stat-card fade-in"
-              style="
-                animation-delay: 0.2s;
-                border-left: 4px solid var(--sunshine-yellow);
-              "
-            >
-              <div class="stat-title">Active Patients</div>
-              <div id="stat-patients" class="stat-value" style="color: #b45309">0</div>
-              <div
-                id="stat-patients-hint"
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              >
+
+            <div class="stat-card accent-amber">
+              <div class="stat-card-header">
+                <div class="stat-title">Active Patients</div>
+                <div class="stat-icon amber">
+                  <i class="fas fa-user-injured"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-patients">0</div>
+              <div class="stat-hint" id="stat-patients-hint">
+                Under your care
               </div>
             </div>
-            <div
-              class="card stat-card fade-in"
-              style="
-                animation-delay: 0.3s;
-                border-left: 4px solid var(--hope-green);
-              "
-            >
-              <div class="stat-title">Pending Reports</div>
-              <div id="stat-reports" class="stat-value" style="color: var(--hope-green-hover)">
-                0
+
+            <div class="stat-card accent-green">
+              <div class="stat-card-header">
+                <div class="stat-title">Pending Reports</div>
+                <div class="stat-icon green">
+                  <i class="fas fa-file-medical"></i>
+                </div>
               </div>
-              <div
-                id="stat-reports-hint"
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              >
+              <div class="stat-value" id="stat-reports">0</div>
+              <div class="stat-hint" id="stat-reports-hint">
+                Awaiting review
               </div>
             </div>
-            <div
-              class="card stat-card fade-in"
-              style="animation-delay: 0.4s; border-left: 4px solid #a855f7"
-            >
-              <div class="stat-title">Online Consults</div>
-              <div id="stat-consults" class="stat-value" style="color: #9333ea">0</div>
-              <div
-                id="stat-consults-hint"
-                style="
-                  margin-top: 8px;
-                  font-size: 0.85rem;
-                  color: var(--text-muted);
-                "
-              >
+
+            <div class="stat-card accent-purple">
+              <div class="stat-card-header">
+                <div class="stat-title">Online Consults</div>
+                <div class="stat-icon purple">
+                  <i class="fas fa-video"></i>
+                </div>
               </div>
+              <div class="stat-value" id="stat-consults">0</div>
+              <div class="stat-hint" id="stat-consults-hint">This week</div>
             </div>
-          </div>
+          </section>
 
           <!-- Main Dashboard Content -->
-          <div
-            class="dashboard-grid"
-            style="padding: 0; gap: 32px; grid-template-columns: 2fr 1fr"
-          >
-            <!-- Upcoming Appointments -->
-            <div class="card" style="padding: 32px">
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 24px;
-                "
-              >
-                <h3 style="color: var(--medical-blue)">
-                  Upcoming Appointments
-                </h3>
-                <a
-                  href="requests.html"
-                  class="btn btn-outline-lavender"
-                  style="padding: 8px 16px; font-size: 0.9rem"
+          <div class="dashboard-grid wide-left">
+            <!-- Upcoming Appointments Table -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <div>
+                  <div class="dash-card-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Upcoming Appointments
+                  </div>
+                  <div class="dash-card-subtitle">
+                    Pending consultation requests
+                  </div>
+                </div>
+                <a href="requests.html" class="btn btn-outline-lavender btn-sm"
                   >View All</a
                 >
               </div>
 
-              <div class="table-container">
+              <div
+                class="table-container"
+                style="margin-top: 0; border: none; box-shadow: none"
+              >
                 <table class="custom-table">
                   <thead>
                     <tr>
@@ -296,99 +255,49 @@
               </div>
             </div>
 
-            <!-- Recent Activity / Notifications -->
-            <div style="display: flex; flex-direction: column; gap: 32px">
+            <!-- Right Column -->
+            <div class="dash-column">
               <!-- Quick Actions -->
-              <div
-                class="card"
-                style="
-                  padding: 32px;
-                  background: linear-gradient(
-                    135deg,
-                    var(--medical-blue),
-                    var(--medical-blue-light)
-                  );
-                  color: white;
-                "
-              >
-                <h3 style="margin-bottom: 16px; color: white">Quick Actions</h3>
-                <div
-                  style="
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 16px;
-                  "
-                >
+              <div class="quick-actions-card">
+                <div class="quick-actions-title">Quick Actions</div>
+                <div class="quick-actions-grid">
                   <a
                     href="manage_records_doctor.html#prescriptions"
-                    class="btn"
-                    style="
-                      background: rgba(255, 255, 255, 0.2);
-                      color: white;
-                      border: 1px solid rgba(255, 255, 255, 0.3);
-                      justify-content: center;
-                    "
+                    class="quick-action-btn"
                   >
-                    <i
-                      class="fas fa-file-prescription"
-                      style="margin-right: 8px"
-                    ></i>
+                    <i class="fas fa-file-prescription"></i>
                     Rx
                   </a>
                   <a
                     href="manage_records_doctor.html#reports"
-                    class="btn"
-                    style="
-                      background: rgba(255, 255, 255, 0.2);
-                      color: white;
-                      border: 1px solid rgba(255, 255, 255, 0.3);
-                      justify-content: center;
-                    "
+                    class="quick-action-btn"
                   >
-                    <i class="fas fa-file-alt" style="margin-right: 8px"></i>
+                    <i class="fas fa-file-alt"></i>
                     Report
                   </a>
-                  <a
-                    href="chat_doctor.html"
-                    class="btn"
-                    style="
-                      background: rgba(255, 255, 255, 0.2);
-                      color: white;
-                      border: 1px solid rgba(255, 255, 255, 0.3);
-                      justify-content: center;
-                    "
-                  >
-                    <i class="fas fa-comment" style="margin-right: 8px"></i>
+                  <a href="chat_doctor.html" class="quick-action-btn">
+                    <i class="fas fa-comment-dots"></i>
                     Chat
                   </a>
-                  <a
-                    href="patients.html"
-                    class="btn"
-                    style="
-                      background: rgba(255, 255, 255, 0.2);
-                      color: white;
-                      border: 1px solid rgba(255, 255, 255, 0.3);
-                      justify-content: center;
-                    "
-                  >
-                    <i class="fas fa-user-plus" style="margin-right: 8px"></i>
+                  <a href="patients.html" class="quick-action-btn">
+                    <i class="fas fa-user-plus"></i>
                     Add
                   </a>
                 </div>
               </div>
 
-              <!-- Notifications -->
-              <div class="card" style="padding: 32px">
-                <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
-                  Recent Activity
-                </h3>
-                <div
-                  class="notification-list"
-                  style="display: flex; flex-direction: column; gap: 16px"
-                >
-                  <div id="recent-activity-list" style="display: flex; flex-direction: column; gap: 16px">
-                      <!-- Populated dynamically -->
-                      <p style="color: var(--text-muted); font-size: 0.9rem;">No recent activity.</p>
+              <!-- Recent Activity -->
+              <div class="dash-card">
+                <div class="dash-card-header">
+                  <div class="dash-card-title">
+                    <i class="fas fa-bell"></i>
+                    Recent Activity
+                  </div>
+                </div>
+                <div id="recent-activity-list" class="activity-feed">
+                  <div class="dash-empty">
+                    <i class="fas fa-inbox"></i>
+                    <p>No recent activity.</p>
                   </div>
                 </div>
               </div>
@@ -399,23 +308,36 @@
     </div>
 
     <!-- Accept Request Modal -->
-    <div id="acceptRequestModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-      <div class="modal-content" style="background: white; padding: 32px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: var(--shadow-lg);">
-        <h3 style="margin-bottom: 20px; color: var(--medical-blue);">Schedule Consultation</h3>
-        
-        <div class="form-group" style="margin-bottom: 16px;">
-           <label style="display: block; margin-bottom: 8px; font-weight: 500;">Select Date</label>
-           <input type="date" id="acceptDate" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;" />
-        </div>
-        
-        <div class="form-group" style="margin-bottom: 24px;">
-           <label style="display: block; margin-bottom: 8px; font-weight: 500;">Select Time</label>
-           <input type="time" id="acceptTime" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;" />
+    <div id="acceptRequestModal" class="modal">
+      <div class="modal-content">
+        <h3 style="margin-bottom: 20px; color: var(--medical-blue)">
+          Schedule Consultation
+        </h3>
+
+        <div class="form-group">
+          <label>Select Date</label>
+          <input type="date" id="acceptDate" />
         </div>
 
-        <div style="display: flex; gap: 16px; justify-content: flex-end;">
-           <button class="btn btn-outline-lavender" onclick="closeAcceptModal()">Cancel</button>
-           <button class="btn btn-primary" onclick="confirmAcceptRequest()">Confirm</button>
+        <div class="form-group">
+          <label>Select Time</label>
+          <input type="time" id="acceptTime" />
+        </div>
+
+        <div
+          style="
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+          "
+        >
+          <button class="btn btn-outline-lavender" onclick="closeAcceptModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="confirmAcceptRequest()">
+            Confirm
+          </button>
         </div>
       </div>
     </div>

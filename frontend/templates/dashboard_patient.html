@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Marutha Palliative</title>
+    <meta
+      name="description"
+      content="Your personal care dashboard – track comfort, appointments and connect with your care team."
+    />
     <!-- Fonts & Icons -->
     <link
       rel="stylesheet"
@@ -15,12 +19,30 @@
     <link rel="stylesheet" href="../static/css/dashboard.css" />
   </head>
   <body>
+    <!-- Mobile Sidebar Toggle -->
+    <button
+      class="sidebar-toggle"
+      onclick="
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+      "
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div
+      class="sidebar-overlay"
+      onclick="
+        document.querySelector('.sidebar').classList.remove('open');
+        this.classList.remove('active');
+      "
+    ></div>
+
     <div class="dashboard-container">
       <!-- Sidebar -->
       <aside class="sidebar">
         <a href="dashboard_patient.html" class="sidebar-brand">
           <img src="../static/images/logo.png" alt="Marutha Support Logo" />
-          <span>Marutha Support</span>
+          <span class="brand-text">Marutha Support</span>
         </a>
 
         <nav class="sidebar-nav">
@@ -64,274 +86,197 @@
         <!-- Header -->
         <header class="top-header">
           <div>
-            <h2
-              id="greeting"
-              style="
-                font-size: 2rem;
-                margin-bottom: 8px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-              "
-            >
+            <h2 id="greeting">
               <i
                 class="fas fa-sun"
-                style="color: #f59e0b; font-size: 1.8rem"
+                style="color: #f59e0b; font-size: 1.6rem"
               ></i>
               Welcome back
             </h2>
-            <p style="color: var(--text-muted); font-weight: 500">
+            <p class="header-subtitle">
               Your comfort and care summary for today.
             </p>
           </div>
           <div class="profile-snippet">
             <div style="text-align: right">
-              <div
-                id="user-name-display"
-                style="
-                  font-weight: 700;
-                  color: var(--medical-blue);
-                  font-size: 0.95rem;
-                "
-              >
-                ...
-              </div>
-              <div
-                id="user-stage-display"
-                style="font-size: 0.75rem; color: var(--text-light)"
-              >
-                ...
-              </div>
+              <div id="user-name-display" class="profile-name">...</div>
+              <div id="user-stage-display" class="profile-role">Patient</div>
             </div>
             <div id="user-avatar-display" class="profile-pic">...</div>
           </div>
         </header>
 
-        <!-- Stats Grid -->
-        <section class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-title">Daily Milestone</div>
-            <div class="stat-value" id="stat-milestone">--</div>
-          </div>
-          <div
-            class="stat-card"
-            style="border-left: 4px solid var(--hope-green)"
-          >
-            <div class="stat-title">Comfort Level</div>
-            <div
-              class="stat-value"
-              style="color: var(--hope-green)"
-              id="stat-comfort"
-            >
-              --
+        <!-- Dashboard Body -->
+        <div class="dashboard-body">
+          <!-- Stats Grid -->
+          <section class="stats-grid fade-in-stagger">
+            <div class="stat-card accent-blue">
+              <div class="stat-card-header">
+                <div class="stat-title">Daily Milestone</div>
+                <div class="stat-icon blue">
+                  <i class="fas fa-flag-checkered"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-milestone">--</div>
+              <div class="stat-hint">Since your first log</div>
             </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Next Visit</div>
-            <div
-              class="stat-value"
-              style="font-size: 1.4rem"
-              id="stat-next-visit"
-            >
-              --
-            </div>
-          </div>
-          <div class="stat-card" style="border-left: 4px solid #f59e0b">
-            <div class="stat-title" style="color: #d97706">Care Needs</div>
-            <div class="stat-value" style="color: #b45309" id="stat-care-needs">
-              --
-            </div>
-          </div>
-        </section>
 
-        <!-- Dashboard Grid -->
-        <div class="dashboard-grid">
-          <!-- Left Column -->
-          <div style="display: flex; flex-direction: column; gap: 40px">
-            <!-- Health Trends -->
-            <div class="card" style="padding: 40px">
+            <div class="stat-card accent-green">
+              <div class="stat-card-header">
+                <div class="stat-title">Comfort Level</div>
+                <div class="stat-icon green">
+                  <i class="fas fa-heart"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-comfort">--</div>
+              <div class="stat-hint">Latest recorded mood</div>
+            </div>
+
+            <div class="stat-card accent-amber">
+              <div class="stat-card-header">
+                <div class="stat-title">Next Visit</div>
+                <div class="stat-icon amber">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+              </div>
               <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 32px;
-                "
+                class="stat-value"
+                id="stat-next-visit"
+                style="font-size: 1.3rem"
               >
-                <div>
-                  <h3 style="margin-bottom: 4px">Health Trends</h3>
-                  <p
+                --
+              </div>
+              <div class="stat-hint">Upcoming appointment</div>
+            </div>
+
+            <div class="stat-card accent-purple">
+              <div class="stat-card-header">
+                <div class="stat-title">Care Needs</div>
+                <div class="stat-icon purple">
+                  <i class="fas fa-clipboard-list"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-care-needs">--</div>
+              <div class="stat-hint">Pending actions</div>
+            </div>
+          </section>
+
+          <!-- Dashboard Grid -->
+          <div class="dashboard-grid">
+            <!-- Left Column -->
+            <div class="dash-column">
+              <!-- Health Trends -->
+              <div class="dash-card">
+                <div class="dash-card-header">
+                  <div>
+                    <div class="dash-card-title">
+                      <i class="fas fa-chart-line"></i>
+                      Health Trends
+                    </div>
+                    <div class="dash-card-subtitle">
+                      Your recent comfort levels
+                    </div>
+                  </div>
+                  <select
+                    id="chart-range-select"
                     style="
-                      font-size: 0.85rem;
-                      color: var(--text-light);
-                      font-weight: 400;
+                      width: auto;
+                      padding: 8px 16px;
+                      font-size: 0.82rem;
+                      border-color: var(--border-color);
                     "
                   >
-                    Your recent comfort levels
-                  </p>
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                  </select>
                 </div>
-                <select
-                  style="
-                    width: auto;
-                    padding: 10px 20px;
-                    font-size: 0.85rem;
-                    border-color: var(--medical-blue-light);
-                  "
+
+                <!-- Chart -->
+                <div class="chart-container">
+                  <!-- Fetched via JS -->
+                </div>
+                <div class="chart-legend">
+                  <span>Mon</span><span>Tue</span><span>Wed</span
+                  ><span>Thu</span><span>Fri</span><span>Sat</span
+                  ><span class="today">Today</span>
+                </div>
+              </div>
+
+              <!-- Upcoming Care -->
+              <div class="dash-card">
+                <div class="dash-card-header">
+                  <div class="dash-card-title">
+                    <i class="fas fa-stethoscope"></i>
+                    Upcoming Care
+                  </div>
+                  <a
+                    href="manage_health_patient.html#find-doctor"
+                    class="btn btn-outline-lavender btn-sm"
+                  >
+                    <i class="fas fa-plus"></i> New Visit
+                  </a>
+                </div>
+                <div
+                  id="appointments-container"
+                  class="fade-in-stagger"
+                  style="display: flex; flex-direction: column; gap: 14px"
                 >
-                  <option>Last 7 Days</option>
-                  <option>Last 30 Days</option>
-                </select>
-              </div>
-
-              <!-- Refined Chart -->
-              <div class="chart-container">
-                <!-- Fetched via JS -->
-              </div>
-
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  margin-top: 20px;
-                  font-size: 0.8rem;
-                  color: var(--text-light);
-                  font-weight: 500;
-                  padding: 0 8px;
-                "
-              >
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span
-                ><span>Fri</span><span>Sat</span
-                ><span style="color: var(--medical-blue)">Today</span>
+                  <!-- Populated by JS -->
+                </div>
               </div>
             </div>
 
-            <!-- Appointments -->
-            <div class="card" style="padding: 40px">
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 32px;
-                "
-              >
-                <h3>Upcoming Care</h3>
-                <a
-                  href="manage_health_patient.html#find-doctor"
-                  class="btn btn-outline-lavender"
-                  style="padding: 10px 24px; font-size: 0.85rem"
-                  >+ New Visit</a
-                >
+            <!-- Right Column -->
+            <div class="dash-column">
+              <!-- Quick Actions -->
+              <div class="quick-actions-card">
+                <div class="quick-actions-title">Quick Actions</div>
+                <div class="quick-actions-grid single-col">
+                  <a
+                    href="manage_health_patient.html#logs"
+                    class="quick-action-btn"
+                  >
+                    <i class="fas fa-plus-circle"></i>
+                    Log Comfort Level
+                  </a>
+                  <a href="chat.html" class="quick-action-btn">
+                    <i class="fas fa-comment-dots"></i>
+                    Message Care Team
+                  </a>
+                  <a
+                    href="manage_health_patient.html#find-doctor"
+                    class="quick-action-btn"
+                  >
+                    <i class="fas fa-user-md"></i>
+                    Find a Doctor
+                  </a>
+                </div>
               </div>
-              <div
-                id="appointments-container"
-                style="display: flex; flex-direction: column; gap: 20px"
-              ></div>
-            </div>
-          </div>
 
-          <!-- Right Column -->
-          <div style="display: flex; flex-direction: column; gap: 40px">
-            <!-- Quick Actions -->
-            <div class="card" style="padding: 40px">
-              <h3 style="margin-bottom: 24px">Quick Actions</h3>
-              <div style="display: flex; flex-direction: column; gap: 16px">
-                <a
-                  href="manage_health_patient.html#logs"
-                  class="btn btn-primary"
-                  style="
-                    justify-content: flex-start;
-                    gap: 16px;
-                    padding: 18px 24px;
-                  "
-                >
-                  <i class="fas fa-plus"></i> Log Comfort Level
-                </a>
-                <a
-                  href="chat.html"
-                  class="btn btn-outline-lavender"
-                  style="
-                    justify-content: flex-start;
-                    gap: 16px;
-                    padding: 18px 24px;
-                  "
-                >
-                  <i class="fas fa-comment"></i> Message Care Team
+              <!-- Emergency Box -->
+              <div class="emergency-card">
+                <div class="emergency-icon">
+                  <i class="fas fa-phone-alt"></i>
+                </div>
+                <div class="emergency-title">Urgent Assistance</div>
+                <p class="emergency-text">
+                  We are here for you 24/7. Click below for immediate support
+                  from our care team.
+                </p>
+                <a href="tel:1800MARUTHA" class="emergency-btn">
+                  <i class="fas fa-phone-alt"></i>
+                  1-800-MARUTHA
                 </a>
               </div>
-            </div>
 
-            <!-- Emergency Box -->
-            <div class="card emergency-card" style="padding: 40px">
-              <h3 style="font-size: 1.4rem">Urgent Assistance</h3>
-              <p
-                style="
-                  font-size: 0.95rem;
-                  line-height: 1.6;
-                  margin-bottom: 32px;
-                "
-              >
-                We are here for you 24/7. Click below for immediate support.
-              </p>
-              <a
-                href="tel:1800MARUTHA"
-                class="btn"
-                style="
-                  background: white;
-                  color: var(--medical-blue);
-                  width: 100%;
-                  box-shadow: 0 4px 12px rgba(45, 74, 138, 0.1);
-                  font-weight: 700;
-                "
-              >
-                <i class="fas fa-phone-alt" style="margin-right: 12px"></i>
-                1-800-MARUTHA
-              </a>
-            </div>
-
-            <!-- Daily Thought (New Warm Element) -->
-            <!-- Daily Sunshine (New Warm Element) -->
-            <div
-              class="card fade-in delay-2"
-              style="
-                padding: 40px;
-                background: linear-gradient(
-                  135deg,
-                  var(--amber-soft),
-                  var(--sunshine-yellow)
-                );
-                border: 1px solid rgba(251, 191, 36, 0.2);
-                text-align: center;
-              "
-            >
-              <i
-                class="fas fa-sun"
-                style="
-                  font-size: 2rem;
-                  color: #d97706;
-                  margin-bottom: 16px;
-                  opacity: 0.8;
-                "
-              ></i>
-              <h4
-                style="
-                  color: #92400e;
-                  margin-bottom: 12px;
-                  font-family: &quot;Poppins&quot;, sans-serif;
-                "
-              >
-                Daily Sunshine
-              </h4>
-              <p
-                style="
-                  font-style: italic;
-                  color: #b45309;
-                  line-height: 1.6;
-                  font-weight: 500;
-                "
-              >
-                "Every moment of comfort is a victory worth celebrating."
-              </p>
+              <!-- Daily Sunshine -->
+              <div class="inspiration-card">
+                <i class="fas fa-sun inspiration-icon"></i>
+                <div class="inspiration-title">Daily Sunshine</div>
+                <p class="inspiration-quote">
+                  "Every moment of comfort is a victory worth celebrating."
+                </p>
+              </div>
             </div>
           </div>
         </div>

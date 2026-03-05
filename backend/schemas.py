@@ -195,3 +195,12 @@ class VolunteerReportDetails(BaseModel):
     created_at: datetime
     class Config:
         from_attributes = True
+
+class VolunteerTimeLogDetails(BaseModel):
+    id: int
+    volunteer_id: int
+    start_time: datetime
+    end_time: Optional[datetime] = None
+    duration_minutes: int
+    class Config:
+        from_attributes = True

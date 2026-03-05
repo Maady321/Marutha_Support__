@@ -58,15 +58,12 @@ def get_chat_contacts(
     if user.role == "patient":
         patient = db.query(models.PatientProfile).filter(models.PatientProfile.user_id == user.id).first()
         if patient:
-            # Direct assignments
-            if patient.doctor_id:
-                doc = db.query(models.DoctorProfile).filter(models.DoctorProfile.id == patient.doctor_id).first()
-                if doc: add_contact(doc.user_id, doc.name, "doctor")
+            # Only add volunteers directly
             if patient.volunteer_id:
                 vol = db.query(models.VolunteerProfile).filter(models.VolunteerProfile.id == patient.volunteer_id).first()
                 if vol: add_contact(vol.user_id, vol.name, "volunteer")
             
-            # Accepted consultations
+            # ONLY add doctors if there is an accepted consultation request
             consults = db.query(models.DoctorRequest).filter(
                 models.DoctorRequest.patient_id == patient.id,
                 models.DoctorRequest.status == "accepted"
@@ -77,11 +74,7 @@ def get_chat_contacts(
     elif user.role == "doctor":
         doc = db.query(models.DoctorProfile).filter(models.DoctorProfile.user_id == user.id).first()
         if doc:
-            # Direct assignments
-            patients = db.query(models.PatientProfile).filter(models.PatientProfile.doctor_id == doc.id).all()
-            for p in patients: add_contact(p.user_id, p.name, "patient")
-            
-            # Accepted consultations
+            # ONLY add patients if there is an accepted consultation request
             consults = db.query(models.DoctorRequest).filter(
                 models.DoctorRequest.doctor_id == doc.id,
                 models.DoctorRequest.status == "accepted"

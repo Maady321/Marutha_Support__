@@ -90,7 +90,7 @@ async function initHealthTrendsAndStats() {
                 
                 // Highlight stable/happy moods
                 if (['Happy', 'Peaceful'].includes(log.mood)) {
-                    bar.style.background = 'var(--hope-green)';
+                    bar.classList.add('positive');
                 }
                 container.appendChild(bar);
             });
@@ -199,7 +199,12 @@ async function initAppointmentsAndStatus() {
 
 function renderAppointments(appointments, container) {
     if (appointments.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 2rem; color: var(--text-muted)">No upcoming appointments. <br><a href="manage_health_patient.html#find-doctor" style="color: var(--medical-blue); font-weight:600; margin-top:8px; display:inline-block">Find a doctor</a></div>';
+        container.innerHTML = `
+            <div class="dash-empty">
+                <i class="fas fa-calendar-plus"></i>
+                <p>No upcoming appointments.</p>
+                <a href="manage_health_patient.html#find-doctor">Find a doctor</a>
+            </div>`;
         return;
     }
 
@@ -210,35 +215,30 @@ function renderAppointments(appointments, container) {
         const dateObj = appt.appointment_time ? new Date(appt.appointment_time) : null;
         const dateStr = dateObj ? dateObj.toLocaleString() : 'Scheduling...';
         
-        let statusColor = 'var(--text-muted)';
-        let badgeClass = 'badge';
+        let badgeClass = 'badge badge-pending';
         if (appt.status === 'accepted') {
-            statusColor = 'var(--hope-green)';
-            badgeClass += ' badge-active';
-        } else if (appt.status === 'pending') {
-             statusColor = '#f59e0b';
-             badgeClass = 'badge'; // default style
+            badgeClass = 'badge badge-active';
+        } else if (appt.status === 'declined') {
+            badgeClass = 'badge badge-declined';
         }
 
         const card = document.createElement('div');
-        card.style.cssText = "display: flex; gap: 24px; padding: 24px; background: var(--bg-warm); border: 1px solid var(--medical-blue-light); border-radius: var(--radius-lg); transition: var(--transition); margin-bottom: 16px;";
+        card.className = 'appointment-item';
         
         card.innerHTML = `
-            <div class="profile-pic" style="width: 56px; height: 56px; font-size: 1.2rem; flex-shrink: 0;">
+            <div class="appointment-avatar">
                 ${initials}
             </div>
-            <div style="flex: 1">
-                <h4 style="font-size: 1.1rem; margin-bottom: 4px; color: var(--medical-blue);">
+            <div class="appointment-info">
+                <div class="appointment-name">
                     ${appt.doctor_name || 'Dr. #' + appt.doctor_id}
-                </h4>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">
-                    General Consultation
-                </p>
-                <div style="display: flex; gap: 24px; font-size: 0.85rem; color: var(--text-muted);">
-                    <span><i class="far fa-calendar-check" style="margin-right: 8px; color: ${statusColor}"></i> ${dateStr}</span>
+                </div>
+                <div class="appointment-type">General Consultation</div>
+                <div class="appointment-meta">
+                    <span><i class="far fa-calendar-check"></i> ${dateStr}</span>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+            <div class="appointment-actions">
                 <span class="${badgeClass}" style="text-transform: capitalize">${appt.status}</span>
                 <div style="display: flex; gap: 8px;">
                     <button class="btn btn-sm btn-outline-lavender" title="View Profile" onclick="window.location.href='doctor_profile.html?id=${appt.doctor_id}'">

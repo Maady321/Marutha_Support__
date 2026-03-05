@@ -82,7 +82,16 @@ def login(user_credentials: schemas.UserLogin, db: Session = Depends(database.ge
     """Endpoint for user login. Generates a new token on successful login."""
     user = db.query(models.UserAccount).filter(models.UserAccount.email == user_credentials.email).first()
     
-    if not user or not verify_password(user_credentials.password, user.hashed_password):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    is_valid = verify_password(user_credentials.password, user.hashed_password)
+    
+    if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

@@ -1,7 +1,7 @@
 const CONFIG = {
     // Check if running on localhost via standard domain
     API_BASE_URL: window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
-        ? 'http://127.0.0.1:8000' 
+        ? 'http://127.0.0.1:8009' 
         : '/api' // Vercel rewrite
 };
 
@@ -156,9 +156,9 @@ function checkAuth() {
         const patientPages = ['dashboard_patient.html', 'manage_health_patient.html', 'chat.html', 'manage_profile_patient.html', 'doctor_profile.html'];
         const volunteerPages = ['dashboard_volunteer.html', 'chat_volunteer.html', 'manage_profile_volunteer.html', 'assigned_patients.html', 'volunteer_activities.html', 'setup_profile_volunteer.html'];
 
-        const isDoctorPage = doctorPages.some(page => currentPath.endsWith(page));
-        const isPatientPage = patientPages.some(page => currentPath.endsWith(page));
-        const isVolunteerPage = volunteerPages.some(page => currentPath.endsWith(page));
+        const isDoctorPage = doctorPages.some(page => currentPath.endsWith('/' + page) || currentPath === page);
+        const isPatientPage = patientPages.some(page => currentPath.endsWith('/' + page) || currentPath === page);
+        const isVolunteerPage = volunteerPages.some(page => currentPath.endsWith('/' + page) || currentPath === page);
 
         if (userRole === 'patient' && (isDoctorPage || isVolunteerPage)) {
             window.location.href = 'dashboard_patient.html';
@@ -207,6 +207,54 @@ function formatDate(date) {
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
+}
+
+/**
+ * Utility: Show a toast notification
+ */
+function showNotification(message, type = 'info') {
+    // Remove existing notification if any
+    const existing = document.getElementById('global-notification');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'global-notification';
+    
+    const colors = {
+        success: { bg: '#d1fae5', color: '#065f46', border: '#a7f3d0', icon: 'fa-check-circle' },
+        error:   { bg: '#fee2e2', color: '#991b1b', border: '#fca5a5', icon: 'fa-exclamation-circle' },
+        info:    { bg: '#dbeafe', color: '#1e40af', border: '#93c5fd', icon: 'fa-info-circle' }
+    };
+    const c = colors[type] || colors.info;
+
+    toast.style.cssText = `
+        position: fixed; bottom: 24px; right: 24px; z-index: 10000;
+        padding: 14px 24px; border-radius: 12px; font-weight: 500;
+        background: ${c.bg}; color: ${c.color}; border: 1px solid ${c.border};
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        display: flex; align-items: center; gap: 10px;
+        animation: slideInRight 0.3s ease;
+        max-width: 400px; font-size: 0.95rem;
+    `;
+    toast.innerHTML = `<i class="fas ${c.icon}"></i> ${message}`;
+    document.body.appendChild(toast);
+
+    // Auto-dismiss after 4 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+
+    // Add keyframes if not already present
+    if (!document.getElementById('notification-keyframes')) {
+        const style = document.createElement('style');
+        style.id = 'notification-keyframes';
+        style.textContent = `
+            @keyframes slideInRight { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+            @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100px); opacity: 0; } }
+        `;
+        document.head.appendChild(style);
+    }
 }
 /**
  * Utility: API Fetch Wrapper

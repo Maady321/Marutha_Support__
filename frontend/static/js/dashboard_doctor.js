@@ -43,6 +43,9 @@ async function loadDoctorProfile() {
             const nameDisplay = document.getElementById('user-name-display');
             if (nameDisplay) nameDisplay.textContent = doctor.name;
             
+            const greetingName = document.getElementById('doctor-greeting-name');
+            if (greetingName) greetingName.textContent = 'Dr. ' + (doctor.name ? doctor.name.split(' ').pop() : '');
+            
             updateStatusUI(doctorStatus);
         }
     } catch (error) {
@@ -172,11 +175,11 @@ let currentAcceptId = null;
  */
 function acceptRequest(requestId) {
     currentAcceptId = requestId;
-    document.getElementById('acceptRequestModal').style.display = 'flex';
+    document.getElementById('acceptRequestModal').classList.add('active');
 }
 
 function closeAcceptModal() {
-    document.getElementById('acceptRequestModal').style.display = 'none';
+    document.getElementById('acceptRequestModal').classList.remove('active');
     currentAcceptId = null;
 }
 

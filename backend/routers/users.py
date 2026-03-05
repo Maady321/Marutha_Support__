@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 import database, models, schemas
 from auth import fetch_logged_in_user
 import logging
@@ -158,16 +158,6 @@ def update_doctor_me(
     db.refresh(doctor)
     return doctor
 
-# Public endpoint to view a doctor's profile by ID (for patients)
-@doctors_router.get("/{doctor_id}", response_model=schemas.DoctorDetails)
-def get_doctor_by_id(
-    doctor_id: int,
-    db: Session = Depends(database.get_database_session)
-):
-    doctor = db.query(models.DoctorProfile).filter_by(id=doctor_id).first()
-    if not doctor:
-        raise HTTPException(status_code=404, detail="Doctor not found.")
-    return doctor
 
 # Endpoint for a doctor to update their online status
 @doctors_router.post("/me/status")
@@ -379,6 +369,70 @@ def get_volunteers_summary(
         })
     return result
 
+# Endpoint to get full detailed roster for all volunteers
+@doctors_router.get("/volunteers-full-details")
+def get_volunteers_full_details(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    from datetime import datetime
+    volunteers = db.query(models.VolunteerProfile).all()
+    result = []
+    
+    for vol in volunteers:
+        # Get user email
+        vol_user = db.query(models.UserAccount).filter_by(id=vol.user_id).first()
+        email = vol_user.email if vol_user else "N/A"
+        
+        # Get assigned patients
+        assigned_patients = db.query(models.PatientProfile).filter_by(volunteer_id=vol.id).all()
+        
+        # Get tasks
+        tasks = db.query(models.VolunteerTask).filter_by(volunteer_id=vol.id).all()
+        tasks_completed = sum(1 for t in tasks if t.is_completed)
+        
+        # Get reports
+        reports = db.query(models.VolunteerReport).filter_by(volunteer_id=vol.id).order_by(models.VolunteerReport.created_at.desc()).all()
+        
+        # Compute exact hours logged
+        time_logs = db.query(models.VolunteerTimeLog).filter_by(volunteer_id=vol.id).all()
+        total_seconds = 0
+        now_utc = datetime.utcnow()
+        for log in time_logs:
+            if log.end_time and log.start_time:
+                delta = log.end_time - log.start_time
+                if delta.total_seconds() > 0:
+                    total_seconds += delta.total_seconds()
+            elif not log.end_time and log.start_time:
+                delta = now_utc - log.start_time
+                if delta.total_seconds() > 0:
+                    total_seconds += delta.total_seconds()
+        
+        hours = total_seconds / 3600.0
+        
+        result.append({
+            "id": vol.id,
+            "user_id": vol.user_id,
+            "name": vol.name,
+            "email": email,
+            "patient_count": len(assigned_patients),
+            "patients": [{"name": p.name} for p in assigned_patients],
+            "tasks_total": len(tasks),
+            "tasks_completed": tasks_completed,
+            "reports_total": len(reports),
+            "recent_reports": [
+                {
+                    "activity_type": r.activity_type, 
+                    "patient_name": r.patient_name, 
+                    "notes": r.notes, 
+                    "date": r.created_at.isoformat()
+                } for r in reports[:3]
+            ],
+            "total_hours": round(hours, 2)
+        })
+        
+    return result
+
 # Endpoint to get list of all volunteers (for doctor)
 @doctors_router.get("/volunteers", response_model=List[schemas.VolunteerDetails])
 def get_all_volunteers(
@@ -429,13 +483,6 @@ def unassign_patient_volunteer(
     return {"message": f"Volunteer unassigned from {patient.name}"}
 
 
-# Endpoint to get a specific doctor's details
-@doctors_router.get("/{doctor_id}", response_model=schemas.DoctorDetails)
-def get_doctor(doctor_id: int, db: Session = Depends(database.get_database_session)):
-    doctor = db.query(models.DoctorProfile).filter_by(id=doctor_id).first()
-    if not doctor:
-        raise HTTPException(status_code=404, detail="Doctor not found.")
-    return doctor
 
 # --- Volunteer Tasks & Reports ---
 
@@ -449,6 +496,25 @@ def get_volunteer_tasks(
     volunteer = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
     tasks = db.query(models.VolunteerTask).filter_by(volunteer_id=volunteer.id).order_by(models.VolunteerTask.created_at.desc()).all()
     return tasks
+
+@volunteers_router.post("/tasks", response_model=schemas.VolunteerTaskDetails)
+def create_volunteer_task(
+    task_data: schemas.VolunteerTaskCreate,
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    if user.role != "volunteer":
+         raise HTTPException(status_code=403, detail="Only volunteers can create their own tasks.")
+    volunteer = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
+    new_task = models.VolunteerTask(
+        volunteer_id=volunteer.id,
+        task_name=task_data.task_name,
+        patient_name=task_data.patient_name
+    )
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+    return new_task
 
 @doctors_router.post("/volunteers/{volunteer_id}/tasks", response_model=schemas.VolunteerTaskDetails)
 def assign_volunteer_task(
@@ -515,3 +581,93 @@ def create_volunteer_report(
     db.commit()
     db.refresh(new_report)
     return new_report
+
+# ── Volunteer Time Logs (Timer) ──────────────
+
+@volunteers_router.get("/time-logs/active", response_model=Optional[schemas.VolunteerTimeLogDetails])
+def get_active_time_log(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    volunteer = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
+    if not volunteer:
+         raise HTTPException(status_code=404, detail="Volunteer not found")
+    # Find unfinished log
+    active_log = db.query(models.VolunteerTimeLog).filter_by(volunteer_id=volunteer.id, end_time=None).first()
+    return active_log
+
+@volunteers_router.post("/time-logs/start", response_model=schemas.VolunteerTimeLogDetails)
+def start_time_log(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    volunteer = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
+    active_log = db.query(models.VolunteerTimeLog).filter_by(volunteer_id=volunteer.id, end_time=None).first()
+    if active_log:
+         raise HTTPException(status_code=400, detail="Timer already running")
+         
+    new_log = models.VolunteerTimeLog(volunteer_id=volunteer.id)
+    db.add(new_log)
+    db.commit()
+    db.refresh(new_log)
+    return new_log
+
+@volunteers_router.post("/time-logs/stop", response_model=schemas.VolunteerTimeLogDetails)
+def stop_time_log(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    from datetime import datetime
+    volunteer = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
+    active_log = db.query(models.VolunteerTimeLog).filter_by(volunteer_id=volunteer.id, end_time=None).first()
+    if not active_log:
+         raise HTTPException(status_code=400, detail="No active timer found")
+         
+    now_utc = datetime.utcnow()
+    active_log.end_time = now_utc
+    delta = now_utc - active_log.start_time
+    
+    seconds = delta.total_seconds()
+    if seconds < 0:
+        active_log.duration_minutes = 0
+    else:
+        active_log.duration_minutes = int(seconds / 60)
+        
+    db.commit()
+    db.refresh(active_log)
+    return active_log
+
+@volunteers_router.get("/time-logs/total", response_model=float)
+def get_total_hours(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    from datetime import datetime
+    volunteer = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
+    logs = db.query(models.VolunteerTimeLog).filter_by(volunteer_id=volunteer.id).all()
+    
+    total_seconds = 0
+    now_utc = datetime.utcnow()
+    
+    for log in logs:
+        if log.end_time and log.start_time:
+            delta = log.end_time - log.start_time
+            if delta.total_seconds() > 0:
+                total_seconds += delta.total_seconds()
+        elif not log.end_time and log.start_time:
+            delta = now_utc - log.start_time
+            if delta.total_seconds() > 0:
+                total_seconds += delta.total_seconds()
+                
+    return total_seconds / 3600.0
+
+# ── IMPORTANT: This catch-all route MUST be at the end ──────────────
+# It matches any /doctors/<something> path, so it must come after
+# all specific routes like /appointments, /requests/pending, etc.
+@doctors_router.get("/{doctor_id}", response_model=schemas.DoctorDetails)
+def get_doctor_by_id(doctor_id: int, db: Session = Depends(database.get_database_session)):
+    """Public endpoint to view a doctor's profile by ID (for patients)."""
+    doctor = db.query(models.DoctorProfile).filter_by(id=doctor_id).first()
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor not found.")
+    return doctor

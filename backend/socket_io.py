@@ -8,7 +8,14 @@ logger = logging.getLogger("socketio")
 
 # Create a Socket.io AsyncServer
 # Create a Socket.io AsyncServer with specific CORS allowed origins
-sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins=['http://127.0.0.1:5505', 'http://localhost:5505', 'http://127.0.0.1:5500', 'http://localhost:5500'])
+sio = socketio.AsyncServer(
+    async_mode='asgi', 
+    cors_allowed_origins=[
+        'http://127.0.0.1:5505', 'http://localhost:5505', 
+        'http://127.0.0.1:5500', 'http://localhost:5500',
+        'http://127.0.0.1:8080', 'http://localhost:8080'
+    ]
+)
 
 # Keep track of user IDs and their associated SIDs
 user_sessions = {}

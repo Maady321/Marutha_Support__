@@ -3,7 +3,7 @@
 ───────────────────────────────────────────── */
 .login-wrapper {
     min-height: 100vh;
-    background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 40%, #E0E7FF 100%);
+    background: var(--bg-page);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,15 +12,15 @@
     overflow: hidden;
 }
 
-/* Decorative blobs */
+/* Subtle decorative elements */
 .login-wrapper::before {
     content: '';
     position: absolute;
-    top: -120px;
-    left: -120px;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(167,139,250,0.25), transparent 70%);
+    top: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.06), transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
@@ -28,31 +28,29 @@
 .login-wrapper::after {
     content: '';
     position: absolute;
-    bottom: -100px;
-    right: -100px;
-    width: 350px;
-    height: 350px;
-    background: radial-gradient(circle, rgba(99,102,241,0.2), transparent 70%);
+    bottom: -200px;
+    left: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(5, 150, 105, 0.05), transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
 
 .login-container {
     width: 100%;
-    max-width: 460px;
+    max-width: 440px;
     position: relative;
     z-index: 1;
 }
 
 .login-box, .register-box {
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: white;
     padding: 40px 36px;
-    border-radius: 24px;
-    box-shadow: 0 8px 40px rgba(45,74,138,0.12), 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
     width: 100%;
-    border: 1px solid rgba(255,255,255,0.8);
+    border: 1px solid var(--border-color);
 }
 
 .register-container {
@@ -71,9 +69,10 @@
 }
 
 .logo-section h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     margin-top: 12px;
     margin-bottom: 6px;
+    color: var(--medical-blue);
 }
 
 .logo-section p {
@@ -110,7 +109,7 @@
 
 /* Link text */
 .link-text {
-    color: var(--medical-blue);
+    color: var(--medical-blue-mid);
     text-decoration: none;
     font-weight: 600;
     font-size: 0.88rem;
@@ -130,7 +129,7 @@
     width: 16px;
     height: 16px;
     min-width: 16px;
-    accent-color: var(--medical-blue);
+    accent-color: var(--medical-blue-mid);
     cursor: pointer;
     border-radius: 4px;
 }
@@ -141,13 +140,13 @@
 .role-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
+    gap: 16px;
     margin: 32px 0;
 }
 
 .role-card {
     background: white;
-    border: 2px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: 28px 20px;
     text-align: center;
@@ -161,19 +160,19 @@
 
 .role-card:hover,
 .role-card.selected {
-    border-color: var(--medical-blue);
+    border-color: var(--medical-blue-mid);
     background: var(--medical-blue-light);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
 .role-icon {
-    font-size: 2rem;
+    font-size: 1.75rem;
     margin-bottom: 16px;
     background: var(--medical-blue-light);
-    color: var(--medical-blue);
-    width: 72px;
-    height: 72px;
+    color: var(--medical-blue-mid);
+    width: 64px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -182,35 +181,22 @@
 }
 
 .role-card:hover .role-icon {
-    background: var(--medical-blue);
+    background: var(--medical-blue-mid);
     color: white;
-    transform: scale(1.1);
 }
 
 .role-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--medical-blue);
     font-weight: 700;
     margin-bottom: 8px;
 }
 
 .role-desc {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     line-height: 1.5;
-}
-
-/* ─────────────────────────────────────────────
-   ANIMATIONS
-───────────────────────────────────────────── */
-.fade-in {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ─────────────────────────────────────────────
@@ -219,10 +205,10 @@
 @media (max-width: 520px) {
     .login-box, .register-box {
         padding: 28px 20px;
-        border-radius: 20px;
+        border-radius: var(--radius-lg);
     }
 
-    .logo-section h1 { font-size: 1.4rem; }
+    .logo-section h1 { font-size: 1.3rem; }
 
     .role-grid {
         grid-template-columns: 1fr;

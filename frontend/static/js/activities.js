@@ -12,7 +12,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load initial data
     loadTasks();
     loadReports();
+    loadTotalHours();
 });
+
+async function loadTotalHours() {
+    try {
+        const res = await apiFetch('/volunteers/time-logs/total');
+        if (res.ok) {
+            const totalHours = await res.json();
+            const el = document.getElementById('stat-hours-logged');
+            if (el) {
+                const totalSec = Math.floor(totalHours * 3600);
+                const hrs = Math.floor(totalSec / 3600);
+                const mins = Math.floor((totalSec % 3600) / 60);
+                const secs = totalSec % 60;
+                
+                el.innerHTML = 
+                    `<span style="font-size: 1.5rem">${hrs}</span><small style="font-size: 0.9rem; opacity: 0.8">h</small> ` +
+                    `<span style="font-size: 1.5rem">${mins}</span><small style="font-size: 0.9rem; opacity: 0.8">m</small> ` +
+                    `<span style="font-size: 1.5rem">${secs}</span><small style="font-size: 0.9rem; opacity: 0.8">s</small>`;
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load total work hours");
+    }
+}
 
 /**
  * Switch between Tasks and Reports tabs
@@ -206,3 +230,77 @@ async function submitReport(e) {
         btn.disabled = false;
     }
 }
+
+// Global scope exports (needed for inline HTML handlers like onsubmit, onchange)
+window.submitReport = submitReport;
+window.completeTask = completeTask;
+window.switchTab = switchTab;
+
+/**
+ * Handle Add Custom Task Modal Responses
+ */
+function openAddTaskModal() {
+    const modal = document.getElementById('addTaskModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Reset inputs
+        const taskName = document.getElementById('newTaskName');
+        const taskPatient = document.getElementById('newTaskPatientName');
+        if (taskName) taskName.value = '';
+        if (taskPatient) taskPatient.value = '';
+    }
+}
+
+function closeAddTaskModal() {
+    const modal = document.getElementById('addTaskModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+async function submitNewTask(e) {
+    e.preventDefault();
+    const taskName = document.getElementById('newTaskName').value.trim();
+    let patientName = document.getElementById('newTaskPatientName').value.trim();
+    
+    if (!taskName) return;
+    if (!patientName) patientName = "General";
+    
+    const btn = document.getElementById('submitNewTaskBtn');
+    if (btn) {
+        btn.innerText = 'Adding...';
+        btn.disabled = true;
+    }
+    
+    try {
+        const res = await apiFetch('/volunteers/tasks', {
+            method: 'POST',
+            body: JSON.stringify({
+                task_name: taskName,
+                patient_name: patientName
+            })
+        });
+        
+        if (res.ok) {
+            closeAddTaskModal();
+            if (window.showNotification) showNotification('Task added successfully!', 'success');
+            loadTasks();
+        } else {
+            if (window.showNotification) showNotification('Failed to add new task.', 'error');
+            else alert('Failed to add new task.');
+        }
+    } catch (e) {
+        console.error(e);
+        if (window.showNotification) showNotification('An error occurred.', 'error');
+        else alert('An error occurred.');
+    } finally {
+        if (btn) {
+            btn.innerText = 'Add Task';
+            btn.disabled = false;
+        }
+    }
+}
+
+window.openAddTaskModal = openAddTaskModal;
+window.closeAddTaskModal = closeAddTaskModal;
+window.submitNewTask = submitNewTask;

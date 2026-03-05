@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volunteer Details - Marutha Support</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/components.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+  </head>
+  <body>
+    <!-- Mobile Sidebar Toggle -->
+    <button
+      class="sidebar-toggle"
+      onclick="
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+      "
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div
+      class="sidebar-overlay"
+      onclick="
+        document.querySelector('.sidebar').classList.remove('open');
+        this.classList.remove('active');
+      "
+    ></div>
+
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <a href="dashboard_doctor.html" class="sidebar-brand">
+          <img src="../static/images/logo.png" alt="Marutha Support Logo" />
+          <span class="brand-text">Marutha Support</span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard_doctor.html" class="sidebar-link"
+            ><i class="fas fa-th-large"></i> Dashboard</a
+          >
+          <a href="patients.html" class="sidebar-link"
+            ><i class="fas fa-users"></i> Patients</a
+          >
+          <a href="requests.html" class="sidebar-link"
+            ><i class="fas fa-calendar-check"></i> Appointments</a
+          >
+          <a href="volunteer_management.html" class="sidebar-link"
+            ><i class="fas fa-user-tag"></i> Volunteer Mgmt</a
+          >
+          <a href="volunteer_details.html" class="sidebar-link active"
+            ><i class="fas fa-id-card"></i> Volunteer Details</a
+          >
+          <a
+            href="manage_records_doctor.html#consultations"
+            class="sidebar-link"
+            ><i class="fas fa-video"></i> Consultations</a
+          >
+          <a href="manage_records_doctor.html#records" class="sidebar-link"
+            ><i class="fas fa-clipboard-list"></i> Medical Records</a
+          >
+          <a
+            href="manage_records_doctor.html#prescriptions"
+            class="sidebar-link"
+            ><i class="fas fa-prescription-bottle-alt"></i> Prescriptions</a
+          >
+          <a href="manage_records_doctor.html#reports" class="sidebar-link"
+            ><i class="fas fa-file-medical-alt"></i> Reports</a
+          >
+          <a href="chat_doctor.html" class="sidebar-link"
+            ><i class="fas fa-comment-medical"></i> Messages</a
+          >
+          <div style="flex-grow: 1"></div>
+          <a href="manage_profile_doctor.html#view" class="sidebar-link"
+            ><i class="fas fa-cog"></i> Settings</a
+          >
+          <a href="login.html" class="sidebar-link" style="color: var(--danger)"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+          <div>
+            <h2
+              style="
+                font-size: 2rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
+            >
+              <i
+                class="fas fa-id-card"
+                style="color: var(--medical-blue); font-size: 1.8rem"
+              ></i>
+              Volunteer Records Directory
+            </h2>
+            <p style="color: var(--text-muted); font-weight: 500">
+              View all details, contact info, shift hours, and completed tasks
+              for your volunteers.
+            </p>
+          </div>
+          <div class="profile-snippet">
+            <div style="text-align: right">
+              <div
+                id="docName"
+                style="
+                  font-weight: 700;
+                  color: var(--medical-blue);
+                  font-size: 0.95rem;
+                "
+              >
+                Dr. ...
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-light)">
+                Doctor
+              </div>
+            </div>
+            <div
+              id="docInitial"
+              class="profile-pic"
+              style="background: var(--medical-blue); color: white"
+            >
+              D
+            </div>
+          </div>
+        </header>
+
+        <div class="container" style="padding: 0 64px 64px; max-width: 1500px">
+          <div
+            class="card fade-in"
+            style="padding: 32px; border-top: 4px solid var(--lavender-warm)"
+          >
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Volunteer Name</th>
+                    <th>Email Address</th>
+                    <th>Patients</th>
+                    <th>Tasks Completed</th>
+                    <th>Total Logged Hours</th>
+                    <th>Reports Submitted</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="volunteer-details-table-body">
+                  <tr>
+                    <td
+                      colspan="7"
+                      style="
+                        text-align: center;
+                        padding: 40px;
+                        color: var(--text-light);
+                      "
+                    >
+                      <i
+                        class="fas fa-spinner fa-spin"
+                        style="font-size: 2rem; margin-bottom: 16px"
+                      ></i
+                      ><br />
+                      Loading Volunteer Data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/volunteer_details.js"></script>
+  </body>
+</html>

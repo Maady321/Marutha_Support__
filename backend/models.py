@@ -138,3 +138,14 @@ class VolunteerReport(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     volunteer = relationship("VolunteerProfile", lazy="joined")
+
+# Define VolunteerTimeLog model for tracking shift hours
+class VolunteerTimeLog(Base):
+    __tablename__ = "volunteer_time_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    volunteer_id = Column(Integer, ForeignKey("volunteers.id"))
+    start_time = Column(DateTime, default=datetime.utcnow)
+    end_time = Column(DateTime, nullable=True)
+    duration_minutes = Column(Integer, default=0)
+    
+    volunteer = relationship("VolunteerProfile", lazy="joined")
