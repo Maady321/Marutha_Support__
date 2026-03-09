@@ -1,336 +1,244 @@
-/**
- * Marutha Support - Patient Dashboard JS
- */
+// dashboard_patient.js - Patient Dashboard
+// Shows greeting, health stats, upcoming appointments, and comfort level modal
 
-document.addEventListener('DOMContentLoaded', () => {
-    initDashboard();
+document.addEventListener('DOMContentLoaded', function() {
+    loadPatientDashboard();
 });
 
-async function initDashboard() {
-    await loadUserProfile();
-    initGreeting();
-    initHealthTrendsAndStats();
-    initAppointmentsAndStatus();
+
+async function loadPatientDashboard() {
+    updateGreeting();
+    await loadHealthStats();
+    await loadUpcomingAppointments();
+    initComfortModal();
 }
 
-/**
- * Load user profile from API
- */
-async function loadUserProfile() {
-    try {
-        const response = await apiFetch('/users/me');
-        if (response.ok) {
-            const user = await response.json();
-            localStorage.setItem('userData', JSON.stringify(user));
-            // Try to find if patient profile exists
-            try {
-                const patientResponse = await apiFetch('/patients/me');
-                if (patientResponse.ok) {
-                    const patient = await patientResponse.json();
-                    localStorage.setItem('patientData', JSON.stringify(patient));
-                }
-            } catch (pErr) {
-                console.log("No patient profile yet or error fetching it");
-            }
-        }
-    } catch (error) {
-        console.error('Failed to load profile:', error);
+
+// ---- Greeting based on time of day ----
+function updateGreeting() {
+    var greetEl = document.getElementById('greeting-text');
+    if (!greetEl) return;
+
+    var hour = new Date().getHours();
+    var greeting = '';
+
+    if (hour < 12) {
+        greeting = 'Good Morning';
+    } else if (hour < 18) {
+        greeting = 'Good Afternoon';
+    } else {
+        greeting = 'Good Evening';
     }
+
+    greetEl.textContent = greeting;
 }
 
-/**
- * Handle time-based greeting
- */
-function initGreeting() {
-    const greetingEl = document.getElementById('greeting');
-    if (!greetingEl) return;
 
-    const hour = new Date().getHours();
-    let greetingPrefix = "Good evening";
-    if (hour < 12) greetingPrefix = "Good morning";
-    else if (hour < 18) greetingPrefix = "Good afternoon";
-
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    const patientData = JSON.parse(localStorage.getItem('patientData') || '{}');
-    
-    // Prioritize patient profile name, fallback to email local part
-    const name = patientData.name || userData.email?.split('@')[0] || 'User';
-    
-    greetingEl.innerHTML = `<i class="fas fa-sun" style="color: #f59e0b; font-size: 1.8rem"></i> ${greetingPrefix}, ${name}`;
-    
-    const nameDisplay = document.getElementById('user-name-display');
-    if (nameDisplay) nameDisplay.textContent = name;
-}
-
-/**
- * Health Trends & Stats
- * Fetches vitals and updates chart + comfort stat + milestone
- */
-async function initHealthTrendsAndStats() {
-    const container = document.querySelector('.chart-container');
-    const comfortStat = document.getElementById('stat-comfort');
-    const milestoneStat = document.getElementById('stat-milestone');
-    
-    if (!container) return;
-
+// ---- Load Health Stats ----
+async function loadHealthStats() {
     try {
-        const response = await apiFetch('/vitals/my');
-        if (response.ok) {
-            const logs = await response.json();
-            
-            // 1. Update Chart
-            const recentLogs = logs.slice(0, 7).reverse();
-            container.innerHTML = '';
-            recentLogs.forEach(log => {
-                const height = log.pain_level * 10;
-                const bar = document.createElement('div');
-                bar.className = 'chart-bar';
-                bar.style.height = `${height}%`;
-                bar.title = `Pain: ${log.pain_level}\nMood: ${log.mood}\nDate: ${new Date(log.timestamp).toLocaleDateString()}`;
-                
-                // Highlight stable/happy moods
-                if (['Happy', 'Peaceful'].includes(log.mood)) {
-                    bar.classList.add('positive');
-                }
-                container.appendChild(bar);
-            });
-            
-            // Fill empty slots
-            for (let i = recentLogs.length; i < 7; i++) {
-                 const bar = document.createElement('div');
-                 bar.className = 'chart-bar';
-                 bar.style.height = '5%';
-                 bar.style.opacity = '0.3';
-                 container.appendChild(bar);
-            }
+        var res = await apiFetch('/vitals/my');
+        if (!res.ok) return;
 
-            // 2. Update Comfort Stat (Latest Log)
-            if (logs.length > 0) {
-                const latest = logs[0]; // Assuming API returns sorted desc
-                if (comfortStat) {
-                    comfortStat.innerText = latest.mood || 'Stable';
-                    // Color code
-                    if (['Anxious', 'Sad', 'Pain'].includes(latest.mood)) {
-                        comfortStat.style.color = 'var(--medical-blue)';
-                    } else {
-                        comfortStat.style.color = 'var(--hope-green)';
-                    }
-                }
-                
-                // 3. Update Milestone (Days since first log)
-                // If logs are desc, last element is oldest
-                const oldest = logs[logs.length - 1];
-                const firstDate = new Date(oldest.timestamp);
-                const now = new Date();
-                const diffTime = Math.abs(now - firstDate);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                if (milestoneStat) milestoneStat.innerText = `${diffDays} Days`;
-            } else {
-                if (comfortStat) comfortStat.innerText = '--';
-                if (milestoneStat) milestoneStat.innerText = 'Day 1';
-            }
+        var logs = await res.json();
 
+        // Update stats cards
+        var totalLogs = document.getElementById('stat-total-logs');
+        if (totalLogs) totalLogs.textContent = logs.length;
+
+        if (logs.length > 0) {
+            // Average pain level
+            var totalPain = 0;
+            for (var i = 0; i < logs.length; i++) {
+                totalPain = totalPain + logs[i].pain_level;
+            }
+            var avgPain = Math.round(totalPain / logs.length);
+
+            var painEl = document.getElementById('stat-avg-pain');
+            if (painEl) painEl.textContent = avgPain + '/10';
+
+            // Most recent mood
+            var moodEl = document.getElementById('stat-latest-mood');
+            if (moodEl) moodEl.textContent = logs[0].mood;
+
+            // Render chart if canvas exists
+            renderHealthChart(logs);
         }
+
     } catch (e) {
-        console.error("Error fetching vitals", e);
-        if (container) container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted)">Unable to load trends</div>';
+        console.error('Error loading health stats:', e);
     }
 }
 
-/**
- * Appointments & Next Visit Stat
- */
-async function initAppointmentsAndStatus() {
-    const container = document.getElementById('appointments-container');
-    const visitStat = document.getElementById('stat-next-visit');
-    const careStat = document.getElementById('stat-care-needs');
 
-    if (!container) return;
+// ---- Render Health Trend Chart ----
+function renderHealthChart(logs) {
+    var canvas = document.getElementById('healthChart');
+    if (!canvas || typeof Chart === 'undefined') return;
 
-    container.innerHTML = '<div style="text-align:center; padding: 1rem;">Loading...</div>';
+    // Get last 7 logs (reversed to show oldest first)
+    var recentLogs = logs.slice(0, 7).reverse();
 
-    try {
-        console.log("Fetching appointments...");
-        const response = await apiFetch('/consultations/my');
-        if (response.ok) {
-            const appointments = await response.json();
-            renderAppointments(appointments, container);
-            
-            // Update Stats
-            if (visitStat) {
-                // Find next accepted appointment
-                const upcoming = appointments
-                    .filter(a => a.status === 'accepted' && new Date(a.appointment_time) > new Date())
-                    .sort((a, b) => new Date(a.appointment_time) - new Date(b.appointment_time));
-                
-                if (upcoming.length > 0) {
-                    const nextDate = new Date(upcoming[0].appointment_time);
-                    // Format: Tomorrow, 2 PM or Date
-                    const today = new Date();
-                    const isTomorrow = nextDate.getDate() === today.getDate() + 1;
-                    const dateStr = isTomorrow ? 'Tomorrow' : nextDate.toLocaleDateString(undefined, {month:'short', day:'numeric'});
-                    visitStat.innerText = `${dateStr}, ${nextDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-                } else {
-                    visitStat.innerText = "No upcoming visits";
-                    visitStat.style.fontSize = "1rem";
-                }
-            }
+    // Build labels and data arrays
+    var labels = [];
+    var painData = [];
 
-            if (careStat) {
-                // Check if any pending
-                const pending = appointments.filter(a => a.status === 'pending');
-                if (pending.length > 0) {
-                    careStat.innerText = `${pending.length} Pending Actions`;
-                    careStat.style.color = '#d97706'; 
-                } else {
-                    careStat.innerText = "All Clear";
-                    careStat.style.color = 'var(--hope-green)';
-                }
-            }
-
-        } else {
-            container.innerHTML = '<div style="text-align:center; padding: 2rem; color: var(--danger)">Failed to load appointments.</div>';
-        }
-    } catch (error) {
-        console.error('Error loading appointments:', error);
-        container.innerHTML = '<div style="text-align:center; padding: 2rem;">Error connecting to server.</div>';
-    }
-}
-
-function renderAppointments(appointments, container) {
-    if (appointments.length === 0) {
-        container.innerHTML = `
-            <div class="dash-empty">
-                <i class="fas fa-calendar-plus"></i>
-                <p>No upcoming appointments.</p>
-                <a href="manage_health_patient.html#find-doctor">Find a doctor</a>
-            </div>`;
-        return;
+    for (var i = 0; i < recentLogs.length; i++) {
+        var date = new Date(recentLogs[i].timestamp);
+        labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        painData.push(recentLogs[i].pain_level);
     }
 
-    container.innerHTML = '';
-    // Show max 3 on dashboard
-    appointments.slice(0, 3).forEach(appt => {
-        const initials = appt.doctor_name ? appt.doctor_name.split(' ').map(n=>n[0]).join('') : 'Dr';
-        const dateObj = appt.appointment_time ? new Date(appt.appointment_time) : null;
-        const dateStr = dateObj ? dateObj.toLocaleString() : 'Scheduling...';
-        
-        let badgeClass = 'badge badge-pending';
-        if (appt.status === 'accepted') {
-            badgeClass = 'badge badge-active';
-        } else if (appt.status === 'declined') {
-            badgeClass = 'badge badge-declined';
+    new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Pain Level',
+                data: painData,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
-
-        const card = document.createElement('div');
-        card.className = 'appointment-item';
-        
-        card.innerHTML = `
-            <div class="appointment-avatar">
-                ${initials}
-            </div>
-            <div class="appointment-info">
-                <div class="appointment-name">
-                    ${appt.doctor_name || 'Dr. #' + appt.doctor_id}
-                </div>
-                <div class="appointment-type">General Consultation</div>
-                <div class="appointment-meta">
-                    <span><i class="far fa-calendar-check"></i> ${dateStr}</span>
-                </div>
-            </div>
-            <div class="appointment-actions">
-                <span class="${badgeClass}" style="text-transform: capitalize">${appt.status}</span>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn btn-sm btn-outline-lavender" title="View Profile" onclick="window.location.href='doctor_profile.html?id=${appt.doctor_id}'">
-                        <i class="fas fa-user-md"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-medical" title="Start Chat" onclick="window.location.href='chat.html?userId=${appt.doctor_user_id}'">
-                        <i class="fas fa-comment"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
     });
 }
 
-/**
- * Log Comfort Level (Modal)
- */
-function logComfortLevel() {
-    let modal = document.getElementById('comfort-log-modal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'comfort-log-modal';
-        modal.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;";
-        modal.innerHTML = `
-            <div style="background: white; padding: 32px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                <h3 style="margin-bottom: 16px; color: var(--medical-blue);">Log How You Feel</h3>
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Pain Level (1-10)</label>
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 16px;">
-                    <input type="range" id="log-pain" min="1" max="10" value="5" class="range-slider" style="flex:1" oninput="document.getElementById('modal-pain-val').innerText = this.value">
-                    <span id="modal-pain-val" style="font-weight:bold; color:var(--medical-blue)">5</span>
-                </div>
-                
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Mood</label>
-                <select id="log-mood" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 16px;">
-                    <option value="Happy">Happy</option>
-                    <option value="Peaceful">Peaceful</option>
-                    <option value="Stable" selected>Stable</option>
-                    <option value="Anxious">Anxious</option>
-                    <option value="Sad">Sad</option>
-                    <option value="Tired">Tired</option>
-                    <option value="Pain">In Pain</option>
-                </select>
-                
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Notes (Optional)</label>
-                <textarea id="log-notes" rows="3" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px;"></textarea>
-                
-                <div style="display: flex; justify-content: flex-end; gap: 12px;">
-                    <button onclick="closeComfortModal()" class="btn btn-outline-lavender" style="padding: 10px 20px;">Cancel</button>
-                    <button onclick="submitComfortLog()" class="btn btn-primary" style="padding: 10px 20px;">Save Log</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-    modal.style.display = 'flex';
-}
 
-function closeComfortModal() {
-    const modal = document.getElementById('comfort-log-modal');
-    if (modal) modal.style.display = 'none';
-}
+// ---- Load Upcoming Appointments ----
+async function loadUpcomingAppointments() {
+    var container = document.getElementById('upcoming-appointments');
+    if (!container) return;
 
-async function submitComfortLog() {
-    const pain = document.getElementById('log-pain').value;
-    const mood = document.getElementById('log-mood').value;
-    const notes = document.getElementById('log-notes').value;
-    
     try {
-        const response = await apiFetch('/vitals/', {
-            method: 'POST',
-            body: JSON.stringify({
-                pain_level: parseInt(pain),
-                mood: mood,
-                notes: notes
-            })
-        });
+        var res = await apiFetch('/consultations/my');
+        if (!res.ok) return;
 
-        if (response.ok) {
-            alert("Log saved successfully!");
-            closeComfortModal();
-            initHealthTrendsAndStats(); // Refresh charts & stats
-        } else {
-            alert("Failed to save log.");
+        var appointments = await res.json();
+
+        // Filter to only accepted and upcoming appointments
+        var now = new Date();
+        var upcoming = [];
+
+        for (var i = 0; i < appointments.length; i++) {
+            var appt = appointments[i];
+            if (appt.status === 'accepted') {
+                if (appt.appointment_time) {
+                    var apptDate = new Date(appt.appointment_time);
+                    if (apptDate >= now) {
+                        upcoming.push(appt);
+                    }
+                }
+            }
         }
-    } catch (error) {
-        console.error("Error logging vitals:", error);
-        alert("Error connecting to server.");
+
+        // Update count display
+        var countEl = document.getElementById('stat-appointments');
+        if (countEl) countEl.textContent = upcoming.length;
+
+        if (upcoming.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted)">No upcoming appointments.</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+
+        for (var j = 0; j < upcoming.length; j++) {
+            var apt = upcoming[j];
+            var card = document.createElement('div');
+            card.className = 'card fade-in';
+            card.style.padding = '16px';
+            card.style.marginBottom = '10px';
+
+            var doctorName = apt.doctor_name || 'Doctor';
+            var dateStr = 'Scheduling...';
+            if (apt.appointment_time) {
+                dateStr = new Date(apt.appointment_time).toLocaleString();
+            }
+
+            card.innerHTML =
+                '<div style="display: flex; justify-content: space-between; align-items: center">' +
+                    '<div>' +
+                        '<div style="font-weight: 600; color: var(--medical-blue)">' + doctorName + '</div>' +
+                        '<div style="font-size: 0.85rem; color: var(--text-muted)">' + dateStr + '</div>' +
+                    '</div>' +
+                    '<span class="badge" style="background: #d1fae5; color: #065f46">Confirmed</span>' +
+                '</div>';
+
+            container.appendChild(card);
+        }
+
+    } catch (e) {
+        console.error('Error loading appointments:', e);
     }
 }
 
-// Global scope
-window.logComfortLevel = logComfortLevel;
-window.closeComfortModal = closeComfortModal;
-window.submitComfortLog = submitComfortLog;
+
+// ---- Comfort Level Modal ----
+function initComfortModal() {
+    var openBtn = document.getElementById('log-comfort-btn');
+    var modal = document.getElementById('comfortModal');
+    var closeBtn = document.getElementById('closeComfortModal');
+    var form = document.getElementById('comfortForm');
+
+    if (openBtn && modal) {
+        openBtn.addEventListener('click', function() {
+            modal.style.display = 'flex';
+        });
+    }
+
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            var painInput = document.getElementById('comfort-pain');
+            var moodInput = document.getElementById('comfort-mood');
+            var notesInput = document.getElementById('comfort-notes');
+
+            var data = {
+                pain_level: parseInt(painInput.value),
+                mood: moodInput.value,
+                notes: notesInput.value
+            };
+
+            try {
+                var res = await apiFetch('/vitals/', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    if (modal) modal.style.display = 'none';
+                    showNotification('Comfort level logged!', 'success');
+                    loadHealthStats(); // Refresh data
+                } else {
+                    showNotification('Failed to log comfort level.', 'error');
+                }
+            } catch (err) {
+                showNotification('Error connecting to server.', 'error');
+            }
+        });
+    }
+}

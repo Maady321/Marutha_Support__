@@ -1,31 +1,28 @@
-/**
- * Marutha Support - Assigned Patients JS (Volunteer)
- */
+// assigned_patients.js - Volunteer's Assigned Patients Search
+// Handles searching/filtering the patient list on the volunteer dashboard
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     initSearch();
 });
 
-/**
- * Handle Patient Search
- */
-function initSearch() {
-    const searchInput = document.querySelector('input[placeholder*="Search by name"]');
-    const cards = document.querySelectorAll(".patient-card");
 
+function initSearch() {
+    var searchInput = document.getElementById('patient-search-input');
     if (!searchInput) return;
 
-    searchInput.addEventListener("input", (e) => {
-        const term = e.target.value.toLowerCase();
-        cards.forEach((card) => {
-            const name = card.querySelector("h3").innerText.toLowerCase();
-            const id = card.querySelector('div[style*="font-size: 0.85rem"]').innerText.toLowerCase();
-            
-            if (name.includes(term) || id.includes(term)) {
-                card.style.display = "block";
+    searchInput.addEventListener('input', function(e) {
+        var query = e.target.value.toLowerCase();
+        var patientItems = document.querySelectorAll('.patient-item, .patient-card');
+
+        for (var i = 0; i < patientItems.length; i++) {
+            var item = patientItems[i];
+            var text = item.innerText.toLowerCase();
+
+            if (text.indexOf(query) >= 0) {
+                item.style.display = '';
             } else {
-                card.style.display = "none";
+                item.style.display = 'none';
             }
-        });
+        }
     });
 }

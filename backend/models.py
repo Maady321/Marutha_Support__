@@ -1,97 +1,127 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime  # Import SQLAlchemy column types and constraints
-from sqlalchemy.orm import relationship  # Import relationship for ORM linking
-from datetime import datetime, timezone  # Import datetime for timestamp columns
-from database import Base  # Import the declarative Base
+# models.py - Database Table Definitions
+# Each class below represents a table in the database
 
-# Define the UserAccount model
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
+from datetime import datetime, timezone
+from database import Base
+
+
+# ---- User Account Table ----
+# Stores login information for all users (patients, doctors, volunteers)
 class UserAccount(Base):
-    __tablename__ = "users"  # Name of the table in the database
-    id = Column(Integer, primary_key=True, index=True)  # Primary key, indexed for faster lookup
-    email = Column(String, unique=True, index=True)  # User email, must be unique
-    hashed_password = Column(String)  # Stored hashed password
-    role = Column(String)  # Role of the user (e.g., patient, doctor, volunteer)
-    is_active = Column(Boolean, default=True)  # Status of the user account
-    token = Column(String, unique=True, index=True, nullable=True)  # Simple token for authentication
+    __tablename__ = "users"
 
-# Define the PatientProfile model
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    role = Column(String)              # "patient", "doctor", or "volunteer"
+    is_active = Column(Boolean, default=True)
+    token = Column(String, unique=True, index=True, nullable=True)
+
+
+# ---- Patient Profile Table ----
+# Stores extra information about patients
 class PatientProfile(Base):
-    __tablename__ = "patients"  # Table name for patient profiles
-    id = Column(Integer, primary_key=True, index=True)  # Primary key
-    user_id = Column(Integer, ForeignKey("users.id"))  # Foreign key linking to the UserAccount table
-    name = Column(String)  # Name of the patient
-    age = Column(Integer)  # Age of the patient
-    stage = Column(String)  # Disease stage
-    doctor_id = Column(Integer, ForeignKey("doctors.id"), nullable=True)  # Foreign key linking to assigned doctor
-    volunteer_id = Column(Integer, ForeignKey("volunteers.id"), nullable=True)  # Foreign key linking to assigned volunteer
-    
+    __tablename__ = "patients"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    name = Column(String)
+    age = Column(Integer)
+    stage = Column(String)
+    doctor_id = Column(Integer, ForeignKey("doctors.id"), nullable=True)
+    volunteer_id = Column(Integer, ForeignKey("volunteers.id"), nullable=True)
+
     volunteer = relationship("VolunteerProfile", lazy="joined")
 
-# Define the DoctorProfile model
+
+# ---- Doctor Profile Table ----
+# Stores extra information about doctors
 class DoctorProfile(Base):
-    __tablename__ = "doctors"  # Table name for doctor profiles
-    id = Column(Integer, primary_key=True, index=True)  # Primary key
-    user_id = Column(Integer, ForeignKey("users.id"))  # Foreign key linking to UserAccount
-    name = Column(String)  # Name of the doctor
-    specialty = Column(String)  # Doctor's specialty area
-    is_online = Column(Boolean, default=False)  # Status indicating if the doctor is currently online
-    experience = Column(Integer, nullable=True)  # Years of experience
-    qualification = Column(String, nullable=True)  # e.g. MBBS, MD, MS
-    bio = Column(String, nullable=True)  # Doctor's biography / about me
-    phone = Column(String, nullable=True)  # Contact phone number
-    license_id = Column(String, nullable=True)  # Medical license ID
+    __tablename__ = "doctors"
 
-# Define the VolunteerProfile model
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    name = Column(String)
+    specialty = Column(String)
+    is_online = Column(Boolean, default=False)
+    experience = Column(Integer, nullable=True)
+    qualification = Column(String, nullable=True)
+    bio = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    license_id = Column(String, nullable=True)
+
+
+# ---- Volunteer Profile Table ----
+# Stores extra information about volunteers
 class VolunteerProfile(Base):
-    __tablename__ = "volunteers"  # Table name for volunteer profiles
-    id = Column(Integer, primary_key=True, index=True)  # Primary key
-    user_id = Column(Integer, ForeignKey("users.id"))  # Foreign key linking to UserAccount
-    name = Column(String)  # Name of the volunteer
+    __tablename__ = "volunteers"
 
-# Define the ChatMessage model
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    name = Column(String)
+
+
+# ---- Chat Messages Table ----
+# Stores all chat messages between users
 class ChatMessage(Base):
-    __tablename__ = "chats"  # Table name for chat messages
-    id = Column(Integer, primary_key=True, index=True)  # Primary key
-    sender_id = Column(Integer, ForeignKey("users.id"))  # Foreign key for the sender
-    recipient_id = Column(Integer, ForeignKey("users.id"))  # Foreign key for the recipient
-    message = Column(String)  # Content of the message
-    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))  # Time when the message was sent
+    __tablename__ = "chats"
 
-# Define the MedicalReport model
+    id = Column(Integer, primary_key=True, index=True)
+    sender_id = Column(Integer, ForeignKey("users.id"))
+    recipient_id = Column(Integer, ForeignKey("users.id"))
+    message = Column(String)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+# ---- Medical Reports Table ----
+# Stores uploaded medical report files
 class MedicalReport(Base):
-    __tablename__ = "reports"  # Table name for medical reports
-    id = Column(Integer, primary_key=True, index=True)  # Primary key
-    patient_id = Column(Integer, ForeignKey("patients.id"))  # Foreign key linking to the patient
-    title = Column(String)  # Title/Name of the report
-    file_path = Column(String)  # Path where the file is stored
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))  # Time when the report was uploaded
+    __tablename__ = "reports"
 
-# Define the DoctorRequest model (Consultations)
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"))
+    title = Column(String)
+    file_path = Column(String)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+# ---- Consultation Requests Table ----
+# Stores requests from patients to doctors
 class DoctorRequest(Base):
-    __tablename__ = "consultations"  # Table name for consultations
-    id = Column(Integer, primary_key=True, index=True)  # Primary key
-    patient_id = Column(Integer, ForeignKey("patients.id"))  # Foreign key linking to the patient
-    doctor_id = Column(Integer, ForeignKey("doctors.id"))  # Foreign key linking to the doctor
-    status = Column(String, default="pending")  # Status of the request (pending, accepted, etc.)
-    appointment_time = Column(DateTime, nullable=True)  # Scheduled time for the appointment
-    notes = Column(String, nullable=True)  # Optional notes
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))  # Time when the request was created
-    
+    __tablename__ = "consultations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"))
+    doctor_id = Column(Integer, ForeignKey("doctors.id"))
+    status = Column(String, default="pending")
+    appointment_time = Column(DateTime, nullable=True)
+    notes = Column(String, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
     patient = relationship("PatientProfile", lazy="joined")
     doctor = relationship("DoctorProfile", lazy="joined")
 
-# Define the HealthLog model (Vitals)
-class HealthLog(Base):
-    __tablename__ = "vitals"  # Table name for health logs
-    id = Column(Integer, primary_key=True, index=True)  # Primary key
-    patient_id = Column(Integer, ForeignKey("patients.id"))  # Foreign key linking to the patient
-    pain_level = Column(Integer)  # Recorded pain level
-    mood = Column(String)  # Recorded mood
-    notes = Column(String, nullable=True)  # Optional notes
-    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))  # Time when the log was created
 
-# Define the MedicalNote model
+# ---- Health Logs Table (Vitals) ----
+# Stores daily health entries from patients
+class HealthLog(Base):
+    __tablename__ = "vitals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"))
+    pain_level = Column(Integer)
+    mood = Column(String)
+    notes = Column(String, nullable=True)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+# ---- Medical Notes Table ----
+# Stores clinical notes written by doctors
 class MedicalNote(Base):
     __tablename__ = "medical_notes"
+
     id = Column(Integer, primary_key=True, index=True)
     doctor_id = Column(Integer, ForeignKey("doctors.id"))
     patient_id = Column(Integer, ForeignKey("patients.id"))
@@ -101,9 +131,12 @@ class MedicalNote(Base):
     patient = relationship("PatientProfile", lazy="joined")
     doctor = relationship("DoctorProfile", lazy="joined")
 
-# Define the Prescription model
+
+# ---- Prescriptions Table ----
+# Stores prescriptions written by doctors
 class Prescription(Base):
     __tablename__ = "prescriptions"
+
     id = Column(Integer, primary_key=True, index=True)
     doctor_id = Column(Integer, ForeignKey("doctors.id"))
     patient_id = Column(Integer, ForeignKey("patients.id"))
@@ -115,9 +148,12 @@ class Prescription(Base):
     patient = relationship("PatientProfile", lazy="joined")
     doctor = relationship("DoctorProfile", lazy="joined")
 
-# Define VolunteerTask model
+
+# ---- Volunteer Tasks Table ----
+# Stores tasks assigned to volunteers
 class VolunteerTask(Base):
     __tablename__ = "volunteer_tasks"
+
     id = Column(Integer, primary_key=True, index=True)
     volunteer_id = Column(Integer, ForeignKey("volunteers.id"))
     patient_name = Column(String, nullable=True)
@@ -127,25 +163,31 @@ class VolunteerTask(Base):
 
     volunteer = relationship("VolunteerProfile", lazy="joined")
 
-# Define VolunteerReport model
+
+# ---- Volunteer Reports Table ----
+# Stores activity reports submitted by volunteers
 class VolunteerReport(Base):
     __tablename__ = "volunteer_reports"
+
     id = Column(Integer, primary_key=True, index=True)
     volunteer_id = Column(Integer, ForeignKey("volunteers.id"))
     patient_name = Column(String)
     activity_type = Column(String)
     notes = Column(String, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    
+
     volunteer = relationship("VolunteerProfile", lazy="joined")
 
-# Define VolunteerTimeLog model for tracking shift hours
+
+# ---- Volunteer Time Logs Table ----
+# Tracks shift hours for volunteers
 class VolunteerTimeLog(Base):
     __tablename__ = "volunteer_time_logs"
+
     id = Column(Integer, primary_key=True, index=True)
     volunteer_id = Column(Integer, ForeignKey("volunteers.id"))
     start_time = Column(DateTime, default=datetime.utcnow)
     end_time = Column(DateTime, nullable=True)
     duration_minutes = Column(Integer, default=0)
-    
+
     volunteer = relationship("VolunteerProfile", lazy="joined")

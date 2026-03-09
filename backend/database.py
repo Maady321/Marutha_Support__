@@ -1,66 +1,74 @@
-from sqlalchemy import create_engine, text
+# database.py - Database connection setup
+# This file sets up the connection to the database
+
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load .env from backend dir, then project root
-for env_path in [Path('.env'), Path('..') / '.env']:
-    if env_path.exists():
-        load_dotenv(dotenv_path=env_path)
-        break
+# Try to load environment variables from .env file
+backend_env = Path('.env')
+root_env = Path('..') / '.env'
 
-# ────────────────────────────────────────────
-# Resolve DATABASE_URL
-# ────────────────────────────────────────────
+if backend_env.exists():
+    load_dotenv(dotenv_path=backend_env)
+elif root_env.exists():
+    load_dotenv(dotenv_path=root_env)
+
+# Get the database URL from environment variable
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
-# Fix for Heroku / some cloud providers that give "postgres://" (deprecated)
+# Fix old-style postgres:// URLs to postgresql://
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# Fallback if no URL is set at all
+# If no database URL is set, use a fallback SQLite database
 if not DATABASE_URL:
     if os.getenv("VERCEL"):
-        # Vercel serverless — use /tmp SQLite as emergency fallback
         DATABASE_URL = "sqlite:////tmp/marutha.db"
-        print("⚠️  WARNING: No DATABASE_URL set. Using temporary SQLite in /tmp — data will NOT persist!")
+        print("WARNING: No DATABASE_URL set. Using temporary SQLite in /tmp")
     else:
-        # Local development fallback
         DATABASE_URL = "sqlite:///./marutha.db"
-        print("⚠️  WARNING: No DATABASE_URL set. Falling back to local SQLite.")
+        print("WARNING: No DATABASE_URL set. Using local SQLite.")
 
-print(f"✅ Database: {DATABASE_URL.split('@')[-1] if '@' in DATABASE_URL else DATABASE_URL}")
+# Print which database we are using (hide password if present)
+if '@' in DATABASE_URL:
+    print("Database:", DATABASE_URL.split('@')[-1])
+else:
+    print("Database:", DATABASE_URL)
 
-# ────────────────────────────────────────────
-# Create Engine
-# ────────────────────────────────────────────
+# Create the database engine based on database type
 if DATABASE_URL.startswith("sqlite"):
-    # SQLite — needs check_same_thread=False for FastAPI
+    # SQLite needs this special setting to work with FastAPI
     engine = create_engine(
         DATABASE_URL,
         connect_args={"check_same_thread": False},
         echo=False,
     )
 else:
-    # PostgreSQL / any other DB — use connection pooling
+    # PostgreSQL or other databases use connection pooling
     engine = create_engine(
         DATABASE_URL,
-        pool_pre_ping=True,       # Test connections before using them
-        pool_recycle=300,         # Recycle connections every 5 min
-        pool_size=5,              # Keep 5 connections in pool
-        max_overflow=10,          # Allow 10 extra connections under load
+        pool_pre_ping=True,
+        pool_recycle=300,
+        pool_size=5,
+        max_overflow=10,
         echo=False,
     )
 
-# ────────────────────────────────────────────
-# Session & Base
-# ────────────────────────────────────────────
+# Create a session factory - this is used to create database sessions
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Base class for all database models
 Base = declarative_base()
 
+
 def get_database_session():
-    """FastAPI dependency: yields a DB session and closes it after each request."""
+    """
+    Creates a new database session for each request.
+    The session is automatically closed when the request is done.
+    """
     db = SessionLocal()
     try:
         yield db

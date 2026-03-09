@@ -1,20 +1,24 @@
-/* ─────────────────────────────────────────────
-   NAVIGATION (Landing / Public pages)
-───────────────────────────────────────────── */
+/* components.css - Reusable UI Components
+   Buttons, Cards, Forms, Tables, Modals, Navigation, etc. */
+
+
+/* === NAVIGATION BAR (Landing / Public Pages) === */
+
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 0;
-    position: sticky;
+    position: sticky;          /* stays at top when scrolling */
     top: 0;
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    z-index: 1000;
+    z-index: 1000;             /* always on top */
     border-bottom: 1px solid var(--border-color);
 }
 
+/* Logo */
 .logo {
     display: flex;
     align-items: center;
@@ -33,6 +37,7 @@ nav {
     object-fit: contain;
 }
 
+/* Desktop navigation links */
 .nav-links {
     display: flex;
     align-items: center;
@@ -47,9 +52,11 @@ nav {
     transition: var(--transition);
 }
 
-.nav-links a:hover { color: var(--medical-blue); }
+.nav-links a:hover {
+    color: var(--medical-blue);
+}
 
-/* Mobile nav toggle */
+/* Hamburger menu button (hidden on desktop, shown on mobile) */
 .nav-toggle {
     display: none;
     background: none;
@@ -68,7 +75,7 @@ nav {
     border-color: var(--medical-blue);
 }
 
-/* Mobile nav drawer */
+/* Mobile navigation drawer */
 .nav-mobile {
     display: none;
     flex-direction: column;
@@ -78,7 +85,9 @@ nav {
     padding: 8px 0 16px;
 }
 
-.nav-mobile.open { display: flex; }
+.nav-mobile.open {
+    display: flex;
+}
 
 .nav-mobile a {
     padding: 14px 24px;
@@ -89,12 +98,18 @@ nav {
     transition: var(--transition);
 }
 
-.nav-mobile a:last-child { border-bottom: none; }
-.nav-mobile a:hover { background: var(--medical-blue-light); color: var(--medical-blue); }
+.nav-mobile a:last-child {
+    border-bottom: none;
+}
 
-/* ─────────────────────────────────────────────
-   BUTTONS — Clean, professional
-───────────────────────────────────────────── */
+.nav-mobile a:hover {
+    background: var(--medical-blue-light);
+    color: var(--medical-blue);
+}
+
+
+/* === BUTTONS === */
+
 .btn {
     padding: 11px 24px;
     border-radius: var(--radius-sm);
@@ -120,6 +135,7 @@ nav {
     transform: none !important;
 }
 
+/* Blue filled button */
 .btn-primary {
     background: var(--medical-blue-mid);
     color: white;
@@ -133,6 +149,7 @@ nav {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
+/* Green filled button */
 .btn-success {
     background: var(--hope-green);
     color: white;
@@ -146,6 +163,7 @@ nav {
     box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
 }
 
+/* Lavender outline button */
 .btn-outline-lavender {
     background: transparent;
     color: var(--medical-blue);
@@ -158,6 +176,7 @@ nav {
     color: var(--medical-blue-mid);
 }
 
+/* Blue outline button */
 .btn-outline-medical {
     background: transparent;
     color: var(--medical-blue-mid);
@@ -169,6 +188,7 @@ nav {
     border-color: var(--medical-blue-mid);
 }
 
+/* Red danger button */
 .btn-danger {
     background: var(--danger);
     color: white;
@@ -181,21 +201,23 @@ nav {
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
+/* Small button */
 .btn-sm {
     padding: 7px 14px;
     font-size: 0.82rem;
     border-radius: 6px;
 }
 
+/* Large button */
 .btn-lg {
     padding: 14px 32px;
     font-size: 1rem;
     border-radius: var(--radius-md);
 }
 
-/* ─────────────────────────────────────────────
-   CARDS — Professional, clean
-───────────────────────────────────────────── */
+
+/* === CARDS === */
+
 .card, .stat-card {
     background: white;
     padding: 24px;
@@ -205,17 +227,21 @@ nav {
     transition: var(--transition);
 }
 
+/* Cards lift slightly on hover */
 .card:hover {
     box-shadow: var(--shadow-hover);
     transform: translateY(-2px);
 }
 
-/* Flat card - no hover lift */
-.card-flat { transform: none !important; box-shadow: var(--shadow-soft) !important; }
+/* Flat card with no hover effect */
+.card-flat {
+    transform: none !important;
+    box-shadow: var(--shadow-soft) !important;
+}
 
-/* ─────────────────────────────────────────────
-   BADGES — Refined
-───────────────────────────────────────────── */
+
+/* === BADGES (small status labels) === */
+
 .badge {
     display: inline-flex;
     align-items: center;
@@ -228,14 +254,14 @@ nav {
     text-transform: uppercase;
 }
 
-.badge-active    { background: var(--hope-green-light); color: #065F46; }
-.badge-pending   { background: var(--amber-soft); color: #92400E; }
-.badge-declined  { background: var(--danger-light); color: #991B1B; }
-.badge-info      { background: var(--medical-blue-light); color: var(--medical-blue); }
+.badge-active   { background: var(--hope-green-light); color: #065F46; }
+.badge-pending  { background: var(--amber-soft); color: #92400E; }
+.badge-declined { background: var(--danger-light); color: #991B1B; }
+.badge-info     { background: var(--medical-blue-light); color: var(--medical-blue); }
 
-/* ─────────────────────────────────────────────
-   FORM ELEMENTS — Clean, modern
-───────────────────────────────────────────── */
+
+/* === FORM ELEMENTS (inputs, selects, textareas) === */
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -248,6 +274,7 @@ nav {
     font-size: 0.875rem;
 }
 
+/* All input types share the same styling */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -271,6 +298,7 @@ textarea {
     appearance: none;
 }
 
+/* Blue glow when focused */
 input:focus,
 select:focus,
 textarea:focus {
@@ -278,8 +306,12 @@ textarea:focus {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
-textarea { resize: vertical; min-height: 100px; }
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
 
+/* Custom dropdown arrow for select boxes */
 select {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 12px center;
@@ -288,9 +320,9 @@ select {
     padding-right: 40px;
 }
 
-/* ─────────────────────────────────────────────
-   TABLES (Responsive)
-───────────────────────────────────────────── */
+
+/* === TABLES === */
+
 .table-container {
     background: white;
     border-radius: var(--radius-lg);
@@ -298,7 +330,7 @@ select {
     border: 1px solid var(--border-color);
     overflow: hidden;
     margin-top: 20px;
-    overflow-x: auto;
+    overflow-x: auto;              /* horizontal scroll on small screens */
     -webkit-overflow-scrolling: touch;
 }
 
@@ -309,6 +341,7 @@ select {
     min-width: 560px;
 }
 
+/* Table header row */
 .custom-table th {
     background: var(--bg-warm);
     color: var(--text-muted);
@@ -321,6 +354,7 @@ select {
     border-bottom: 1px solid var(--border-color);
 }
 
+/* Table data cells */
 .custom-table td {
     padding: 14px 20px;
     border-bottom: 1px solid var(--border-light);
@@ -329,22 +363,25 @@ select {
     vertical-align: middle;
 }
 
-.custom-table tr:last-child td { border-bottom: none; }
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
 
 .custom-table tbody tr {
     transition: var(--transition);
 }
 
+/* Row highlight on hover */
 .custom-table tbody tr:hover {
     background: var(--bg-warm);
 }
 
-/* ─────────────────────────────────────────────
-   MODALS
-───────────────────────────────────────────── */
+
+/* === MODALS (popup dialogs) === */
+
 .modal-overlay {
     position: fixed;
-    inset: 0;
+    inset: 0;                      /* covers entire screen */
     background: rgba(15, 23, 42, 0.5);
     backdrop-filter: blur(4px);
     z-index: 500;
@@ -367,14 +404,16 @@ select {
     animation: fadeInUp 0.3s ease;
 }
 
-/* ─────────────────────────────────────────────
-   SECTION (Landing)
-───────────────────────────────────────────── */
-.section { padding: 80px 0; }
 
-/* ─────────────────────────────────────────────
-   UTILITY
-───────────────────────────────────────────── */
+/* === SECTIONS (Landing page) === */
+
+.section {
+    padding: 80px 0;
+}
+
+
+/* === UTILITY CLASSES (quick text colors and spacing) === */
+
 .text-muted  { color: var(--text-muted); }
 .text-light  { color: var(--text-light); }
 .text-green  { color: var(--hope-green); }
@@ -388,9 +427,9 @@ select {
 .mt-16 { margin-top: 16px; }
 .mt-24 { margin-top: 24px; }
 
-/* ─────────────────────────────────────────────
-   NOTIFICATION DOT
-───────────────────────────────────────────── */
+
+/* === NOTIFICATION DOT (red circle) === */
+
 .notif-dot {
     width: 8px;
     height: 8px;
@@ -401,9 +440,9 @@ select {
     right: 10px;
 }
 
-/* ─────────────────────────────────────────────
-   EMPTY STATE
-───────────────────────────────────────────── */
+
+/* === EMPTY STATE (shown when no data available) === */
+
 .empty-state {
     text-align: center;
     padding: 48px 24px;
@@ -421,12 +460,15 @@ select {
     font-size: 0.92rem;
 }
 
-/* ─────────────────────────────────────────────
-   RESPONSIVE — MOBILE COMPONENTS
-───────────────────────────────────────────── */
-@media (max-width: 768px) {
-    nav { padding: 12px 0; }
 
+/* === MOBILE SCREENS (less than 768px) === */
+
+@media (max-width: 768px) {
+    nav {
+        padding: 12px 0;
+    }
+
+    /* Show hamburger menu, hide desktop links */
     .nav-links { display: none; }
     .nav-toggle { display: block; }
 
@@ -435,14 +477,71 @@ select {
 
     .card, .stat-card { padding: 18px; }
 
+    .modal-overlay {
+        padding: 12px;
+    }
+
     .modal-box {
         padding: 24px 20px;
         border-radius: var(--radius-lg);
+        max-width: 100%;
     }
 
     .section { padding: 48px 0; }
+
+    /* Forms need full width */
+    .form-group label {
+        font-size: 0.82rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    input[type="tel"],
+    select,
+    textarea {
+        font-size: 16px;   /* prevents iOS zoom on focus */
+    }
+
+    /* Tables always scroll horizontally */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .custom-table {
+        min-width: 500px;
+    }
+
+    .custom-table th {
+        padding: 10px 14px;
+        font-size: 0.7rem;
+    }
+
+    .custom-table td {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+
+    /* Badges */
+    .badge {
+        font-size: 0.68rem;
+        padding: 3px 8px;
+    }
 }
 
 @media (max-width: 480px) {
     .btn-lg { padding: 12px 24px; font-size: 0.95rem; }
+
+    .modal-box {
+        padding: 20px 16px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
 }
+

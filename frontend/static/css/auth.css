@@ -1,18 +1,21 @@
-/* ─────────────────────────────────────────────
-   AUTH PAGES (Login / Register)
-───────────────────────────────────────────── */
+/* auth.css - Login & Registration Page Styles */
+
+
+/* === LOGIN PAGE WRAPPER ===
+   Full-screen centered layout for login/register pages */
+
 .login-wrapper {
-    min-height: 100vh;
+    min-height: 100vh;         /* fill the full screen height */
     background: var(--bg-page);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center;       /* center vertically */
+    justify-content: center;   /* center horizontally */
     padding: 24px 16px;
     position: relative;
     overflow: hidden;
 }
 
-/* Subtle decorative elements */
+/* Decorative circle in top-right corner */
 .login-wrapper::before {
     content: '';
     position: absolute;
@@ -22,9 +25,10 @@
     height: 500px;
     background: radial-gradient(circle, rgba(37, 99, 235, 0.06), transparent 70%);
     border-radius: 50%;
-    pointer-events: none;
+    pointer-events: none;      /* doesn't block clicks */
 }
 
+/* Decorative circle in bottom-left corner */
 .login-wrapper::after {
     content: '';
     position: absolute;
@@ -37,11 +41,14 @@
     pointer-events: none;
 }
 
+
+/* === LOGIN BOX === */
+
 .login-container {
     width: 100%;
     max-width: 440px;
     position: relative;
-    z-index: 1;
+    z-index: 1;                /* appear above decorations */
 }
 
 .login-box, .register-box {
@@ -62,7 +69,9 @@
     max-width: 960px;
 }
 
-/* Logo / heading section */
+
+/* === LOGO SECTION (top of login box) === */
+
 .logo-section {
     text-align: center;
     margin-bottom: 32px;
@@ -80,13 +89,16 @@
     font-size: 0.9rem;
 }
 
-/* Divider */
+
+/* === DIVIDER LINE (between login and register buttons) === */
+
 .divider {
     text-align: center;
     margin: 24px 0;
     position: relative;
 }
 
+/* Horizontal line behind the text */
 .divider::before {
     content: "";
     position: absolute;
@@ -98,6 +110,7 @@
     z-index: 1;
 }
 
+/* Text sits on top of the line */
 .divider span {
     background: white;
     padding: 0 14px;
@@ -107,7 +120,9 @@
     font-size: 0.85rem;
 }
 
-/* Link text */
+
+/* === LINK TEXT === */
+
 .link-text {
     color: var(--medical-blue-mid);
     text-decoration: none;
@@ -116,9 +131,13 @@
     transition: var(--transition);
 }
 
-.link-text:hover { text-decoration: underline; }
+.link-text:hover {
+    text-decoration: underline;
+}
 
-/* Checkbox */
+
+/* === CHECKBOX === */
+
 .checkbox-wrapper {
     display: flex;
     align-items: center;
@@ -134,9 +153,10 @@
     border-radius: 4px;
 }
 
-/* ─────────────────────────────────────────────
-   ROLE SELECTION GRID (Registration)
-───────────────────────────────────────────── */
+
+/* === ROLE SELECTION CARDS (on Register page) ===
+   Three cards: Patient, Doctor, Volunteer */
+
 .role-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -158,14 +178,16 @@
     cursor: pointer;
 }
 
+/* When hovered or selected */
 .role-card:hover,
 .role-card.selected {
     border-color: var(--medical-blue-mid);
     background: var(--medical-blue-light);
-    transform: translateY(-2px);
+    transform: translateY(-2px);    /* lifts card slightly */
     box-shadow: var(--shadow-md);
 }
 
+/* Role icon circle */
 .role-icon {
     font-size: 1.75rem;
     margin-bottom: 16px;
@@ -180,6 +202,7 @@
     transition: var(--transition);
 }
 
+/* Icon changes color on hover */
 .role-card:hover .role-icon {
     background: var(--medical-blue-mid);
     color: white;
@@ -199,17 +222,20 @@
     line-height: 1.5;
 }
 
-/* ─────────────────────────────────────────────
-   RESPONSIVE — AUTH
-───────────────────────────────────────────── */
+
+/* === MOBILE (less than 520px) === */
+
 @media (max-width: 520px) {
     .login-box, .register-box {
         padding: 28px 20px;
         border-radius: var(--radius-lg);
     }
 
-    .logo-section h1 { font-size: 1.3rem; }
+    .logo-section h1 {
+        font-size: 1.3rem;
+    }
 
+    /* Stack role cards vertically on small screens */
     .role-grid {
         grid-template-columns: 1fr;
     }

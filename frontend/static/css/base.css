@@ -1,86 +1,98 @@
+/* base.css - Global Styles
+   This file sets up fonts, colors, and basic styling for the entire website */
+
+/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
 
+/* CSS Variables - These are like "constants" that store values we reuse */
 :root {
-    /* ── Professional Color Palette: White / Lavender / Green / Blue ── */
+    /* Background Colors */
     --bg-white: #FFFFFF;
-    --bg-warm: #FAF8FD;
-    --bg-page: #F5F1FA;
-    --bg-gradient: linear-gradient(160deg, #FAF8FD 0%, #F5F1FA 40%, #F0FDF4 100%);
+    --bg-warm: #FAF8FD;           /* very light purple-ish white */
+    --bg-page: #F5F1FA;           /* light lavender page background */
 
-    /* Lavender */
-    --lavender-soft: #E8E0F0;
-    --lavender-warm: #C9B8DB;
-    --lavender-muted: #9B8BB4;
+    /* Lavender (Purple) Shades */
+    --lavender-soft: #E8E0F0;     /* light lavender for cards */
+    --lavender-warm: #C9B8DB;     /* medium lavender for borders */
+    --lavender-muted: #9B8BB4;    /* darker lavender for accents */
 
-    /* Blue */
-    --medical-blue: #1E3A5F;
-    --medical-blue-mid: #2563EB;
-    --medical-blue-light: #EFF6FF;
-    --medical-blue-hover: #1D4ED8;
-    --reassuring-blue: #DBEAFE;
+    /* Blue Shades */
+    --medical-blue: #1E3A5F;      /* dark blue for headings */
+    --medical-blue-mid: #2563EB;  /* medium blue for buttons */
+    --medical-blue-light: #EFF6FF;/* very light blue background */
+    --medical-blue-hover: #1D4ED8;/* button hover color */
+    --reassuring-blue: #DBEAFE;   /* soft blue for highlights */
 
-    /* Green */
-    --hope-green: #059669;
+    /* Green Shades */
+    --hope-green: #059669;        /* success / positive color */
     --hope-green-hover: #047857;
-    --hope-green-light: #D1FAE5;
-    --hope-green-muted: #ECFDF5;
+    --hope-green-light: #D1FAE5;  /* light green background */
+    --hope-green-muted: #ECFDF5;  /* very light green */
 
-    /* Sidebar — professional dark blue */
-    --sidebar-bg: #0F172A;
+    /* Sidebar Colors */
+    --sidebar-bg: #0F172A;        /* dark navy for sidebar */
     --sidebar-text: rgba(255, 255, 255, 0.7);
     --sidebar-active: rgba(255, 255, 255, 0.1);
 
-    /* Neutral */
-    --border-color: #E2E8F0;
-    --border-light: #F1F5F9;
-    --danger: #DC2626;
-    --danger-light: #FEE2E2;
-    --amber-soft: #FEF3C7;
+    /* Border & Status Colors */
+    --border-color: #E2E8F0;      /* standard border gray */
+    --border-light: #F1F5F9;      /* lighter border */
+    --danger: #DC2626;            /* red for errors/warnings */
+    --danger-light: #FEE2E2;      /* light red background */
+    --amber-soft: #FEF3C7;        /* soft yellow/amber */
 
-    /* Text — high contrast */
-    --text-main: #0F172A;
-    --text-secondary: #334155;
-    --text-muted: #64748B;
-    --text-light: #94A3B8;
+    /* Text Colors - dark to light */
+    --text-main: #0F172A;         /* primary text (near black) */
+    --text-secondary: #334155;    /* secondary text */
+    --text-muted: #64748B;        /* muted/gray text */
+    --text-light: #94A3B8;        /* very light text */
 
-    /* Spacing & Effects */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
+    /* Sizes & Effects */
+    --radius-sm: 8px;             /* small border radius */
+    --radius-md: 12px;            /* medium border radius */
+    --radius-lg: 16px;            /* large border radius */
+    --radius-xl: 20px;            /* extra large border radius */
+
+    /* Box Shadows - from subtle to strong */
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02);
     --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.04), 0 4px 6px rgba(0, 0, 0, 0.02);
     --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.05), 0 8px 10px rgba(0, 0, 0, 0.02);
+
+    /* Animation speed */
     --transition: all 0.2s ease;
 
     /* Sidebar width */
     --sidebar-width: 260px;
 }
 
-/* ─────────────────────────────────────────────
-   RESET & BASE
-───────────────────────────────────────────── */
+
+/* === RESET ===
+   Remove default browser margins/padding so everything starts clean */
+
 *, *::before, *::after {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box;    /* makes sizing easier to calculate */
 }
 
 html {
-    scroll-behavior: smooth;
-    font-size: 16px;
+    scroll-behavior: smooth;   /* smooth scrolling when clicking links */
+    font-size: 16px;           /* base font size */
 }
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background-color: var(--bg-white);
     color: var(--text-main);
-    line-height: 1.6;
+    line-height: 1.6;          /* space between lines of text */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
 }
+
+
+/* === HEADINGS === */
 
 h1, h2, h3, h4, h5 {
     font-family: 'Poppins', sans-serif;
@@ -105,6 +117,9 @@ img {
     height: auto;
 }
 
+
+/* === LINKS === */
+
 a {
     transition: var(--transition);
     color: var(--medical-blue-mid);
@@ -114,18 +129,19 @@ a:hover {
     color: var(--medical-blue-hover);
 }
 
-/* ─────────────────────────────────────────────
-   LAYOUT
-───────────────────────────────────────────── */
+
+/* === LAYOUT CONTAINER === */
+
 .container {
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 0 auto;           /* center the container */
     padding: 0 24px;
 }
 
-/* ─────────────────────────────────────────────
-   ANIMATIONS
-───────────────────────────────────────────── */
+
+/* === ANIMATIONS ===
+   These create smooth fade-in effects when elements appear */
+
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -141,6 +157,7 @@ a:hover {
     to   { opacity: 1; transform: translateX(0); }
 }
 
+/* Add these classes to any element to animate it */
 .fade-in {
     animation: fadeIn 0.4s ease forwards;
 }
@@ -149,17 +166,17 @@ a:hover {
     animation: fadeInUp 0.5s ease forwards;
 }
 
-/* ─────────────────────────────────────────────
-   SCROLLBAR — subtle, professional
-───────────────────────────────────────────── */
+
+/* === SCROLLBAR STYLING === */
+
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
 
-/* ─────────────────────────────────────────────
-   MOBILE: < 768px base fixes
-───────────────────────────────────────────── */
+
+/* === MOBILE SCREENS (less than 768px wide) === */
+
 @media (max-width: 768px) {
     html { font-size: 15px; }
     .container { padding: 0 16px; }

@@ -1,44 +1,52 @@
-/**
- * Marutha Support - Patient Health Management JS
- */
+// manage_health.js - Patient Health Management
+// Handles health logs, appointments, and finding doctors
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     initRange();
-    
+
     // Check for hash in URL to switch tab
-    const hash = window.location.hash.replace("#", "");
-    const validTabs = ["logs", "appointments", "find-doctor"];
-    
-    if (validTabs.includes(hash)) {
+    var hash = window.location.hash.replace("#", "");
+    var validTabs = ["logs", "appointments", "find-doctor"];
+
+    if (validTabs.indexOf(hash) >= 0) {
         switchHealthTab(hash);
     } else {
-        // Default to logs if no hash
+        // Default to logs
         loadHealthLogs();
     }
 });
 
-/**
- * Switch Tabs Logic
- */
+
+// ---- Switch Tabs ----
 function switchHealthTab(tabId) {
     // Hide all tabs
-    document.querySelectorAll(".tab-content").forEach((el) => el.classList.remove("active"));
-    
+    var allTabs = document.querySelectorAll(".tab-content");
+    for (var i = 0; i < allTabs.length; i++) {
+        allTabs[i].classList.remove("active");
+    }
+
     // Remove active class from buttons
-    document.querySelectorAll(".tab-btn").forEach((el) => el.classList.remove("active"));
-    document.querySelectorAll(".sidebar-link").forEach((el) => el.classList.remove("active"));
+    var allBtns = document.querySelectorAll(".tab-btn");
+    for (var j = 0; j < allBtns.length; j++) {
+        allBtns[j].classList.remove("active");
+    }
+
+    var allLinks = document.querySelectorAll(".sidebar-link");
+    for (var k = 0; k < allLinks.length; k++) {
+        allLinks[k].classList.remove("active");
+    }
 
     // Activate selected content
-    const targetContent = document.getElementById("content-" + tabId);
+    var targetContent = document.getElementById("content-" + tabId);
     if (targetContent) targetContent.classList.add("active");
 
     // Activate tab button
-    const tabBtn = document.getElementById("tab-" + tabId);
+    var tabBtn = document.getElementById("tab-" + tabId);
     if (tabBtn) tabBtn.classList.add("active");
 
-    // Handle sidebar active state shim
-    const navLogs = document.getElementById("nav-logs");
-    const navAppts = document.getElementById("nav-appointments");
+    // Handle sidebar active state
+    var navLogs = document.getElementById("nav-logs");
+    var navAppts = document.getElementById("nav-appointments");
 
     if (tabId === "logs" && navLogs) {
         navLogs.classList.add("active");
@@ -46,7 +54,7 @@ function switchHealthTab(tabId) {
         navAppts.classList.add("active");
     }
 
-    // Load dynamic data
+    // Load data for the selected tab
     if (tabId === "find-doctor") {
         loadDoctors();
     } else if (tabId === "logs") {
@@ -56,37 +64,44 @@ function switchHealthTab(tabId) {
     }
 }
 
-/**
- * Initialize Range Input
- */
+
+// ---- Initialize Pain Range Slider ----
 function initRange() {
-    const range = document.getElementById("pain_range");
-    const display = document.getElementById("pain_val");
+    var range = document.getElementById("pain_range");
+    var display = document.getElementById("pain_val");
     if (range && display) {
-        range.addEventListener("input", (e) => {
+        range.addEventListener("input", function(e) {
             display.innerText = e.target.value;
         });
     }
 }
 
-/**
- * Handle Log Submission
- */
+
+// ---- Submit Health Log ----
 async function submitLog(e) {
     e.preventDefault();
-    
-    const painRange = document.getElementById("pain_range");
-    const moodInput = document.getElementById("mood_select");
-    const notesArea = e.target.querySelector('textarea');
 
-    const payload = {
-        pain_level: parseInt(painRange?.value || 5),
-        mood: moodInput?.value || 'Stable',
-        notes: notesArea?.value || ''
+    var painRange = document.getElementById("pain_range");
+    var moodInput = document.getElementById("mood_select");
+    var notesArea = e.target.querySelector('textarea');
+
+    var painValue = 5;
+    if (painRange) painValue = parseInt(painRange.value);
+
+    var moodValue = 'Stable';
+    if (moodInput) moodValue = moodInput.value;
+
+    var notesValue = '';
+    if (notesArea) notesValue = notesArea.value;
+
+    var payload = {
+        pain_level: painValue,
+        mood: moodValue,
+        notes: notesValue
     };
 
     try {
-        const response = await apiFetch('/vitals/', {
+        var response = await apiFetch('/vitals/', {
             method: 'POST',
             body: JSON.stringify(payload)
         });
@@ -94,12 +109,12 @@ async function submitLog(e) {
         if (response.ok) {
             alert("Health log submitted successfully!");
             e.target.reset();
-            const display = document.getElementById("pain_val");
+            var display = document.getElementById("pain_val");
             if (display) display.innerText = "5";
             loadHealthLogs(); // Refresh list
         } else {
-            const data = await response.json();
-            alert(`Error: ${data.detail}`);
+            var data = await response.json();
+            alert('Error: ' + data.detail);
         }
     } catch (error) {
         console.error('Submit log error:', error);
@@ -107,19 +122,18 @@ async function submitLog(e) {
     }
 }
 
-/**
- * Load Health Logs
- */
+
+// ---- Load Health Logs ----
 async function loadHealthLogs() {
-    const tbody = document.getElementById('logs-table-body');
+    var tbody = document.getElementById('logs-table-body');
     if (!tbody) return;
 
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Loading logs...</td></tr>';
 
     try {
-        const response = await apiFetch('/vitals/my');
+        var response = await apiFetch('/vitals/my');
         if (response.ok) {
-            const logs = await response.json();
+            var logs = await response.json();
             renderLogs(logs, tbody);
         } else {
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">Failed to load logs</td></tr>';
@@ -130,6 +144,7 @@ async function loadHealthLogs() {
     }
 }
 
+
 function renderLogs(logs, tbody) {
     if (logs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted)">No logs recorded yet.</td></tr>';
@@ -137,41 +152,47 @@ function renderLogs(logs, tbody) {
     }
 
     tbody.innerHTML = '';
-    logs.forEach(log => {
-        const date = new Date(log.timestamp);
-        const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
-        // Mood badge color
-        let badgeClass = 'mood-badge';
-        if (['Happy', 'Peaceful'].includes(log.mood)) badgeClass += ' mood-peaceful';
-        else if (log.mood === 'Stable') badgeClass += ' mood-stable';
-        else badgeClass += ' mood-anxious'; // simplistic fallback
 
-        const row = `
-            <tr>
-                <td>${dateStr}</td>
-                <td><span class="${badgeClass}">${log.mood}</span></td>
-                <td>${log.pain_level}/10</td>
-                <td>${log.notes || '-'}</td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
-    });
+    for (var i = 0; i < logs.length; i++) {
+        var log = logs[i];
+        var date = new Date(log.timestamp);
+        var dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        // Set badge color based on mood
+        var badgeClass = 'mood-badge';
+        if (log.mood === 'Happy' || log.mood === 'Peaceful') {
+            badgeClass = badgeClass + ' mood-peaceful';
+        } else if (log.mood === 'Stable') {
+            badgeClass = badgeClass + ' mood-stable';
+        } else {
+            badgeClass = badgeClass + ' mood-anxious';
+        }
+
+        var notesText = log.notes || '-';
+
+        var row = '<tr>' +
+            '<td>' + dateStr + '</td>' +
+            '<td><span class="' + badgeClass + '">' + log.mood + '</span></td>' +
+            '<td>' + log.pain_level + '/10</td>' +
+            '<td>' + notesText + '</td>' +
+        '</tr>';
+
+        tbody.innerHTML = tbody.innerHTML + row;
+    }
 }
 
-/**
- * Load Appointments
- */
+
+// ---- Load Appointments ----
 async function loadAppointments() {
-    const grid = document.getElementById('appointments-grid');
+    var grid = document.getElementById('appointments-grid');
     if (!grid) return;
 
     grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Loading appointments...</div>';
 
     try {
-        const response = await apiFetch('/consultations/my');
+        var response = await apiFetch('/consultations/my');
         if (response.ok) {
-            const appointments = await response.json();
+            var appointments = await response.json();
             renderAppointments(appointments, grid);
         } else {
             grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:red; padding:20px;">Failed to load appointments</div>';
@@ -181,6 +202,7 @@ async function loadAppointments() {
     }
 }
 
+
 function renderAppointments(appointments, container) {
     if (appointments.length === 0) {
         container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted)">No scheduled appointments. <br><button class="btn btn-outline-lavender" onclick="switchTab(\'find-doctor\')" style="margin-top:10px">Find a Specialist</button></div>';
@@ -188,62 +210,71 @@ function renderAppointments(appointments, container) {
     }
 
     container.innerHTML = '';
-    appointments.forEach(appt => {
-        const initials = appt.doctor_name ? appt.doctor_name.split(' ').map(n=>n[0]).join('') : 'Dr';
-        const dateObj = appt.appointment_time ? new Date(appt.appointment_time) : null;
-        const dateStr = dateObj ? dateObj.toLocaleString() : 'Scheduling...';
-        
-        let statusColor = 'var(--text-muted)';
-        let badgeStyle = "background: #e2e8f0; color: #64748b";
-        
-        if (appt.status === 'accepted') {
-             statusColor = 'var(--hope-green)';
-             badgeStyle = "background: #dcfce7; color: #166534";
-        } else if (appt.status === 'pending') {
-             statusColor = '#f59e0b';
-             badgeStyle = "background: #fef3c7; color: #d97706";
+
+    for (var i = 0; i < appointments.length; i++) {
+        var appt = appointments[i];
+
+        // Get initials
+        var initials = 'Dr';
+        if (appt.doctor_name) {
+            var parts = appt.doctor_name.split(' ');
+            initials = '';
+            for (var j = 0; j < parts.length; j++) {
+                initials = initials + parts[j][0];
+            }
         }
 
-        const card = document.createElement('div');
+        // Format date
+        var dateStr = 'Scheduling...';
+        if (appt.appointment_time) {
+            dateStr = new Date(appt.appointment_time).toLocaleString();
+        }
+
+        // Set status colors
+        var badgeStyle = "background: #e2e8f0; color: #64748b";
+        if (appt.status === 'accepted') {
+            badgeStyle = "background: #dcfce7; color: #166534";
+        } else if (appt.status === 'pending') {
+            badgeStyle = "background: #fef3c7; color: #d97706";
+        }
+
+        var borderColor = appt.status === 'accepted' ? 'var(--medical-blue)' : '#cbd5e1';
+
+        var card = document.createElement('div');
         card.className = 'card';
         card.style.padding = '24px';
-        card.style.borderLeft = `4px solid ${appt.status === 'accepted' ? 'var(--medical-blue)' : '#cbd5e1'}`;
+        card.style.borderLeft = '4px solid ' + borderColor;
         card.style.background = '#f8fafc';
 
-        card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                <span class="badge" style="${badgeStyle}">${appt.status.toUpperCase()}</span>
-                <span style="font-weight: 600; color: var(--medical-blue)">${dateStr}</span>
-            </div>
-            <h4 style="margin-bottom: 4px">${appt.doctor_name || 'Doctor Assigned Soon'}</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-                General Consultation
-            </p>
-            <div style="display: flex; gap: 8px">
-                <button class="btn btn-sm btn-outline-lavender" onclick="window.location.href='doctor_profile.html?id=${appt.doctor_id}'">View Details</button>
-                <button class="btn btn-sm btn-outline-medical" onclick="window.location.href='chat.html?userId=${appt.doctor_user_id}'">
-                    <i class="fas fa-comment"></i> Chat
-                </button>
-            </div>
-        `;
+        card.innerHTML =
+            '<div style="display: flex; justify-content: space-between; margin-bottom: 12px;">' +
+                '<span class="badge" style="' + badgeStyle + '">' + appt.status.toUpperCase() + '</span>' +
+                '<span style="font-weight: 600; color: var(--medical-blue)">' + dateStr + '</span>' +
+            '</div>' +
+            '<h4 style="margin-bottom: 4px">' + (appt.doctor_name || 'Doctor Assigned Soon') + '</h4>' +
+            '<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">General Consultation</p>' +
+            '<div style="display: flex; gap: 8px">' +
+                '<button class="btn btn-sm btn-outline-lavender" onclick="window.location.href=\'doctor_profile.html?id=' + appt.doctor_id + '\'">View Details</button>' +
+                '<button class="btn btn-sm btn-outline-medical" onclick="window.location.href=\'chat.html?userId=' + appt.doctor_user_id + '\'">' +
+                    '<i class="fas fa-comment"></i> Chat</button>' +
+            '</div>';
+
         container.appendChild(card);
-    });
+    }
 }
 
 
-/**
- * Load Doctors List
- */
+// ---- Load Doctors List ----
 async function loadDoctors() {
-    const grid = document.getElementById('doctor-grid');
+    var grid = document.getElementById('doctor-grid');
     if (!grid) return;
 
     grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem">Searching for online doctors...</div>';
 
     try {
-        const response = await apiFetch('/patients/online/doctors');
+        var response = await apiFetch('/patients/online/doctors');
         if (response.ok) {
-            const doctors = await response.json();
+            var doctors = await response.json();
             renderDoctors(doctors, grid);
         } else {
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--danger)">Failed to load doctors</div>';
@@ -253,6 +284,7 @@ async function loadDoctors() {
     }
 }
 
+
 function renderDoctors(doctors, container) {
     if (doctors.length === 0) {
         container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted)">No doctors are currently online. Please check back later.</div>';
@@ -260,38 +292,46 @@ function renderDoctors(doctors, container) {
     }
 
     container.innerHTML = '';
-    doctors.forEach(doc => {
-        const initials = doc.name.split(' ').map(n => n[0]).join('');
-        const card = document.createElement('div');
+
+    for (var i = 0; i < doctors.length; i++) {
+        var doc = doctors[i];
+
+        // Get initials
+        var parts = doc.name.split(' ');
+        var initials = '';
+        for (var j = 0; j < parts.length; j++) {
+            initials = initials + parts[j][0];
+        }
+
+        var card = document.createElement('div');
         card.className = "card doctor-card fade-in";
         card.style.padding = "32px";
         card.style.textAlign = "center";
 
-        card.innerHTML = `
-            <div class="profile-pic" style="width: 80px; height: 80px; margin: 0 auto 16px; font-size: 1.5rem; background: var(--lavender-soft); color: var(--medical-blue);">
-                ${initials}
-            </div>
-            <h4 style="margin-bottom: 4px">${doc.name}</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-                ${doc.specialty} • Specialist
-            </p>
-            <div style="display: flex; gap: 8px; justify-content: center">
-                <button class="btn btn-sm btn-primary" onclick="requestDoctor(${doc.id})">Request Now</button>
-                <button class="btn btn-sm btn-outline-lavender" onclick="window.location.href='doctor_profile.html?id=${doc.id}'">View Profile</button>
-            </div>
-        `;
+        card.innerHTML =
+            '<div class="profile-pic" style="width: 80px; height: 80px; margin: 0 auto 16px; font-size: 1.5rem; background: var(--lavender-soft); color: var(--medical-blue);">' +
+                initials +
+            '</div>' +
+            '<h4 style="margin-bottom: 4px">' + doc.name + '</h4>' +
+            '<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">' +
+                doc.specialty + ' • Specialist' +
+            '</p>' +
+            '<div style="display: flex; gap: 8px; justify-content: center">' +
+                '<button class="btn btn-sm btn-primary" onclick="requestDoctor(' + doc.id + ')">Request Now</button>' +
+                '<button class="btn btn-sm btn-outline-lavender" onclick="window.location.href=\'doctor_profile.html?id=' + doc.id + '\'">View Profile</button>' +
+            '</div>';
+
         container.appendChild(card);
-    });
+    }
 }
 
-/**
- * Request a doctor
- */
+
+// ---- Request a Doctor ----
 async function requestDoctor(doctorId) {
     if (!confirm('Would you like to send a consultation request to this doctor?')) return;
 
     try {
-        const response = await apiFetch(`/patients/request_doctor/${doctorId}`, {
+        var response = await apiFetch('/patients/request_doctor/' + doctorId, {
             method: 'POST',
             body: JSON.stringify({})
         });
@@ -299,16 +339,17 @@ async function requestDoctor(doctorId) {
         if (response.ok) {
             alert('Request sent successfully! The doctor will notify you shortly.');
         } else {
-            const data = await response.json();
-            alert(`Error: ${data.detail || 'Could not send request'}`);
+            var data = await response.json();
+            alert('Error: ' + (data.detail || 'Could not send request'));
         }
     } catch (error) {
         alert('Failed to send request.');
     }
 }
 
-// Global shims
+
+// Make functions available globally
 window.switchTab = switchHealthTab;
 window.submitLog = submitLog;
-window.updatePainValue = (val) => document.getElementById('pain_val').innerText = val;
+window.updatePainValue = function(val) { document.getElementById('pain_val').innerText = val; };
 window.requestDoctor = requestDoctor;

@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="../static/css/components.css" />
     <link rel="stylesheet" href="../static/css/landing.css" />
     <style>
-      /* ── Landing Nav ── */
+      /* Landing page specific styles - these only apply to this page */
+
+      /* Navigation bar at the top */
       .landing-nav {
         display: flex;
         justify-content: space-between;
@@ -60,7 +62,7 @@
         background: var(--medical-blue-light);
         border-color: var(--medical-blue);
       }
-      /* Mobile drawer */
+      /* Mobile menu that slides down on small screens */
       .landing-mobile-menu {
         display: none;
         flex-direction: column;
@@ -103,7 +105,7 @@
         }
       }
 
-      /* ── Hero ── */
+      /* Hero section at the top of the page */
       .landing-hero {
         padding: 60px 0 80px;
       }
@@ -147,7 +149,7 @@
         flex-wrap: wrap;
       }
 
-      /* Role cards */
+      /* Cards for Patient, Doctor, Volunteer portals */
       .role-card {
         transition: all 0.2s ease;
         background: white;
@@ -180,7 +182,7 @@
         transform: scale(1.05);
       }
 
-      /* Section headers */
+      /* Section headers used throughout the page */
       .section-header {
         text-align: center;
         margin-bottom: 48px;
@@ -196,7 +198,7 @@
         font-size: 1rem;
       }
 
-      /* ── Responsive ── */
+      /* Mobile responsive adjustments */
       @media (max-width: 768px) {
         .nav-hamburger {
           display: flex;
@@ -937,27 +939,32 @@
       </div>
     </footer>
     <script>
-      // Mobile hamburger toggle
-      const hamburger = document.getElementById("navHamburger");
-      const mobileMenu = document.getElementById("landingMobileMenu");
-      let isOpen = false;
+      // Mobile hamburger menu toggle
+      var hamburger = document.getElementById("navHamburger");
+      var mobileMenu = document.getElementById("landingMobileMenu");
+      var isOpen = false;
 
-      hamburger.addEventListener("click", () => {
+      // When hamburger button is clicked, open/close the mobile menu
+      hamburger.addEventListener("click", function () {
         isOpen = !isOpen;
-        mobileMenu.classList.toggle("open", isOpen);
-        hamburger.innerHTML = isOpen
-          ? '<i class="fas fa-times"></i>'
-          : '<i class="fas fa-bars"></i>';
+        if (isOpen) {
+          mobileMenu.classList.add("open");
+          hamburger.innerHTML = '<i class="fas fa-times"></i>';
+        } else {
+          mobileMenu.classList.remove("open");
+          hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        }
       });
 
+      // Close the mobile menu
       function closeMobileMenu() {
         isOpen = false;
         mobileMenu.classList.remove("open");
         hamburger.innerHTML = '<i class="fas fa-bars"></i>';
       }
 
-      // Close on outside click
-      document.addEventListener("click", (e) => {
+      // Close menu when clicking outside of it
+      document.addEventListener("click", function (e) {
         if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
           closeMobileMenu();
         }

@@ -1,12 +1,14 @@
-/* ============================
-   Professional Chat Layout
-   ============================ */
+/* chat.css - Chat Page Styles */
+
+
+/* === CHAT PAGE LAYOUT ===
+   Two-column layout: contacts sidebar on the left, messages on the right */
 
 .chat-layout {
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 320px 1fr;   /* sidebar = 320px, messages = rest */
     gap: 0;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 160px);        /* full height minus header */
     background: white;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -14,7 +16,9 @@
     border: 1px solid var(--border-color);
 }
 
-/* --- Contact Sidebar --- */
+
+/* === CONTACTS SIDEBAR (left side) === */
+
 .chat-sidebar {
     border-right: 1px solid var(--border-color);
     background: var(--bg-warm);
@@ -23,6 +27,7 @@
     overflow: hidden;
 }
 
+/* Sidebar header with search */
 .chat-sidebar-header {
     padding: 18px 20px;
     border-bottom: 1px solid var(--border-color);
@@ -36,6 +41,7 @@
     font-weight: 700;
 }
 
+/* Search bar */
 .chat-search {
     position: relative;
 }
@@ -51,7 +57,7 @@
 
 .chat-search input {
     width: 100%;
-    padding: 9px 14px 9px 38px;
+    padding: 9px 14px 9px 38px;        /* extra left padding for the icon */
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     outline: none;
@@ -65,12 +71,15 @@
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.06);
 }
 
-/* Contact List */
+
+/* === CONTACT LIST === */
+
 #chatListContainer {
-    overflow-y: auto;
+    overflow-y: auto;          /* scrollable if many contacts */
     flex: 1;
 }
 
+/* Each contact item */
 .chat-contact {
     padding: 12px 18px;
     cursor: pointer;
@@ -86,11 +95,13 @@
     background: var(--medical-blue-light);
 }
 
+/* Active (currently selected) contact */
 .chat-contact.active {
     background: var(--reassuring-blue);
     border-left-color: var(--medical-blue-mid);
 }
 
+/* Contact avatar (circle with initials) */
 .chat-contact .contact-avatar {
     width: 42px;
     height: 42px;
@@ -123,7 +134,9 @@
     text-transform: capitalize;
 }
 
-/* --- Conversation Panel --- */
+
+/* === CONVERSATION PANEL (right side) === */
+
 .chat-main {
     display: flex;
     flex-direction: column;
@@ -131,7 +144,7 @@
     min-width: 0;
 }
 
-/* Chat Header */
+/* Chat header showing who you're talking to */
 .chat-conv-header {
     padding: 14px 20px;
     border-bottom: 1px solid var(--border-color);
@@ -168,18 +181,20 @@
     color: var(--hope-green);
 }
 
-/* Messages Container */
+
+/* === MESSAGES AREA === */
+
 .chat-messages-area {
     flex: 1;
-    padding: 20px 20px;
-    overflow-y: auto;
+    padding: 20px;
+    overflow-y: auto;          /* scrollable messages */
     background: var(--bg-page);
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-/* Empty state */
+/* Empty state (when no messages) */
 .chat-empty-state {
     flex: 1;
     display: flex;
@@ -204,20 +219,26 @@
     color: var(--text-muted);
 }
 
-/* --- Message Bubbles --- */
+
+/* === MESSAGE BUBBLES === */
+
+/* Each message row */
 .msg-row {
     display: flex;
     margin-bottom: 2px;
 }
 
+/* Sent messages go to the right */
 .msg-row.sent {
     justify-content: flex-end;
 }
 
+/* Received messages go to the left */
 .msg-row.received {
     justify-content: flex-start;
 }
 
+/* The bubble itself */
 .msg-bubble {
     max-width: 65%;
     padding: 8px 14px;
@@ -229,21 +250,24 @@
     animation: msgAppear 0.2s ease;
 }
 
+/* Bubble appear animation */
 @keyframes msgAppear {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Sent bubble (green, right side) */
 .msg-row.sent .msg-bubble {
     background: var(--hope-green-light);
     color: var(--text-main);
-    border-top-right-radius: 0;
+    border-top-right-radius: 0;   /* pointed corner */
 }
 
+/* Received bubble (white, left side) */
 .msg-row.received .msg-bubble {
     background: white;
     color: var(--text-main);
-    border-top-left-radius: 0;
+    border-top-left-radius: 0;    /* pointed corner */
     border: 1px solid var(--border-color);
 }
 
@@ -251,6 +275,7 @@
     margin: 0;
 }
 
+/* Timestamp below the message */
 .msg-bubble .msg-time {
     display: block;
     font-size: 0.68rem;
@@ -259,7 +284,7 @@
     margin-top: 3px;
 }
 
-/* Date separator */
+/* Date separator (like "Today" or "Yesterday") */
 .msg-date-sep {
     text-align: center;
     margin: 14px 0 6px;
@@ -276,7 +301,9 @@
     letter-spacing: 0.3px;
 }
 
-/* --- Message Input Area --- */
+
+/* === MESSAGE INPUT BAR (bottom) === */
+
 .chat-input-bar {
     padding: 12px 16px;
     background: white;
@@ -309,6 +336,7 @@
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.06);
 }
 
+/* Send button (round blue circle) */
 .chat-send-btn {
     width: 42px;
     height: 42px;
@@ -334,7 +362,10 @@
     transform: scale(0.95);
 }
 
-/* --- Responsive --- */
+
+/* === MOBILE (less than 900px) ===
+   On small screens, hide sidebar and show full-width messages */
+
 @media (max-width: 900px) {
     .chat-layout {
         grid-template-columns: 1fr;

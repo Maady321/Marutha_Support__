@@ -12,12 +12,12 @@
     <link rel="stylesheet" href="../static/css/components.css" />
     <link rel="stylesheet" href="../static/css/dashboard.css" />
     <style>
-      /* ── Page Layout ── */
+      /* Page layout padding */
       .page-body {
         padding: 28px 36px 48px;
       }
 
-      /* ── Summary Bar ── */
+      /* Summary stats bar at the top */
       .summary-bar {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -56,7 +56,7 @@
         color: #ef4444;
       }
 
-      /* ── Filter Tabs ── */
+      /* Filter tabs (All, Available, Partially Assigned, etc.) */
       .filter-tabs {
         display: flex;
         gap: 8px;
@@ -84,7 +84,7 @@
         color: white;
       }
 
-      /* ── Volunteer Cards Grid ── */
+      /* Volunteer cards grid layout */
       .volunteers-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -297,7 +297,7 @@
         gap: 8px;
       }
 
-      /* ── Assign Patient Modal ── */
+      /* Assign patient popup modal */
       .modal-backdrop {
         position: fixed;
         inset: 0;
@@ -352,7 +352,7 @@
         cursor: not-allowed;
       }
 
-      /* ── Empty State ── */
+      /* Empty state when no volunteers found */
       .empty-state {
         grid-column: 1 / -1;
         text-align: center;
@@ -366,7 +366,7 @@
         display: block;
       }
 
-      /* ── Responsive ── */
+      /* Mobile responsive adjustments */
       @media (max-width: 768px) {
         .page-body {
           padding: 16px;
@@ -381,6 +381,24 @@
     </style>
   </head>
   <body>
+    <!-- Mobile Sidebar Toggle Button -->
+    <button
+      class="sidebar-toggle"
+      onclick="
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+      "
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div
+      class="sidebar-overlay"
+      onclick="
+        document.querySelector('.sidebar').classList.remove('open');
+        this.classList.remove('active');
+      "
+    ></div>
+
     <div class="dashboard-container">
       <!-- Doctor Sidebar -->
       <aside class="sidebar">
@@ -578,21 +596,25 @@
 
     <script src="../static/js/app.js"></script>
     <script>
-      let allVolunteers = [];
-      let allPatients = [];
-      let selectedVolunteerId = null;
+      // Store data globally
+      var allVolunteers = [];
+      var allPatients = [];
+      var selectedVolunteerId = null;
 
+      // Load all volunteer and patient data from the server
       async function loadData() {
-        const token = localStorage.getItem("auth_token");
-        const headers = { Authorization: `Bearer ${token}` };
+        var token = localStorage.getItem("auth_token");
+        var headers = { Authorization: "Bearer " + token };
 
         try {
-          const [volRes, patRes] = await Promise.all([
-            fetch(`${CONFIG.API_BASE_URL}/doctors/volunteers-summary`, {
-              headers,
-            }),
-            fetch(`${CONFIG.API_BASE_URL}/patients/`, { headers }),
-          ]);
+          // Load volunteers and patients one after the other
+          var volRes = await fetch(
+            CONFIG.API_BASE_URL + "/doctors/volunteers-summary",
+            { headers: headers },
+          );
+          var patRes = await fetch(CONFIG.API_BASE_URL + "/patients/", {
+            headers: headers,
+          });
           allVolunteers = await volRes.json();
           allPatients = await patRes.json();
 
@@ -601,36 +623,53 @@
           populateProfile();
         } catch (e) {
           document.getElementById("volunteersGrid").innerHTML =
-            `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><p>Failed to load data. Please refresh.</p></div>`;
+            '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><p>Failed to load data. Please refresh.</p></div>';
         }
       }
 
-      function populateProfile() {
-        fetch(`${CONFIG.API_BASE_URL}/doctors/me`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-          },
-        })
-          .then((r) => r.json())
-          .then((d) => {
-            document.getElementById("docName").textContent =
-              "Dr. " + (d.name || "");
-            document.getElementById("docInitial").textContent = (d.name ||
-              "D")[0].toUpperCase();
-          })
-          .catch(() => {});
+      // Load doctor profile and display name
+      async function populateProfile() {
+        try {
+          var token = localStorage.getItem("auth_token");
+          var response = await fetch(CONFIG.API_BASE_URL + "/doctors/me", {
+            headers: { Authorization: "Bearer " + token },
+          });
+          var data = await response.json();
+          var name = data.name || "D";
+          document.getElementById("docName").textContent = "Dr. " + name;
+          document.getElementById("docInitial").textContent =
+            name[0].toUpperCase();
+        } catch (err) {
+          // Ignore errors
+        }
       }
 
+      // Calculate and display summary statistics
       function updateStats() {
-        const total = allVolunteers.length;
-        const available = allVolunteers.filter(
-          (v) => v.patient_count === 0,
-        ).length;
-        const partial = allVolunteers.filter(
-          (v) => v.patient_count > 0 && v.patient_count < 3,
-        ).length;
-        const full = allVolunteers.filter((v) => v.patient_count >= 3).length;
-        const unassigned = allPatients.filter((p) => !p.volunteer_id).length;
+        var total = allVolunteers.length;
+        var available = 0;
+        var partial = 0;
+        var full = 0;
+        var unassigned = 0;
+
+        // Count volunteers by assignment status
+        for (var i = 0; i < allVolunteers.length; i++) {
+          var count = allVolunteers[i].patient_count;
+          if (count === 0) {
+            available = available + 1;
+          } else if (count > 0 && count < 3) {
+            partial = partial + 1;
+          } else {
+            full = full + 1;
+          }
+        }
+
+        // Count unassigned patients
+        for (var j = 0; j < allPatients.length; j++) {
+          if (!allPatients[j].volunteer_id) {
+            unassigned = unassigned + 1;
+          }
+        }
 
         document.getElementById("statTotal").textContent = total;
         document.getElementById("statAvailable").textContent = available;
@@ -639,141 +678,235 @@
         document.getElementById("statUnassigned").textContent = unassigned;
       }
 
+      // Filter volunteers by assignment status
       function filterVolunteers(type, tab) {
-        document
-          .querySelectorAll(".filter-tab")
-          .forEach((t) => t.classList.remove("active"));
+        // Remove active class from all filter tabs
+        var allTabs = document.querySelectorAll(".filter-tab");
+        for (var t = 0; t < allTabs.length; t++) {
+          allTabs[t].classList.remove("active");
+        }
         tab.classList.add("active");
-        let filtered = allVolunteers;
-        if (type === "available")
-          filtered = allVolunteers.filter((v) => v.patient_count === 0);
-        else if (type === "partial")
-          filtered = allVolunteers.filter(
-            (v) => v.patient_count > 0 && v.patient_count < 3,
-          );
-        else if (type === "full")
-          filtered = allVolunteers.filter((v) => v.patient_count >= 3);
+
+        // Build filtered list based on type
+        var filtered = [];
+        if (type === "all") {
+          filtered = allVolunteers;
+        } else {
+          for (var i = 0; i < allVolunteers.length; i++) {
+            var v = allVolunteers[i];
+            if (type === "available" && v.patient_count === 0) {
+              filtered.push(v);
+            } else if (
+              type === "partial" &&
+              v.patient_count > 0 &&
+              v.patient_count < 3
+            ) {
+              filtered.push(v);
+            } else if (type === "full" && v.patient_count >= 3) {
+              filtered.push(v);
+            }
+          }
+        }
         renderVolunteers(filtered);
       }
 
+      // Display volunteer cards in the grid
       function renderVolunteers(list) {
-        const grid = document.getElementById("volunteersGrid");
-        if (!list.length) {
-          grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-            <i class="fas fa-users-slash"></i><p>No volunteers found.</p></div>`;
+        var grid = document.getElementById("volunteersGrid");
+        if (list.length === 0) {
+          grid.innerHTML =
+            '<div class="empty-state" style="grid-column:1/-1">' +
+            '<i class="fas fa-users-slash"></i><p>No volunteers found.</p></div>';
           return;
         }
-        grid.innerHTML = list.map((v) => renderVolunteerCard(v)).join("");
+        var html = "";
+        for (var i = 0; i < list.length; i++) {
+          html = html + renderVolunteerCard(list[i]);
+        }
+        grid.innerHTML = html;
       }
 
+      // Build a single volunteer card
       function renderVolunteerCard(v) {
-        const isFull = v.patient_count >= 3;
-        const isPartial = v.patient_count > 0 && v.patient_count < 3;
-        const statusLabel = isFull
-          ? "Fully Assigned"
-          : isPartial
-            ? "Partially Assigned"
-            : "Available";
-        const statusCls = isFull ? "full" : isPartial ? "partial" : "available";
-        const initials = (v.name || "V")
-          .split(" ")
-          .map((w) => w[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2);
+        var isFull = v.patient_count >= 3;
+        var isPartial = v.patient_count > 0 && v.patient_count < 3;
 
-        // Build slots (3 max)
-        let slotsHtml = "";
-        for (let i = 0; i < 3; i++) {
-          const cls =
-            i < v.patient_count
-              ? isFull
-                ? "filled filed-full"
-                : "filled"
-              : "";
-          slotsHtml += `<div class="slot-dot ${cls}" title="Slot ${i + 1}"></div>`;
+        // Determine status label and CSS class
+        var statusLabel = "Available";
+        var statusCls = "available";
+        if (isFull) {
+          statusLabel = "Fully Assigned";
+          statusCls = "full";
+        } else if (isPartial) {
+          statusLabel = "Partially Assigned";
+          statusCls = "partial";
+        }
+
+        // Get volunteer initials (first letter of each word)
+        var nameParts = (v.name || "V").split(" ");
+        var initials = "";
+        for (var w = 0; w < nameParts.length; w++) {
+          initials = initials + nameParts[w][0];
+        }
+        initials = initials.toUpperCase().slice(0, 2);
+
+        // Build slot dots (3 max)
+        var slotsHtml = "";
+        for (var s = 0; s < 3; s++) {
+          var slotClass = "";
+          if (s < v.patient_count) {
+            if (isFull) {
+              slotClass = "filled filed-full";
+            } else {
+              slotClass = "filled";
+            }
+          }
+          slotsHtml =
+            slotsHtml +
+            '<div class="slot-dot ' +
+            slotClass +
+            '" title="Slot ' +
+            (s + 1) +
+            '"></div>';
         }
 
         // Build patient list
-        let patientsHtml = "";
-        for (let i = 0; i < v.patients.length; i++) {
-          const p = v.patients[i];
-          patientsHtml += `
-            <div class="vc-patient-item">
-              <div class="vc-patient-avatar">${p.name[0].toUpperCase()}</div>
-              <div>
-                <div class="vc-patient-name">${p.name}</div>
-                <div class="vc-patient-stage">Stage: ${p.stage} · Age ${p.age}</div>
-              </div>
-              <div class="vc-patient-actions">
-                <button class="icon-btn view" title="View Patient" onclick="goToPatient(${p.id})"><i class="fas fa-eye"></i></button>
-                <button class="icon-btn remove" title="Unassign" onclick="unassignPatient(${p.id}, ${v.id})"><i class="fas fa-times"></i></button>
-              </div>
-            </div>`;
+        var patientsHtml = "";
+        for (var p = 0; p < v.patients.length; p++) {
+          var patient = v.patients[p];
+          patientsHtml =
+            patientsHtml +
+            '<div class="vc-patient-item">' +
+            '<div class="vc-patient-avatar">' +
+            patient.name[0].toUpperCase() +
+            "</div>" +
+            "<div>" +
+            '<div class="vc-patient-name">' +
+            patient.name +
+            "</div>" +
+            '<div class="vc-patient-stage">Stage: ' +
+            patient.stage +
+            " · Age " +
+            patient.age +
+            "</div>" +
+            "</div>" +
+            '<div class="vc-patient-actions">' +
+            '<button class="icon-btn view" title="View Patient" onclick="goToPatient(' +
+            patient.id +
+            ')"><i class="fas fa-eye"></i></button>' +
+            '<button class="icon-btn remove" title="Unassign" onclick="unassignPatient(' +
+            patient.id +
+            ", " +
+            v.id +
+            ')"><i class="fas fa-times"></i></button>' +
+            "</div>" +
+            "</div>";
         }
 
-        // Empty slots
-        for (let i = v.patients.length; i < 3; i++) {
-          patientsHtml += `<div class="vc-empty-slot"><i class="fas fa-plus-circle" style="opacity:0.4"></i> Open slot</div>`;
+        // Empty slots (remaining out of 3)
+        for (var e = v.patients.length; e < 3; e++) {
+          patientsHtml =
+            patientsHtml +
+            '<div class="vc-empty-slot"><i class="fas fa-plus-circle" style="opacity:0.4"></i> Open slot</div>';
         }
 
-        return `
-          <div class="volunteer-card ${isFull ? "full" : ""}" data-status="${statusCls}">
-            <div class="vc-header">
-              <div class="vc-avatar ${isFull ? "full" : ""}">${initials}</div>
-              <div style="flex:1;min-width:0">
-                <div class="vc-name">${v.name}</div>
-                <div class="vc-status-row">
-                  <span class="vc-badge ${statusCls}">${statusLabel}</span>
-                  <span style="font-size:0.78rem;color:var(--text-light)">${v.patient_count}/3 patients</span>
-                </div>
-              </div>
-              <div class="vc-slots">${slotsHtml}</div>
-            </div>
-            <div class="vc-patients">
-              <div class="vc-patients-label">Assigned Patients</div>
-              ${patientsHtml}
-            </div>
-            <div class="vc-footer">
-              ${
-                !isFull
-                  ? `<button class="btn btn-primary btn-sm" style="flex:1" onclick="openAssignModal(${v.id}, '${v.name.replace(/'/g, "\\'")}')">
-                <i class="fas fa-user-plus"></i> Assign Patient</button>`
-                  : ""
-              }
-              <button class="btn btn-outline-lavender btn-sm" onclick="chatWithVolunteer(${v.user_id})">
-                <i class="fas fa-comment"></i> Chat</button>
-            </div>
-          </div>`;
+        // Build the assign button (only if not full)
+        var assignBtnHtml = "";
+        if (!isFull) {
+          var escapedName = v.name.replace(/'/g, "\\'");
+          assignBtnHtml =
+            '<button class="btn btn-primary btn-sm" style="flex:1" onclick="openAssignModal(' +
+            v.id +
+            ", '" +
+            escapedName +
+            "')\">" +
+            '<i class="fas fa-user-plus"></i> Assign Patient</button>';
+        }
+
+        // Build the full card
+        var fullClass = "";
+        if (isFull) fullClass = " full";
+
+        var avatarClass = "";
+        if (isFull) avatarClass = " full";
+
+        var cardHtml =
+          '<div class="volunteer-card' +
+          fullClass +
+          '" data-status="' +
+          statusCls +
+          '">' +
+          '<div class="vc-header">' +
+          '<div class="vc-avatar' +
+          avatarClass +
+          '">' +
+          initials +
+          "</div>" +
+          '<div style="flex:1;min-width:0">' +
+          '<div class="vc-name">' +
+          v.name +
+          "</div>" +
+          '<div class="vc-status-row">' +
+          '<span class="vc-badge ' +
+          statusCls +
+          '">' +
+          statusLabel +
+          "</span>" +
+          '<span style="font-size:0.78rem;color:var(--text-light)">' +
+          v.patient_count +
+          "/3 patients</span>" +
+          "</div>" +
+          "</div>" +
+          '<div class="vc-slots">' +
+          slotsHtml +
+          "</div>" +
+          "</div>" +
+          '<div class="vc-patients">' +
+          '<div class="vc-patients-label">Assigned Patients</div>' +
+          patientsHtml +
+          "</div>" +
+          '<div class="vc-footer">' +
+          assignBtnHtml +
+          '<button class="btn btn-outline-lavender btn-sm" onclick="chatWithVolunteer(' +
+          v.user_id +
+          ')">' +
+          '<i class="fas fa-comment"></i> Chat</button>' +
+          "</div>" +
+          "</div>";
+
+        return cardHtml;
       }
 
+      // Navigate to patient details page
       function goToPatient(pid) {
-        window.location.href = `patient_details.html?id=${pid}`;
+        window.location.href = "patient_details.html?id=" + pid;
       }
 
+      // Remove a patient from a volunteer
       async function unassignPatient(patientId, volunteerId) {
         if (!confirm("Remove this patient from the volunteer?")) return;
-        const token = localStorage.getItem("auth_token");
-        const r = await fetch(
-          `${CONFIG.API_BASE_URL}/doctors/patients/${patientId}/unassign`,
-          {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+        var token = localStorage.getItem("auth_token");
+        var url =
+          CONFIG.API_BASE_URL + "/doctors/patients/" + patientId + "/unassign";
+        var r = await fetch(url, {
+          method: "POST",
+          headers: { Authorization: "Bearer " + token },
+        });
         if (r.ok) {
           showToast("Patient unassigned successfully", "success");
           await loadData();
         } else {
-          const err = await r.json();
+          var err = await r.json();
           showToast(err.detail || "Failed to unassign", "error");
         }
       }
 
+      // Open chat with a volunteer
       function chatWithVolunteer(userId) {
-        window.location.href = `chat_doctor.html?user_id=${userId}`;
+        window.location.href = "chat_doctor.html?user_id=" + userId;
       }
 
+      // Open the assign patient modal
       function openAssignModal(volId, volName) {
         selectedVolunteerId = volId;
         document.getElementById("modalVolName").textContent = volName;
@@ -781,80 +914,115 @@
         renderPatientSelectList();
       }
 
+      // Close the assign patient modal
       function closeAssignModal() {
         document.getElementById("assignModal").style.display = "none";
         selectedVolunteerId = null;
       }
 
+      // Show list of unassigned patients in the modal
       function renderPatientSelectList() {
-        const list = document.getElementById("patientSelectList");
-        // Filter unassigned patients only
-        const unassigned = allPatients.filter((p) => !p.volunteer_id);
-        if (!unassigned.length) {
-          list.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px">
-            <i class="fas fa-check-circle" style="color:var(--hope-green);margin-bottom:8px;display:block;font-size:2rem"></i>
-            All patients are already assigned to a volunteer.</div>`;
+        var list = document.getElementById("patientSelectList");
+
+        // Find patients without a volunteer
+        var unassigned = [];
+        for (var i = 0; i < allPatients.length; i++) {
+          if (!allPatients[i].volunteer_id) {
+            unassigned.push(allPatients[i]);
+          }
+        }
+
+        if (unassigned.length === 0) {
+          list.innerHTML =
+            '<div style="text-align:center;color:var(--text-muted);padding:20px">' +
+            '<i class="fas fa-check-circle" style="color:var(--hope-green);margin-bottom:8px;display:block;font-size:2rem"></i>' +
+            "All patients are already assigned to a volunteer.</div>";
           return;
         }
-        list.innerHTML = unassigned
-          .map(
-            (p) => `
-          <div class="patient-select-item" onclick="assignPatient(${p.id})">
-            <div class="vc-patient-avatar" style="width:36px;height:36px;font-size:0.9rem">
-              ${p.name[0].toUpperCase()}
-            </div>
-            <div>
-              <div style="font-weight:600;color:var(--text-main)">${p.name}</div>
-              <div style="font-size:0.78rem;color:var(--text-muted)">Age ${p.age} · Stage: ${p.stage}</div>
-            </div>
-            <div style="margin-left:auto">
-              <i class="fas fa-plus-circle" style="color:var(--hope-green)"></i>
-            </div>
-          </div>`,
-          )
-          .join("");
+
+        var html = "";
+        for (var j = 0; j < unassigned.length; j++) {
+          var p = unassigned[j];
+          html =
+            html +
+            '<div class="patient-select-item" onclick="assignPatient(' +
+            p.id +
+            ')">' +
+            '<div class="vc-patient-avatar" style="width:36px;height:36px;font-size:0.9rem">' +
+            p.name[0].toUpperCase() +
+            "</div>" +
+            "<div>" +
+            '<div style="font-weight:600;color:var(--text-main)">' +
+            p.name +
+            "</div>" +
+            '<div style="font-size:0.78rem;color:var(--text-muted)">Age ' +
+            p.age +
+            " · Stage: " +
+            p.stage +
+            "</div>" +
+            "</div>" +
+            '<div style="margin-left:auto">' +
+            '<i class="fas fa-plus-circle" style="color:var(--hope-green)"></i>' +
+            "</div>" +
+            "</div>";
+        }
+        list.innerHTML = html;
       }
 
+      // Assign a patient to the selected volunteer
       async function assignPatient(patientId) {
-        const token = localStorage.getItem("auth_token");
-        const r = await fetch(
-          `${CONFIG.API_BASE_URL}/doctors/patients/${patientId}/assign/${selectedVolunteerId}`,
-          {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+        var token = localStorage.getItem("auth_token");
+        var url =
+          CONFIG.API_BASE_URL +
+          "/doctors/patients/" +
+          patientId +
+          "/assign/" +
+          selectedVolunteerId;
+        var r = await fetch(url, {
+          method: "POST",
+          headers: { Authorization: "Bearer " + token },
+        });
         if (r.ok) {
           showToast("Patient assigned successfully!", "success");
           closeAssignModal();
           await loadData();
         } else {
-          const err = await r.json();
+          var err = await r.json();
           showToast(err.detail || "Assignment failed", "error");
         }
       }
 
-      function showToast(msg, type = "success") {
-        const t = document.createElement("div");
-        t.style.cssText = `
-          position:fixed;bottom:24px;right:24px;z-index:9999;
-          padding:14px 20px;border-radius:12px;font-weight:600;font-size:0.9rem;
-          background:${type === "success" ? "var(--hope-green)" : "var(--danger)"};
-          color:white;box-shadow:0 8px 24px rgba(0,0,0,0.15);
-          animation:fadeInUp 0.3s ease;
-        `;
+      // Show a temporary notification message
+      function showToast(msg, type) {
+        if (!type) type = "success";
+        var bgColor = "var(--hope-green)";
+        if (type !== "success") {
+          bgColor = "var(--danger)";
+        }
+        var t = document.createElement("div");
+        t.style.cssText =
+          "position:fixed;bottom:24px;right:24px;z-index:9999;" +
+          "padding:14px 20px;border-radius:12px;font-weight:600;font-size:0.9rem;" +
+          "background:" +
+          bgColor +
+          ";" +
+          "color:white;box-shadow:0 8px 24px rgba(0,0,0,0.15);" +
+          "animation:fadeInUp 0.3s ease;";
         t.textContent = msg;
         document.body.appendChild(t);
-        setTimeout(() => t.remove(), 3000);
+        setTimeout(function () {
+          t.remove();
+        }, 3000);
       }
 
-      // Close modal on backdrop click
+      // Close modal when clicking the dark background
       document
         .getElementById("assignModal")
         .addEventListener("click", function (e) {
           if (e.target === this) closeAssignModal();
         });
 
+      // Start loading when the page is ready
       document.addEventListener("DOMContentLoaded", loadData);
     </script>
   </body>

@@ -1,20 +1,19 @@
-/* ═══════════════════════════════════════════════
-   MARUTHA SUPPORT — PREMIUM DASHBOARD CSS
-   Modern, clean, professional palliative care UI
-═══════════════════════════════════════════════ */
+/* dashboard.css - Dashboard Layout & Components
+   Used by patient, doctor, and volunteer dashboards */
 
-/* ─────────────────────────────────────────────
-   DASHBOARD LAYOUT
-───────────────────────────────────────────── */
+
+/* === DASHBOARD LAYOUT ===
+   Sidebar on the left, main content on the right */
+
 .dashboard-container {
     display: flex;
     min-height: 100vh;
     background: var(--bg-page);
 }
 
-/* ─────────────────────────────────────────────
-   SIDEBAR — Soft Light Sidebar
-───────────────────────────────────────────── */
+
+/* === SIDEBAR (left navigation panel) === */
+
 .sidebar {
     width: var(--sidebar-width);
     background: white;
@@ -22,16 +21,16 @@
     display: flex;
     flex-direction: column;
     padding: 24px 16px;
-    position: fixed;
+    position: fixed;           /* stays in place when scrolling */
     top: 0;
     left: 0;
     height: 100vh;
     z-index: 200;
     overflow-y: auto;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s ease;
 }
 
-/* Sidebar Brand */
+/* Sidebar brand/logo */
 .sidebar-brand {
     display: flex;
     align-items: center;
@@ -59,7 +58,7 @@
     letter-spacing: -0.01em;
 }
 
-/* Sidebar Nav */
+/* Sidebar navigation links */
 .sidebar-nav {
     display: flex;
     flex-direction: column;
@@ -67,6 +66,7 @@
     flex: 1;
 }
 
+/* Each sidebar link */
 .sidebar-link {
     display: flex;
     align-items: center;
@@ -77,7 +77,7 @@
     font-weight: 500;
     font-size: 0.88rem;
     border-radius: var(--radius-sm);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     position: relative;
     white-space: nowrap;
 }
@@ -99,6 +99,7 @@
     transform: scale(1.1);
 }
 
+/* Active (current page) sidebar link */
 .sidebar-link.active {
     background: var(--lavender-soft);
     color: var(--medical-blue);
@@ -110,18 +111,19 @@
     color: var(--lavender-muted);
 }
 
-/* Sidebar divider */
+/* Thin line separator in sidebar */
 .sidebar-divider {
     height: 1px;
     background: var(--border-color);
     margin: 12px 8px;
 }
 
-/* ─────────────────────────────────────────────
-   MOBILE SIDEBAR TOGGLE
-───────────────────────────────────────────── */
+
+/* === MOBILE SIDEBAR TOGGLE BUTTON ===
+   Hamburger button shown only on mobile */
+
 .sidebar-toggle {
-    display: none;
+    display: none;             /* hidden on desktop */
     position: fixed;
     top: 16px;
     left: 16px;
@@ -145,6 +147,7 @@
     transform: scale(1.05);
 }
 
+/* Dark overlay behind sidebar on mobile */
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -154,21 +157,23 @@
     backdrop-filter: blur(4px);
 }
 
-.sidebar-overlay.active { display: block; }
+.sidebar-overlay.active {
+    display: block;
+}
 
-/* ─────────────────────────────────────────────
-   MAIN CONTENT
-───────────────────────────────────────────── */
+
+/* === MAIN CONTENT AREA (right of sidebar) === */
+
 .main-content {
     flex: 1;
-    margin-left: var(--sidebar-width);
+    margin-left: var(--sidebar-width);   /* space for the sidebar */
     min-height: 100vh;
     background: transparent;
 }
 
-/* ─────────────────────────────────────────────
-   TOP HEADER — Sleek sticky header
-───────────────────────────────────────────── */
+
+/* === TOP HEADER (sticky bar at top of content) === */
+
 .top-header {
     display: flex;
     justify-content: space-between;
@@ -198,7 +203,7 @@
     margin-top: 4px;
 }
 
-/* Profile Snippet */
+/* Profile snippet (top-right corner) */
 .profile-snippet {
     display: flex;
     align-items: center;
@@ -220,6 +225,7 @@
     transform: translateY(-1px);
 }
 
+/* Profile picture circle (initials) */
 .profile-pic {
     width: 38px;
     height: 38px;
@@ -247,16 +253,16 @@
     font-weight: 500;
 }
 
-/* ─────────────────────────────────────────────
-   DASHBOARD CONTENT WRAPPER
-───────────────────────────────────────────── */
+
+/* === DASHBOARD BODY (main content padding) === */
+
 .dashboard-body {
     padding: 32px 40px 64px;
 }
 
-/* ─────────────────────────────────────────────
-   STATS GRID — Premium stat cards
-───────────────────────────────────────────── */
+
+/* === STATS GRID (row of stat cards) === */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -264,9 +270,9 @@
     margin-bottom: 32px;
 }
 
-/* ─────────────────────────────────────────────
-   STAT CARDS — Modern with icon + accent
-───────────────────────────────────────────── */
+
+/* === STAT CARDS (individual stat boxes) === */
+
 .stat-card {
     background: var(--bg-white);
     border-radius: var(--radius-lg);
@@ -274,10 +280,11 @@
     border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     box-shadow: var(--shadow-soft);
 }
 
+/* Left accent stripe */
 .stat-card::before {
     content: '';
     position: absolute;
@@ -306,6 +313,7 @@
     margin-bottom: 16px;
 }
 
+/* Stat icon box */
 .stat-icon {
     width: 44px;
     height: 44px;
@@ -317,6 +325,7 @@
     flex-shrink: 0;
 }
 
+/* Icon color variations */
 .stat-icon.blue   { background: var(--medical-blue-light); color: var(--medical-blue-mid); }
 .stat-icon.green  { background: var(--hope-green-muted); color: var(--hope-green); }
 .stat-icon.amber  { background: var(--lavender-soft); color: var(--lavender-muted); }
@@ -354,16 +363,16 @@
 .stat-hint .trend-up   { color: var(--hope-green); }
 .stat-hint .trend-down { color: var(--danger); }
 
-/* Accent color overrides for ::before */
+/* Accent stripe color overrides */
 .stat-card.accent-blue::before   { background: var(--medical-blue-mid); }
 .stat-card.accent-green::before  { background: var(--hope-green); }
 .stat-card.accent-amber::before  { background: var(--lavender-muted); }
 .stat-card.accent-purple::before { background: var(--hope-green); }
 .stat-card.accent-red::before    { background: #EF4444; }
 
-/* ─────────────────────────────────────────────
-   DASHBOARD GRID — Two Column Layout
-───────────────────────────────────────────── */
+
+/* === DASHBOARD GRID (two-column layout for main content) === */
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: 5fr 3fr;
@@ -378,9 +387,9 @@
     grid-template-columns: 2fr 1fr;
 }
 
-/* ─────────────────────────────────────────────
-   DASHBOARD CARDS — Refined sections
-───────────────────────────────────────────── */
+
+/* === DASHBOARD CARDS (content sections) === */
+
 .dash-card {
     background: var(--bg-white);
     border-radius: var(--radius-lg);
@@ -422,16 +431,16 @@
     margin-top: 2px;
 }
 
-/* Stacked cards in a column */
+/* Stack cards vertically */
 .dash-column {
     display: flex;
     flex-direction: column;
     gap: 24px;
 }
 
-/* ─────────────────────────────────────────────
-   CHART CONTAINER — Premium chart area
-───────────────────────────────────────────── */
+
+/* === CHART CONTAINER (bar chart area) === */
+
 .chart-container {
     height: 200px;
     background: var(--bg-warm);
@@ -445,6 +454,7 @@
     position: relative;
 }
 
+/* Baseline for chart */
 .chart-container::after {
     content: '';
     position: absolute;
@@ -456,11 +466,12 @@
     opacity: 0.5;
 }
 
+/* Individual bar */
 .chart-bar {
     flex: 1;
     background: var(--reassuring-blue);
     border-radius: 4px 4px 0 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     min-width: 0;
     position: relative;
     z-index: 1;
@@ -478,6 +489,7 @@
     background: var(--hope-green-light);
 }
 
+/* Day labels below chart */
 .chart-legend {
     display: flex;
     justify-content: space-between;
@@ -493,9 +505,9 @@
     font-weight: 700;
 }
 
-/* ─────────────────────────────────────────────
-   APPOINTMENT ITEMS — Premium cards
-───────────────────────────────────────────── */
+
+/* === APPOINTMENT ITEMS === */
+
 .appointment-item {
     display: flex;
     gap: 20px;
@@ -567,9 +579,9 @@
     flex-shrink: 0;
 }
 
-/* ─────────────────────────────────────────────
-   QUICK ACTIONS — Gradient card
-───────────────────────────────────────────── */
+
+/* === QUICK ACTIONS CARD (gradient card with action buttons) === */
+
 .quick-actions-card {
     background: linear-gradient(135deg, var(--lavender-warm) 0%, var(--lavender-soft) 100%);
     border-radius: var(--radius-lg);
@@ -580,6 +592,7 @@
     overflow: hidden;
 }
 
+/* Decorative circle top-right */
 .quick-actions-card::before {
     content: '';
     position: absolute;
@@ -591,6 +604,7 @@
     border-radius: 50%;
 }
 
+/* Decorative circle bottom-left */
 .quick-actions-card::after {
     content: '';
     position: absolute;
@@ -615,6 +629,7 @@
     color: var(--medical-blue);
 }
 
+/* Grid of action buttons inside the card */
 .quick-actions-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -627,6 +642,7 @@
     grid-template-columns: 1fr;
 }
 
+/* Each quick action button */
 .quick-action-btn {
     display: flex;
     align-items: center;
@@ -656,9 +672,9 @@
     color: var(--medical-blue-mid);
 }
 
-/* ─────────────────────────────────────────────
-   EMERGENCY / URGENT CARD
-───────────────────────────────────────────── */
+
+/* === EMERGENCY / URGENT CARD === */
+
 .emergency-card {
     background: linear-gradient(135deg, var(--medical-blue-light) 0%, var(--reassuring-blue) 100%);
     border: 1px solid var(--reassuring-blue);
@@ -736,9 +752,9 @@
     transform: translateY(-2px);
 }
 
-/* ─────────────────────────────────────────────
-   INSPIRATION / DAILY CARD
-───────────────────────────────────────────── */
+
+/* === INSPIRATION / DAILY QUOTE CARD === */
+
 .inspiration-card {
     background: linear-gradient(135deg, var(--lavender-soft) 0%, rgba(201, 184, 219, 0.4) 100%);
     border: 1px solid var(--lavender-warm);
@@ -784,9 +800,9 @@
     font-size: 0.88rem;
 }
 
-/* ─────────────────────────────────────────────
-   ACTIVITY FEED
-───────────────────────────────────────────── */
+
+/* === ACTIVITY FEED (recent actions list) === */
+
 .activity-feed {
     display: flex;
     flex-direction: column;
@@ -809,6 +825,7 @@
     border-color: var(--reassuring-blue);
 }
 
+/* Colored dot next to activity */
 .activity-dot {
     width: 10px;
     height: 10px;
@@ -835,9 +852,9 @@
     font-weight: 500;
 }
 
-/* ─────────────────────────────────────────────
-   ONLINE STATUS TOGGLE
-───────────────────────────────────────────── */
+
+/* === ONLINE STATUS TOGGLE === */
+
 .status-toggle {
     display: flex;
     align-items: center;
@@ -853,10 +870,11 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #94A3B8;
+    background: #94A3B8;       /* gray when offline */
     transition: background 0.3s ease;
 }
 
+/* Green pulsing dot when online */
 .status-dot.online {
     background: #10B981;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
@@ -874,9 +892,9 @@
     color: var(--text-muted);
 }
 
-/* ─────────────────────────────────────────────
-   TABLES — Professional
-───────────────────────────────────────────── */
+
+/* === TABLES === */
+
 .table-container {
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -911,7 +929,9 @@
     vertical-align: middle;
 }
 
-.custom-table tr:last-child td { border-bottom: none; }
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
 
 .custom-table tbody tr {
     transition: all 0.2s ease;
@@ -921,9 +941,9 @@
     background: var(--bg-warm);
 }
 
-/* ─────────────────────────────────────────────
-   TABS
-───────────────────────────────────────────── */
+
+/* === TABS (content switcher buttons) === */
+
 .tab-btn {
     padding: 8px 16px;
     border: none;
@@ -941,21 +961,26 @@
     color: var(--medical-blue);
 }
 
+/* Active tab has blue bottom border */
 .tab-btn.active {
     color: var(--medical-blue-mid);
     border-bottom-color: var(--medical-blue-mid);
     font-weight: 600;
 }
 
-.tab-content { display: none; }
+/* Tab content panels */
+.tab-content {
+    display: none;             /* hidden by default */
+}
+
 .tab-content.active {
-    display: block;
+    display: block;            /* shown when active */
     animation: fadeIn 0.3s ease;
 }
 
-/* ─────────────────────────────────────────────
-   MODALS — Premium
-───────────────────────────────────────────── */
+
+/* === MODALS (popup dialogs) === */
+
 .modal {
     display: none;
     position: fixed;
@@ -970,7 +995,9 @@
     justify-content: center;
 }
 
-.modal.active { display: flex; }
+.modal.active {
+    display: flex;
+}
 
 .modal-content {
     background: white;
@@ -982,9 +1009,9 @@
     animation: fadeInUp 0.3s ease;
 }
 
-/* ─────────────────────────────────────────────
-   EMPTY STATES in Dashboard
-───────────────────────────────────────────── */
+
+/* === EMPTY STATES (shown when no data) === */
+
 .dash-empty {
     text-align: center;
     padding: 40px 24px;
@@ -1011,9 +1038,10 @@
     font-size: 0.88rem;
 }
 
-/* ─────────────────────────────────────────────
-   ANIMATIONS — Staggered fade in
-───────────────────────────────────────────── */
+
+/* === STAGGERED FADE-IN ANIMATION ===
+   Children of this container fade in one after another */
+
 .fade-in-stagger > * {
     opacity: 0;
     animation: fadeIn 0.4s ease forwards;
@@ -1026,11 +1054,17 @@
 .fade-in-stagger > *:nth-child(5) { animation-delay: 0.25s; }
 .fade-in-stagger > *:nth-child(6) { animation-delay: 0.3s; }
 
-/* ─────────────────────────────────────────────
-   RESPONSIVE — TABLET (max 1024px)
-───────────────────────────────────────────── */
+
+/* === TABLET (less than 1024px) === */
+
 @media (max-width: 1024px) {
     .dashboard-grid {
+        grid-template-columns: 1fr;       /* single column */
+    }
+    .dashboard-grid.equal-cols {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-grid.wide-left {
         grid-template-columns: 1fr;
     }
     .dashboard-body {
@@ -1043,61 +1077,143 @@
         grid-template-columns: repeat(2, 1fr);
     }
     .quick-actions-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+    /* Tables must scroll horizontally if too wide */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
 
-/* ─────────────────────────────────────────────
-   RESPONSIVE — MOBILE (max 768px)
-───────────────────────────────────────────── */
-@media (max-width: 768px) {
+
+/* === SMALL TABLET / LARGE PHONE (less than 900px) ===
+   Sidebar hides, main content expands */
+
+@media (max-width: 900px) {
+    /* Show mobile menu button */
     .sidebar-toggle {
         display: flex;
     }
 
+    /* Sidebar slides off-screen */
     .sidebar {
         transform: translateX(-100%);
         width: 280px;
     }
 
+    /* Sidebar slides in when toggled open */
     .sidebar.open {
         transform: translateX(0);
     }
 
+    /* No left margin since sidebar is hidden */
     .main-content {
         margin-left: 0;
     }
 
+    /* Header needs extra top padding for the toggle button */
     .top-header {
-        padding: 56px 16px 16px;
+        padding: 60px 20px 16px;
         flex-wrap: wrap;
         gap: 12px;
     }
 
     .top-header h2 {
-        font-size: 1.15rem;
+        font-size: 1.2rem;
+        width: 100%;              /* title takes full width */
     }
 
+    .top-header .header-subtitle {
+        font-size: 0.82rem;
+    }
+
+    /* Profile snippet wraps to new line */
+    .profile-snippet {
+        padding: 5px 12px 5px 5px;
+    }
+
+    .profile-name {
+        font-size: 0.82rem;
+    }
+
+    .profile-role {
+        font-size: 0.68rem;
+    }
+}
+
+
+/* === MOBILE (less than 768px) === */
+
+@media (max-width: 768px) {
     .dashboard-body {
         padding: 16px;
     }
 
+    /* Stats grid: two columns on mobile */
     .stats-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 10px;
     }
 
+    /* Stat cards need to handle text overflow */
+    .stat-card {
+        padding: 14px;
+        overflow: hidden;
+    }
+
+    .stat-card-header {
+        margin-bottom: 10px;
+    }
+
+    .stat-title {
+        font-size: 0.65rem;
+        letter-spacing: 0.4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+    }
+
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .stat-hint {
+        font-size: 0.72rem;
+    }
+
+    /* Dashboard grid becomes single column */
     .dashboard-grid {
         grid-template-columns: 1fr;
         gap: 16px;
     }
 
-    .stat-value { font-size: 1.4rem; }
-    .stat-card { padding: 18px; }
+    /* Dash cards (sections) smaller padding */
+    .dash-card {
+        padding: 20px;
+    }
 
+    .dash-card-header {
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .dash-card-title {
+        font-size: 0.95rem;
+    }
+
+    /* Appointment items stack vertically */
     .appointment-item {
         flex-direction: column;
         gap: 12px;
+        padding: 14px;
     }
 
     .appointment-actions {
@@ -1105,19 +1221,205 @@
         width: 100%;
     }
 
+    .appointment-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Status toggle moves up */
     .status-toggle {
         order: -1;
+    }
+
+    /* Quick actions become single column */
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Chart container */
+    .chart-container {
+        height: 160px;
+        padding: 14px 10px;
+    }
+
+    /* Activity feed */
+    .activity-item {
+        padding: 10px 12px;
+    }
+
+    .activity-text {
+        font-size: 0.82rem;
+    }
+
+    /* Modal adjustments */
+    .modal-content {
+        padding: 24px 20px;
+        max-width: 95%;
+        border-radius: var(--radius-lg);
+    }
+
+    /* Tables */
+    .custom-table th {
+        padding: 10px 12px;
+        font-size: 0.68rem;
+    }
+
+    .custom-table td {
+        padding: 10px 12px;
+        font-size: 0.82rem;
+    }
+
+    /* Tabs */
+    .tab-btn {
+        padding: 6px 12px;
+        font-size: 0.82rem;
+    }
+
+    /* Emergency card */
+    .emergency-card {
+        padding: 20px;
+    }
+}
+
+
+/* === SMALL MOBILE (less than 480px) === */
+
+@media (max-width: 480px) {
+    /* Top header even more compact */
+    .top-header {
+        padding: 56px 12px 12px;
+    }
+
+    .top-header h2 {
+        font-size: 1rem;
+        gap: 8px;
+    }
+
+    /* Stats grid: still 2 columns but tighter */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-title {
+        font-size: 0.6rem;
+        letter-spacing: 0.2px;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .stat-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    /* Hide the profile text, show only avatar */
+    .profile-snippet > div:first-child {
+        display: none;
+    }
+
+    .dashboard-body {
+        padding: 12px;
+    }
+
+    /* Smaller card padding */
+    .dash-card {
+        padding: 16px;
+    }
+
+    .quick-action-btn {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+
+    /* Inspiration card */
+    .inspiration-card {
+        padding: 20px;
+    }
+
+    .inspiration-quote {
+        font-size: 0.82rem;
+    }
+}
+
+
+/* === VERY SMALL MOBILE (less than 360px) === */
+
+@media (max-width: 360px) {
+    .stats-grid {
+        grid-template-columns: 1fr;   /* single column for very narrow screens */
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+    }
+
+    .stat-title {
+        font-size: 0.7rem;
+        white-space: normal;   /* allow wrapping on very small screens */
+    }
+}
+
+
+/* ============================================================
+   INLINE STYLE OVERRIDES
+   These use !important to fix inline styles in HTML files 
+   that break the responsive layout on smaller screens.
+   ============================================================ */
+
+/* Fix: Container padding of 64px is too wide for mobile */
+@media (max-width: 900px) {
+    .container[style*="padding: 0 64px"] {
+        padding: 0 24px 32px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .container[style*="padding: 0 64px"] {
+        padding: 0 16px 24px !important;
+    }
+
+    /* Fix: Search bars with fixed 350px width overflow on mobile */
+    .item-search[style*="width: 350px"] {
+        width: 100% !important;
+    }
+
+    /* Fix: Flex rows that don't wrap on mobile (action bars) */
+    .main-content [style*="justify-content: space-between"] {
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+    }
+
+    /* Fix: Profile snippet needs to stay compact */
+    .profile-snippet {
+        max-width: 200px;
     }
 }
 
 @media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
+    .container[style*="padding: 0 64px"] {
+        padding: 0 12px 20px !important;
     }
-    .profile-snippet > div:first-child {
-        display: none;
+
+    /* Fix: 2-column form grids need to stack on mobile */
+    div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
     }
-    .quick-actions-grid {
-        grid-template-columns: 1fr;
+
+    /* Fix: Button rows need to stack */
+    div[style*="display: flex"][style*="gap: 16px"] {
+        flex-wrap: wrap !important;
     }
 }

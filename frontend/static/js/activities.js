@@ -1,36 +1,37 @@
-/**
- * Marutha Support - Activities JS (Volunteer)
- */
+// activities.js - Volunteer Activities Page
+// Handles tasks, reports, and work hours
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Tab switching if not handled by app.js or manage_profile.js
-    const hash = window.location.hash.replace('#', '');
-    if (['tasks', 'reports'].includes(hash)) {
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for tab in URL hash
+    var hash = window.location.hash.replace('#', '');
+    if (hash === 'tasks' || hash === 'reports') {
         switchTab(hash);
     }
-    
+
     // Load initial data
     loadTasks();
     loadReports();
     loadTotalHours();
 });
 
+
+// ---- Load Total Hours ----
 async function loadTotalHours() {
     try {
-        const res = await apiFetch('/volunteers/time-logs/total');
+        var res = await apiFetch('/volunteers/time-logs/total');
         if (res.ok) {
-            const totalHours = await res.json();
-            const el = document.getElementById('stat-hours-logged');
+            var totalHours = await res.json();
+            var el = document.getElementById('stat-hours-logged');
             if (el) {
-                const totalSec = Math.floor(totalHours * 3600);
-                const hrs = Math.floor(totalSec / 3600);
-                const mins = Math.floor((totalSec % 3600) / 60);
-                const secs = totalSec % 60;
-                
-                el.innerHTML = 
-                    `<span style="font-size: 1.5rem">${hrs}</span><small style="font-size: 0.9rem; opacity: 0.8">h</small> ` +
-                    `<span style="font-size: 1.5rem">${mins}</span><small style="font-size: 0.9rem; opacity: 0.8">m</small> ` +
-                    `<span style="font-size: 1.5rem">${secs}</span><small style="font-size: 0.9rem; opacity: 0.8">s</small>`;
+                var totalSec = Math.floor(totalHours * 3600);
+                var hrs = Math.floor(totalSec / 3600);
+                var mins = Math.floor((totalSec % 3600) / 60);
+                var secs = totalSec % 60;
+
+                el.innerHTML =
+                    '<span style="font-size: 1.5rem">' + hrs + '</span><small style="font-size: 0.9rem; opacity: 0.8">h</small> ' +
+                    '<span style="font-size: 1.5rem">' + mins + '</span><small style="font-size: 0.9rem; opacity: 0.8">m</small> ' +
+                    '<span style="font-size: 1.5rem">' + secs + '</span><small style="font-size: 0.9rem; opacity: 0.8">s</small>';
             }
         }
     } catch (e) {
@@ -38,36 +39,45 @@ async function loadTotalHours() {
     }
 }
 
-/**
- * Switch between Tasks and Reports tabs
- */
-function switchTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
 
-    const content = document.getElementById('content-' + tabId);
-    const btn = document.getElementById('tab-' + tabId);
-    const nav = document.getElementById('nav-' + tabId);
+// ---- Switch Tabs ----
+function switchTab(tabId) {
+    var allTabs = document.querySelectorAll('.tab-content');
+    for (var i = 0; i < allTabs.length; i++) {
+        allTabs[i].classList.remove('active');
+    }
+
+    var allBtns = document.querySelectorAll('.tab-btn');
+    for (var j = 0; j < allBtns.length; j++) {
+        allBtns[j].classList.remove('active');
+    }
+
+    var allLinks = document.querySelectorAll('.sidebar-link');
+    for (var k = 0; k < allLinks.length; k++) {
+        allLinks[k].classList.remove('active');
+    }
+
+    var content = document.getElementById('content-' + tabId);
+    var btn = document.getElementById('tab-' + tabId);
+    var nav = document.getElementById('nav-' + tabId);
 
     if (content) content.classList.add('active');
     if (btn) btn.classList.add('active');
     if (nav) nav.classList.add('active');
-    
-    window.history.pushState(null, null, `#${tabId}`);
+
+    window.history.pushState(null, null, '#' + tabId);
 }
 
-/**
- * API Data Loaders
- */
+
+// ---- Load Tasks ----
 async function loadTasks() {
-    const container = document.getElementById('tasks-container');
+    var container = document.getElementById('tasks-container');
     if (!container) return;
 
     try {
-        const res = await apiFetch('/volunteers/tasks');
+        var res = await apiFetch('/volunteers/tasks');
         if (res.ok) {
-            const tasks = await res.json();
+            var tasks = await res.json();
             renderTasks(tasks, container);
         } else {
             container.innerHTML = '<div style="color:red">Failed to load tasks.</div>';
@@ -78,82 +88,97 @@ async function loadTasks() {
     }
 }
 
+
 function renderTasks(tasks, container) {
     if (tasks.length === 0) {
         container.innerHTML = 'No tasks assigned today.';
         return;
     }
-    
-    let html = '';
-    let completedCount = 0;
-    
-    tasks.forEach(task => {
+
+    var html = '';
+    var completedCount = 0;
+
+    for (var i = 0; i < tasks.length; i++) {
+        var task = tasks[i];
         if (task.is_completed) completedCount++;
-        html += `
-            <div class="card task-card fade-in" style="${task.is_completed ? 'opacity: 0.5; text-decoration: line-through;' : ''}">
-                <div style="display: flex; gap: 16px; align-items: flex-start;">
-                    <label class="check-container" style="margin-top: 2px">
-                        <input type="checkbox" onchange="completeTask(this, ${task.id})" ${task.is_completed ? 'checked disabled' : ''}>
-                        <span class="checkmark"></span>
-                    </label>
-                    <div style="flex: 1">
-                        <div style="font-weight: 600; color: var(--medical-blue); margin-bottom: 4px;">
-                            ${task.task_name}
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted)">
-                            For: ${task.patient_name || 'General'}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
+
+        var cardStyle = '';
+        if (task.is_completed) {
+            cardStyle = 'opacity: 0.5; text-decoration: line-through;';
+        }
+
+        var checkedAttr = '';
+        if (task.is_completed) {
+            checkedAttr = 'checked disabled';
+        }
+
+        html = html +
+            '<div class="card task-card fade-in" style="' + cardStyle + '">' +
+                '<div style="display: flex; gap: 16px; align-items: flex-start;">' +
+                    '<label class="check-container" style="margin-top: 2px">' +
+                        '<input type="checkbox" onchange="completeTask(this, ' + task.id + ')" ' + checkedAttr + '>' +
+                        '<span class="checkmark"></span>' +
+                    '</label>' +
+                    '<div style="flex: 1">' +
+                        '<div style="font-weight: 600; color: var(--medical-blue); margin-bottom: 4px;">' + task.task_name + '</div>' +
+                        '<div style="font-size: 0.85rem; color: var(--text-muted)">For: ' + (task.patient_name || 'General') + '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+    }
+
     container.innerHTML = html;
-    
-    // Update progress
-    const pct = tasks.length ? Math.round((completedCount / tasks.length) * 100) : 0;
-    const progressEl = document.getElementById('progress-percent');
-    if (progressEl) progressEl.innerText = `${pct}%`;
-    const textEl = document.getElementById('progress-text');
-    if (textEl) textEl.innerText = `${completedCount}/${tasks.length} Tasks Done`;
-    const barEl = document.getElementById('progress-bar-fill');
-    if (barEl) barEl.style.width = `${pct}%`;
+
+    // Update progress display
+    var totalTasks = tasks.length;
+    var pct = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+
+    var progressEl = document.getElementById('progress-percent');
+    if (progressEl) progressEl.innerText = pct + '%';
+
+    var textEl = document.getElementById('progress-text');
+    if (textEl) textEl.innerText = completedCount + '/' + totalTasks + ' Tasks Done';
+
+    var barEl = document.getElementById('progress-bar-fill');
+    if (barEl) barEl.style.width = pct + '%';
 }
 
+
+// ---- Load Reports ----
 async function loadReports() {
-    const container = document.getElementById('recent-history-container');
-    const monthEl = document.getElementById('stat-reports-month');
+    var container = document.getElementById('recent-history-container');
+    var monthEl = document.getElementById('stat-reports-month');
     if (!container) return;
 
     try {
-        const res = await apiFetch('/volunteers/reports');
+        var res = await apiFetch('/volunteers/reports');
         if (res.ok) {
-            const reports = await res.json();
+            var reports = await res.json();
             if (monthEl) monthEl.innerText = reports.length;
-            
+
             if (reports.length === 0) {
                 container.innerHTML = "No recent activities recorded.";
                 return;
             }
-            
-            let html = '<div style="display: flex; flex-direction: column; gap: 16px; text-align: left;">';
-            reports.forEach(r => {
-                const dateObj = new Date(r.created_at);
-                html += `
-                    <div style="padding: 16px; background: white; border: 1px solid var(--border-color); border-radius: 8px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
-                            <strong>${r.activity_type}</strong>
-                            <span style="color:var(--text-muted); font-size: 0.85rem;">${dateObj.toLocaleDateString()}</span>
-                        </div>
-                        <div style="color: var(--medical-blue); font-size: 0.9rem; margin-bottom: 8px;">
-                            Patient: ${r.patient_name}
-                        </div>
-                        <p style="margin:0; font-size: 0.9rem; color:var(--text-muted)">${r.notes || ''}</p>
-                    </div>
-                `;
-            });
-            html += '</div>';
+
+            var html = '<div style="display: flex; flex-direction: column; gap: 16px; text-align: left;">';
+
+            for (var i = 0; i < reports.length; i++) {
+                var r = reports[i];
+                var dateObj = new Date(r.created_at);
+
+                html = html +
+                    '<div style="padding: 16px; background: white; border: 1px solid var(--border-color); border-radius: 8px;">' +
+                        '<div style="display:flex; justify-content:space-between; margin-bottom: 8px;">' +
+                            '<strong>' + r.activity_type + '</strong>' +
+                            '<span style="color:var(--text-muted); font-size: 0.85rem;">' + dateObj.toLocaleDateString() + '</span>' +
+                        '</div>' +
+                        '<div style="color: var(--medical-blue); font-size: 0.9rem; margin-bottom: 8px;">Patient: ' + r.patient_name + '</div>' +
+                        '<p style="margin:0; font-size: 0.9rem; color:var(--text-muted)">' + (r.notes || '') + '</p>' +
+                    '</div>';
+            }
+
+            html = html + '</div>';
             container.innerHTML = html;
         }
     } catch (e) {
@@ -161,21 +186,20 @@ async function loadReports() {
     }
 }
 
-/**
- * Handle Task Completion
- */
+
+// ---- Complete Task ----
 async function completeTask(checkbox, taskId) {
     if (!checkbox.checked) return;
-    
-    const card = checkbox.closest('.card');
+
+    var card = checkbox.closest('.card');
     card.style.opacity = '0.5';
-    
+
     try {
-        const res = await apiFetch(`/volunteers/tasks/${taskId}/complete`, { method: 'PUT' });
+        var res = await apiFetch('/volunteers/tasks/' + taskId + '/complete', { method: 'PUT' });
         if (res.ok) {
             card.style.textDecoration = 'line-through';
             alert('Task marked as complete!');
-            loadTasks(); // refresh progress
+            loadTasks(); // refresh
         } else {
             alert('Failed to update task.');
             checkbox.checked = false;
@@ -188,24 +212,23 @@ async function completeTask(checkbox, taskId) {
     }
 }
 
-/**
- * Handle Report Submission
- */
+
+// ---- Submit Activity Report ----
 async function submitReport(e) {
     e.preventDefault();
-    const form = e.target;
-    const btn = form.querySelector('button[type="submit"]');
-    const originalText = btn.innerText;
+    var form = e.target;
+    var btn = form.querySelector('button[type="submit"]');
+    var originalText = btn.innerText;
 
-    const patientName = document.getElementById('reportPatientName').value;
-    const activityType = document.getElementById('reportActivityType').value;
-    const notes = document.getElementById('reportNotes').value;
+    var patientName = document.getElementById('reportPatientName').value;
+    var activityType = document.getElementById('reportActivityType').value;
+    var notes = document.getElementById('reportNotes').value;
 
     btn.innerText = 'Submitting...';
     btn.disabled = true;
 
     try {
-        const res = await apiFetch('/volunteers/reports', {
+        var res = await apiFetch('/volunteers/reports', {
             method: 'POST',
             body: JSON.stringify({
                 patient_name: patientName,
@@ -213,14 +236,14 @@ async function submitReport(e) {
                 notes: notes
             })
         });
-        
+
         if (res.ok) {
             alert('Activity report submitted successfully!');
             form.reset();
             loadReports();
         } else {
-            const data = await res.json();
-            alert(`Error: ${data.detail || 'Failed to submit.'}`);
+            var data = await res.json();
+            alert('Error: ' + (data.detail || 'Failed to submit.'));
         }
     } catch (err) {
         console.error("Submit error", err);
@@ -231,56 +254,51 @@ async function submitReport(e) {
     }
 }
 
-// Global scope exports (needed for inline HTML handlers like onsubmit, onchange)
-window.submitReport = submitReport;
-window.completeTask = completeTask;
-window.switchTab = switchTab;
 
-/**
- * Handle Add Custom Task Modal Responses
- */
+// ---- Add Task Modal ----
 function openAddTaskModal() {
-    const modal = document.getElementById('addTaskModal');
+    var modal = document.getElementById('addTaskModal');
     if (modal) {
         modal.style.display = 'flex';
-        // Reset inputs
-        const taskName = document.getElementById('newTaskName');
-        const taskPatient = document.getElementById('newTaskPatientName');
+        var taskName = document.getElementById('newTaskName');
+        var taskPatient = document.getElementById('newTaskPatientName');
         if (taskName) taskName.value = '';
         if (taskPatient) taskPatient.value = '';
     }
 }
 
+
 function closeAddTaskModal() {
-    const modal = document.getElementById('addTaskModal');
+    var modal = document.getElementById('addTaskModal');
     if (modal) {
         modal.style.display = 'none';
     }
 }
 
+
 async function submitNewTask(e) {
     e.preventDefault();
-    const taskName = document.getElementById('newTaskName').value.trim();
-    let patientName = document.getElementById('newTaskPatientName').value.trim();
-    
+    var taskName = document.getElementById('newTaskName').value.trim();
+    var patientName = document.getElementById('newTaskPatientName').value.trim();
+
     if (!taskName) return;
     if (!patientName) patientName = "General";
-    
-    const btn = document.getElementById('submitNewTaskBtn');
+
+    var btn = document.getElementById('submitNewTaskBtn');
     if (btn) {
         btn.innerText = 'Adding...';
         btn.disabled = true;
     }
-    
+
     try {
-        const res = await apiFetch('/volunteers/tasks', {
+        var res = await apiFetch('/volunteers/tasks', {
             method: 'POST',
             body: JSON.stringify({
                 task_name: taskName,
                 patient_name: patientName
             })
         });
-        
+
         if (res.ok) {
             closeAddTaskModal();
             if (window.showNotification) showNotification('Task added successfully!', 'success');
@@ -301,6 +319,11 @@ async function submitNewTask(e) {
     }
 }
 
+
+// Make functions available globally
+window.submitReport = submitReport;
+window.completeTask = completeTask;
+window.switchTab = switchTab;
 window.openAddTaskModal = openAddTaskModal;
 window.closeAddTaskModal = closeAddTaskModal;
 window.submitNewTask = submitNewTask;

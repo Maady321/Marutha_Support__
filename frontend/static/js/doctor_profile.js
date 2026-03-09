@@ -1,10 +1,9 @@
-/**
- * doctor_profile.js — Load and display doctor details for patients
- */
+// doctor_profile.js - Doctor Profile Page (Patient View)
+// Shows doctor details and allows consultation request
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const doctorId = urlParams.get('id');
+document.addEventListener('DOMContentLoaded', async function() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var doctorId = urlParams.get('id');
 
     if (!doctorId) {
         document.getElementById('docName').textContent = 'Doctor Not Found';
@@ -13,13 +12,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // Fetch doctor profile (public endpoint)
-        const response = await apiFetch(`/doctors/${doctorId}`);
+        var response = await apiFetch('/doctors/' + doctorId);
         if (!response.ok) {
             throw new Error('Doctor not found');
         }
 
-        const doc = await response.json();
+        var doc = await response.json();
         renderDoctorProfile(doc);
 
     } catch (error) {
@@ -29,63 +27,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-function renderDoctorProfile(doc) {
-    // Avatar initials
-    const name = doc.name || 'Doctor';
-    const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-    document.getElementById('docAvatar').textContent = initials;
 
-    // Name & specialty
+function renderDoctorProfile(doc) {
+    var name = doc.name || 'Doctor';
+
+    // Get initials
+    var parts = name.split(' ');
+    var initials = '';
+    for (var i = 0; i < parts.length; i++) {
+        initials = initials + parts[i][0];
+    }
+    initials = initials.substring(0, 2).toUpperCase();
+
+    document.getElementById('docAvatar').textContent = initials;
     document.getElementById('docName').textContent = name;
     document.getElementById('docSpecialty').textContent = doc.specialty || 'General Medicine';
 
     // Online status
-    const statusDot = document.getElementById('docStatusDot');
+    var statusDot = document.getElementById('docStatusDot');
     if (doc.is_online) {
         statusDot.classList.add('online');
     }
 
     // Badges
-    const badgesContainer = document.getElementById('docBadges');
+    var badgesContainer = document.getElementById('docBadges');
     badgesContainer.innerHTML = '';
 
     if (doc.specialty) {
-        badgesContainer.innerHTML += `
-            <span class="badge" style="background: var(--lavender-soft); color: var(--medical-blue)">
-                <i class="fas fa-stethoscope" style="margin-right: 4px"></i> ${doc.specialty}
-            </span>`;
+        badgesContainer.innerHTML = badgesContainer.innerHTML +
+            '<span class="badge" style="background: var(--lavender-soft); color: var(--medical-blue)">' +
+                '<i class="fas fa-stethoscope" style="margin-right: 4px"></i> ' + doc.specialty +
+            '</span>';
     }
 
     if (doc.experience) {
-        badgesContainer.innerHTML += `
-            <span class="badge" style="background: #dbeafe; color: #1e40af">
-                <i class="fas fa-clock" style="margin-right: 4px"></i> ${doc.experience}+ Years
-            </span>`;
+        badgesContainer.innerHTML = badgesContainer.innerHTML +
+            '<span class="badge" style="background: #dbeafe; color: #1e40af">' +
+                '<i class="fas fa-clock" style="margin-right: 4px"></i> ' + doc.experience + '+ Years' +
+            '</span>';
     }
 
     if (doc.qualification) {
-        badgesContainer.innerHTML += `
-            <span class="badge" style="background: #d1fae5; color: #059669">
-                <i class="fas fa-graduation-cap" style="margin-right: 4px"></i> ${doc.qualification}
-            </span>`;
+        badgesContainer.innerHTML = badgesContainer.innerHTML +
+            '<span class="badge" style="background: #d1fae5; color: #059669">' +
+                '<i class="fas fa-graduation-cap" style="margin-right: 4px"></i> ' + doc.qualification +
+            '</span>';
     }
 
-    badgesContainer.innerHTML += `
-        <span class="badge" style="background: ${doc.is_online ? '#d1fae5' : '#fef3c7'}; color: ${doc.is_online ? '#059669' : '#d97706'}">
-            <i class="fas fa-circle" style="margin-right: 4px; font-size: 0.5rem"></i> 
-            ${doc.is_online ? 'Available Now' : 'Currently Offline'}
-        </span>`;
+    var statusBg = doc.is_online ? '#d1fae5' : '#fef3c7';
+    var statusColor = doc.is_online ? '#059669' : '#d97706';
+    var statusText = doc.is_online ? 'Available Now' : 'Currently Offline';
 
-    // Stats row
-    document.getElementById('docExperience').textContent =
-        doc.experience ? `${doc.experience} yrs` : '—';
-    document.getElementById('docQualification').textContent =
-        doc.qualification || '—';
-    document.getElementById('docLicense').textContent =
-        doc.license_id || '—';
+    badgesContainer.innerHTML = badgesContainer.innerHTML +
+        '<span class="badge" style="background: ' + statusBg + '; color: ' + statusColor + '">' +
+            '<i class="fas fa-circle" style="margin-right: 4px; font-size: 0.5rem"></i> ' + statusText +
+        '</span>';
+
+    // Stats
+    var expEl = document.getElementById('docExperience');
+    if (expEl) expEl.textContent = doc.experience ? (doc.experience + ' yrs') : '—';
+
+    var qualEl = document.getElementById('docQualification');
+    if (qualEl) qualEl.textContent = doc.qualification || '—';
+
+    var licEl = document.getElementById('docLicense');
+    if (licEl) licEl.textContent = doc.license_id || '—';
 
     // Bio
-    const bioEl = document.getElementById('docBio');
+    var bioEl = document.getElementById('docBio');
     if (doc.bio) {
         bioEl.textContent = doc.bio;
     } else {
@@ -95,31 +104,29 @@ function renderDoctorProfile(doc) {
     // Contact info
     document.getElementById('docPhone').textContent = doc.phone || 'Not provided';
     document.getElementById('docLicense2').textContent = doc.license_id || 'Not provided';
-
-    // Try to get email from user account (if we have it)
-    // Since the doctor profile doesn't include email, we can use user_id
     document.getElementById('docEmail').textContent = 'Available after consultation';
 
     // Chat link
-    const chatLink = document.getElementById('chatLink');
+    var chatLink = document.getElementById('chatLink');
     if (doc.user_id) {
-        chatLink.href = `chat.html?userId=${doc.user_id}`;
+        chatLink.href = 'chat.html?userId=' + doc.user_id;
     }
 
-    // Request button — store doctorId for requestThisDoctor()
-    document.getElementById('requestBtn').dataset.doctorId = doc.id;
+    // Store doctor ID for request button
+    document.getElementById('requestBtn').setAttribute('data-doctor-id', doc.id);
 }
 
+
 async function requestThisDoctor() {
-    const btn = document.getElementById('requestBtn');
-    const doctorId = btn.dataset.doctorId;
+    var btn = document.getElementById('requestBtn');
+    var doctorId = btn.getAttribute('data-doctor-id');
     if (!doctorId) return;
 
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px"></i> Sending...';
 
     try {
-        const response = await apiFetch('/consultations/', {
+        var response = await apiFetch('/consultations/', {
             method: 'POST',
             body: JSON.stringify({
                 doctor_id: parseInt(doctorId),
@@ -133,11 +140,11 @@ async function requestThisDoctor() {
             btn.style.color = '#059669';
             showNotification('Consultation request sent successfully!', 'success');
         } else {
-            const err = await response.json();
+            var err = await response.json();
             btn.innerHTML = '<i class="fas fa-exclamation-triangle" style="margin-right: 8px"></i> Failed';
             btn.disabled = false;
             showNotification(err.detail || 'Failed to send request', 'error');
-            setTimeout(() => {
+            setTimeout(function() {
                 btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px"></i> Send Request';
             }, 2000);
         }

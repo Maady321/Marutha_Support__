@@ -1,11 +1,9 @@
-/**
- * Marutha Support - Authentication JS
- * Handles Login, Registration, and Role Management.
- */
+// auth.js - Login and Registration
+// Handles user login, account creation, and role selection
 
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.querySelector('.login-box form');
-    const registerForm = document.getElementById('registerForm');
+document.addEventListener('DOMContentLoaded', function() {
+    var loginForm = document.querySelector('.login-box form');
+    var registerForm = document.getElementById('registerForm');
 
     if (loginForm) {
         initLogin(loginForm);
@@ -15,70 +13,78 @@ document.addEventListener('DOMContentLoaded', () => {
         initRegistration(registerForm);
     }
 
-    // Handle role selection in register.html if applicable
+    // Handle role selection cards on register page
     setupRoleCards();
 });
 
-/**
- * Role Selection logic for register.html
- */
+
+// ---- Role Selection ----
+// When user clicks a role card (Patient/Doctor/Volunteer), save the role and redirect
+
 function setupRoleCards() {
-    const roleCards = document.querySelectorAll('.role-card');
-    if (roleCards.length > 0) {
-        roleCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
-                const currentHref = card.getAttribute('href');
-                let role = 'patient';
-                if (currentHref.includes('role=doctor')) role = 'doctor';
-                if (currentHref.includes('role=volunteer')) role = 'volunteer';
-                
-                localStorage.setItem('tempRole', role);
-                window.location.href = `create_account.html?role=${role}`;
-            });
+    var roleCards = document.querySelectorAll('.role-card');
+
+    for (var i = 0; i < roleCards.length; i++) {
+        roleCards[i].addEventListener('click', function(e) {
+            e.preventDefault();
+            var currentHref = this.getAttribute('href');
+            var role = 'patient';
+
+            if (currentHref.includes('role=doctor')) {
+                role = 'doctor';
+            }
+            if (currentHref.includes('role=volunteer')) {
+                role = 'volunteer';
+            }
+
+            localStorage.setItem('tempRole', role);
+            window.location.href = 'create_account.html?role=' + role;
         });
     }
 }
 
-/**
- * Login Logic
- */
+
+// ---- Login ----
 function initLogin(form) {
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
 
         if (!email || !password) {
             alert('Please fill in all fields');
             return;
         }
 
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerText;
+        var submitBtn = form.querySelector('button[type="submit"]');
+        var originalText = submitBtn.innerText;
         submitBtn.innerText = 'Signing In...';
         submitBtn.disabled = true;
 
         try {
-            const response = await fetch(`${CONFIG.API_BASE_URL}/login`, {
+            var response = await fetch(CONFIG.API_BASE_URL + '/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email: email, password: password })
             });
 
-            const data = await response.json();
+            var data = await response.json();
 
             if (response.ok) {
-                // Save token and role from server
+                // Save login info to localStorage
                 localStorage.setItem('authToken', data.access_token);
                 localStorage.setItem('userRole', data.role);
                 localStorage.setItem('isLoggedIn', 'true');
 
-                // Redirect based on server role
-                let target = 'dashboard_patient.html';
-                if (data.role === 'doctor') target = 'dashboard_doctor.html';
-                if (data.role === 'volunteer') target = 'dashboard_volunteer.html';
+                // Redirect to the right dashboard
+                var target = 'dashboard_patient.html';
+                if (data.role === 'doctor') {
+                    target = 'dashboard_doctor.html';
+                }
+                if (data.role === 'volunteer') {
+                    target = 'dashboard_volunteer.html';
+                }
 
                 window.location.href = target;
             } else {
@@ -94,48 +100,55 @@ function initLogin(form) {
     });
 }
 
-/**
- * Registration Logic
- */
+
+// ---- Registration ----
 function initRegistration(form) {
-    const urlParams = new URLSearchParams(window.location.search);
-    let role = urlParams.get('role') || localStorage.getItem('tempRole') || 'patient';
-    
-    const roleInput = document.getElementById('role');
-    const roleSubtitle = document.getElementById('role-subtitle');
-    
-    if (roleInput) roleInput.value = role;
-    if (roleSubtitle) {
-        const roleDisplay = role.charAt(0).toUpperCase() + role.slice(1);
-        roleSubtitle.textContent = `Join us as a ${roleDisplay}`;
+    var urlParams = new URLSearchParams(window.location.search);
+    var role = urlParams.get('role') || localStorage.getItem('tempRole') || 'patient';
+
+    var roleInput = document.getElementById('role');
+    var roleSubtitle = document.getElementById('role-subtitle');
+
+    if (roleInput) {
+        roleInput.value = role;
     }
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const name = document.getElementById('fullname').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const confirm = document.getElementById('confirmPassword').value;
+    if (roleSubtitle) {
+        var roleDisplay = role.charAt(0).toUpperCase() + role.slice(1);
+        roleSubtitle.textContent = 'Join us as a ' + roleDisplay;
+    }
 
-        if (password !== confirm) {
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        var name = document.getElementById('fullname').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (password !== confirmPassword) {
             alert('Passwords do not match!');
             return;
         }
 
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerText;
+        var submitBtn = form.querySelector('button[type="submit"]');
+        var originalText = submitBtn.innerText;
         submitBtn.innerText = 'Creating Account...';
         submitBtn.disabled = true;
 
         try {
-            const response = await fetch(`${CONFIG.API_BASE_URL}/register`, {
+            var response = await fetch(CONFIG.API_BASE_URL + '/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, role, name })
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    role: role,
+                    name: name
+                })
             });
 
-            const data = await response.json();
+            var data = await response.json();
 
             if (response.ok) {
                 alert('Account created successfully! Please sign in.');
@@ -153,23 +166,24 @@ function initRegistration(form) {
     });
 }
 
-/**
- * Handle Forgot Password
- */
-const forgotForm = document.getElementById("forgotPasswordForm");
+
+// ---- Forgot Password ----
+var forgotForm = document.getElementById("forgotPasswordForm");
 if (forgotForm) {
-    forgotForm.addEventListener("submit", function (e) {
+    forgotForm.addEventListener("submit", function(e) {
         e.preventDefault();
-        const submitBtn = forgotForm.querySelector('button[type="submit"]');
+        var submitBtn = forgotForm.querySelector('button[type="submit"]');
         submitBtn.innerText = 'Sending...';
         submitBtn.disabled = true;
 
-        setTimeout(() => {
+        setTimeout(function() {
             forgotForm.style.display = "none";
-            const successMsg = document.getElementById("successMessage");
-            if (successMsg) successMsg.style.display = "block";
+            var successMsg = document.getElementById("successMessage");
+            if (successMsg) {
+                successMsg.style.display = "block";
+            }
 
-            setTimeout(() => {
+            setTimeout(function() {
                 window.location.href = "login.html";
             }, 5000);
         }, 1500);
