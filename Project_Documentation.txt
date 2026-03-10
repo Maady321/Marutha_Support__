@@ -1,0 +1,223 @@
+MARUTHA SUPPORT – PALLIATIVE CARE SUPPORT PLATFORM
+Professional Technical Documentation
+
+==================================================
+
+1. EXECUTIVE SUMMARY
+
+Marutha Support is a specialized healthcare platform focused on Palliative Care. It provides a digital ecosystem where patients, doctors, and volunteers can collaborate in real-time. The platform streamlines patient monitoring, medical record management, and secure communication, ensuring that high-quality care is accessible and coordinated.
+
+==================================================
+
+2. PROJECT OBJECTIVES
+
+- Centralized Care: Provide a single point of interaction for the entire care team.
+- Real-Time Communication: Enabling instant messaging between patients, doctors, and volunteers.
+- Health Tracking: Continuous monitoring of vitals and patient progress.
+- Educational Foundation: Built as a reference project for students to learn modern Full-Stack development without the complexity of heavy frameworks.
+
+==================================================
+
+3. SYSTEM ARCHITECTURE OVERVIEW
+
+The system follows a decoupled Client-Server architecture:
+
+- Backend: A high-performance Python FastAPI server handling business logic, authentication, and database persistence.
+- Frontend: A modern, responsive "Vanilla" web interface (HTML/CSS/JS) that interacts with the backend via RESTful APIs and WebSockets.
+- Real-time Layer: An integrated Socket.io server to handle persistent bi-directional communication.
+
+==================================================
+
+4. TECHNOLOGY STACK EXPLANATION
+
+- Backend (Python/FastAPI): Chosen for its speed (Starlette/Pydantic) and automatic OpenAPI documentation.
+- Database (PostgreSQL/SQLAlchemy): Enterprise-grade relational database. SQLite is supported for local development simplicity.
+- Real-time (Socket.io/python-socketio): Handles live chat messages and status updates without browser refreshes.
+- Frontend (Vanilla JavaScript): Uses standard DOM manipulation and fetch APIs to keep the codebase lightweight and highly educational.
+
+==================================================
+
+5. SYSTEM WORKFLOW
+
+1. Authentication: User logs in; Backend issues a unique Session Token.
+2. Dashboard Loading: Frontend uses apiFetch to retrieve role-specific data (e.g., active patients for doctors).
+3. Interaction:
+   - REST: Used for static data (updating vitals, uploading reports).
+   - WebSocket: Used for dynamic events (live chat messages).
+4. Persistence: Every action is committed to the PostgreSQL/SQLite database via SQLAlchemy ORM.
+
+==================================================
+
+6. DETAILED FEATURE BREAKDOWN
+
+Patient Dashboard
+- Vitals Tracking: Input pain levels, mood, and physical status.
+- Medical Reports: Secure upload and download of PDF/Image records.
+- Appointments: Request and view scheduled consultations.
+
+Doctor Dashboard
+- Patient Oversight: View all assigned patients and their health history.
+- Consultation Management: Accept or decline patient requests with specific timings.
+- Clinical Notes: Securely log internal observations.
+
+Volunteer Dashboard
+- Active Support: Track assigned patients and log daily activities.
+- Team Coordination: Direct access to the patient's primary doctor for escalations.
+
+==================================================
+
+7. USER ROLE PERMISSIONS
+
+Role: Patient
+Access Level: User
+Permissions: Read/Write own health data, Chat with team.
+
+Role: Doctor
+Access Level: Professional
+Permissions: Read all patients, Write clinical records, Manage appointments.
+
+Role: Volunteer
+Access Level: Support
+Permissions: Read assigned patient info, Log support activities, Chat with care team.
+
+==================================================
+
+8. BACKEND ARCHITECTURE
+
+The backend is organized into modular services:
+
+- main.py: Entry point, CORS configuration, and static file mounting.
+- auth.py: Security layer handling password hashing (Bcrypt) and session management.
+- models.py: Database schema definitions using SQLAlchemy.
+- routers/: Directory containing specific API routes (e.g., chats.py, clinical.py, users.py).
+- socket_io.py: Dedicated logic for WebSocket events and broadcasting.
+
+==================================================
+
+9. FRONTEND ARCHITECTURE
+
+The frontend uses a directory-based structure:
+
+- templates/: HTML files for each role (e.g., dashboard_doctor.html).
+- static/css/: Modular styles (base.css, dashboard.css, components.css).
+- static/js/:
+  - app.js: Global features (Authentication checking, Profile loading, apiFetch helper).
+  - chat.js: The real-time messaging engine.
+  - dashboard_*.js: Specific logic for each user role.
+
+==================================================
+
+10. DATABASE DESIGN AND EXAMPLE SCHEMA
+
+Key Entity: UserAccount
+- id: Primary Key
+- email: string (Unique)
+- hashed_password: string
+- role: enum (patient, doctor, volunteer)
+- token: string (Active session token)
+
+Key Entity: DoctorRequest
+- id: Primary Key
+- patient_id: Foreign Key
+- doctor_id: Foreign Key
+- status: string (pending, accepted, declined)
+- appointment_time: datetime
+
+==================================================
+
+11. API DESIGN AND EXAMPLE ENDPOINTS
+
+The API follows REST conventions:
+
+- POST /login: Authenticates user and returns a token.
+- POST /vitals/: Add health log (Pain, Mood, BP, HR, Notes)
+- GET /vitals/my: Get own history
+- GET /vitals/patient/{id}: Get patient history (Doctor/Volunteer only)
+- GET /users/me: Returns current user profile details.
+- GET /doctors/requests/pending: Fetches pending appointments for a doctor.
+- POST /chats/: Submits a new message to the database.
+
+==================================================
+
+12. REAL-TIME CHAT ARCHITECTURE
+
+The chat system uses a Mixed Architecture:
+
+1. Submission: Message is sent via a standard POST request to /chats/. This ensures the message is saved in the database first.
+2. Broadcast: After saving, the Backend triggers the socket_io.py broadcast service.
+3. Delivery: The Socket.io server emits receive_message only to the recipient's room and the sender's room (for synchronization).
+4. Fallback: If the Socket is disconnected, the user can still read messages by refreshing (REST fallback).
+
+==================================================
+
+13. SECURITY DESIGN
+
+- Authentication: Uses custom Bearer Tokens verified on every request.
+- Data Protection: Passwords are never stored in plain text; Bcrypt hashing is used.
+- CORS Management: Strict origin filtering to prevent unauthorized cross-domain requests.
+- Authorization: Middleware checks the user role before allowing access to professional endpoints (e.g., only Doctors can access /clinical/notes).
+
+==================================================
+
+14. DEPLOYMENT ARCHITECTURE
+
+Designed for easy deployment on Vercel or Render:
+
+- Backend: Deployed as an ASGI application (Uvicorn).
+- Frontend: Assets Served via FastAPI's StaticFiles.
+- Database: Managed PostgreSQL instance (e.g., Supabase or Neon).
+
+==================================================
+
+15. FOLDER STRUCTURE EXPLANATION
+
+Marutha_support/
+├── backend/                # API Logic
+│   ├── routers/            # API Endpoints
+│   ├── main.py             # App Entry
+│   ├── models.py           # SQL Models
+│   └── socket_io.py        # Real-time Events
+├── frontend/               # UI Files
+│   ├── templates/          # HTML Pages
+│   └── static/             # Assets (CSS/JS/Images)
+├── .env                    # Configuration (DB URL, Port)
+└── README.md               # User Quick Start
+
+==================================================
+
+16. DEVELOPMENT SETUP GUIDE
+
+1. Environment: Create a .env file with DATABASE_URL and PORT=8009.
+2. Dependencies: Install Python packages: pip install fastapi uvicorn sqlalchemy socketio.
+3. Run Backend: python -m uvicorn main:app --reload --port 8009.
+4. Run Frontend: Open frontend/templates/landing.html using a local web server (e.g., Live Server on port 5507).
+
+==================================================
+
+17. FUTURE IMPROVEMENTS / ROADMAP
+
+- Video Consultations: Integration of WebRTC for live video calls.
+- Notification System: Push notifications for mobile devices.
+- Detailed Analytics: Charts for patient health trends over months.
+
+==================================================
+
+18. POTENTIAL AI INTEGRATIONS
+
+- Vitals Analysis: AI to detect abnormal health trends and alert doctors automatically.
+- Support Chatbot: An AI assistant for patients to answer basic palliative care questions.
+- Smart Scheduling: Automated appointment optimization based on doctor availability.
+
+==================================================
+
+19. SCALABILITY CONSIDERATIONS
+
+- Load Balancing: The ASGI architecture supports scaling via multiple worker processes (Gunicorn).
+- Redis Socket.io: For multi-server deployments, a Redis adapter can be used to synchronize messages across multiple backend nodes.
+- Database Indexing: Optimized queries for the DoctorRequest and ChatMessage tables to handle thousands of users.
+
+==================================================
+
+20. CONCLUSION
+
+Marutha Support represents a modern approach to community-driven healthcare. By leveraging high-performance backend technology with a simplified, accessible frontend, the platform provides a robust foundation for palliative care coordination while serving as an excellent educational blueprint for technical teams.

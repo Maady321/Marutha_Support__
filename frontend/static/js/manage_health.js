@@ -97,6 +97,8 @@ async function submitLog(e) {
     var payload = {
         pain_level: painValue,
         mood: moodValue,
+        bp: document.getElementById("bp_input") ? document.getElementById("bp_input").value : null,
+        heart_rate: document.getElementById("hr_input") ? parseInt(document.getElementById("hr_input").value) || null : null,
         notes: notesValue
     };
 
@@ -128,7 +130,7 @@ async function loadHealthLogs() {
     var tbody = document.getElementById('logs-table-body');
     if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Loading logs...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Loading logs...</td></tr>';
 
     try {
         var response = await apiFetch('/vitals/my');
@@ -136,18 +138,18 @@ async function loadHealthLogs() {
             var logs = await response.json();
             renderLogs(logs, tbody);
         } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">Failed to load logs</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red; padding:20px;">Failed to load logs</td></tr>';
         }
     } catch (error) {
         console.error("Error loading logs:", error);
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">Error connecting to server</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red; padding:20px;">Error connecting to server</td></tr>';
     }
 }
 
 
 function renderLogs(logs, tbody) {
     if (logs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted)">No logs recorded yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted)">No logs recorded yet.</td></tr>';
         return;
     }
 
@@ -169,11 +171,14 @@ function renderLogs(logs, tbody) {
         }
 
         var notesText = log.notes || '-';
+        var bpText = log.bp || '-';
+        var hrText = log.heart_rate ? log.heart_rate + ' bpm' : '-';
 
         var row = '<tr>' +
             '<td>' + dateStr + '</td>' +
             '<td><span class="' + badgeClass + '">' + log.mood + '</span></td>' +
             '<td>' + log.pain_level + '/10</td>' +
+            '<td>' + bpText + ' / ' + hrText + '</td>' +
             '<td>' + notesText + '</td>' +
         '</tr>';
 
@@ -348,8 +353,9 @@ async function requestDoctor(doctorId) {
 }
 
 
-// Make functions available globally
 window.switchTab = switchHealthTab;
 window.submitLog = submitLog;
-window.updatePainValue = function(val) { document.getElementById('pain_val').innerText = val; };
+window.updatePainValue = function (val) {
+    document.getElementById("pain_val").innerText = val;
+};
 window.requestDoctor = requestDoctor;

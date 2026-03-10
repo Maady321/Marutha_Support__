@@ -170,24 +170,30 @@ function initMobileNav() {
 // Makes sure users are logged in and on the right pages for their role
 
 function checkAuth() {
-    var publicPages = ['login.html', 'register.html', 'create_account.html', 'landing.html', 'index.html', 'forgot_password.html', 'reset_password.html', '/'];
-    var currentPath = window.location.pathname;
+    var currentPath = window.location.pathname.toLowerCase();
+    var publicPages = ['login.html', 'register.html', 'create_account.html', 'landing.html', 'index.html', 'forgot_password.html', 'reset_password.html', 'login', 'register', 'index', 'landing', '/'];
 
     // Check if current page is a public page
     var isPublicPage = false;
     for (var i = 0; i < publicPages.length; i++) {
-        if (currentPath.endsWith(publicPages[i])) {
+        var page = publicPages[i].toLowerCase();
+        if (currentPath === page || currentPath.endsWith('/' + page) || (page === '/' && currentPath.endsWith('/'))) {
             isPublicPage = true;
             break;
         }
     }
 
     var userRole = localStorage.getItem('userRole');
-    console.log('Current Session - Role: ' + (userRole || 'Guest'));
+    console.log('Current Session - Role: ' + (userRole || 'Guest') + ' | Path: ' + currentPath);
+
+    // CRITICAL: Prevent refresh loop if already on login page
+    var isOnLoginPage = currentPath.includes('login.html') || currentPath.endsWith('/login');
 
     // If not on a public page and not logged in, redirect to login
     if (!isPublicPage && !userRole) {
-        window.location.href = 'login.html';
+        if (!isOnLoginPage) {
+            window.location.href = 'login.html';
+        }
         return;
     }
 
@@ -202,19 +208,19 @@ function checkAuth() {
         var isVolunteerPage = false;
 
         for (var j = 0; j < doctorPages.length; j++) {
-            if (currentPath.endsWith('/' + doctorPages[j]) || currentPath === doctorPages[j]) {
+            if (currentPath.endsWith(doctorPages[j])) {
                 isDoctorPage = true;
                 break;
             }
         }
         for (var k = 0; k < patientPages.length; k++) {
-            if (currentPath.endsWith('/' + patientPages[k]) || currentPath === patientPages[k]) {
+            if (currentPath.endsWith(patientPages[k])) {
                 isPatientPage = true;
                 break;
             }
         }
         for (var l = 0; l < volunteerPages.length; l++) {
-            if (currentPath.endsWith('/' + volunteerPages[l]) || currentPath === volunteerPages[l]) {
+            if (currentPath.endsWith(volunteerPages[l])) {
                 isVolunteerPage = true;
                 break;
             }
@@ -324,42 +330,37 @@ function showNotification(message, type) {
 // This function adds the auth token to every API request automatically
 
 async function apiFetch(endpoint, options) {
-    if (!options) options = {};
+    options = options || {};
+    options.headers = options.headers || {};
 
     var token = localStorage.getItem('authToken');
-
-    // Build headers
-    var headers = {
-        'Content-Type': 'application/json'
-    };
-
     if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
+        options.headers['Authorization'] = 'Bearer ' + token;
     }
 
-    // Add any extra headers from options
-    if (options.headers) {
-        var keys = Object.keys(options.headers);
-        for (var i = 0; i < keys.length; i++) {
-            headers[keys[i]] = options.headers[keys[i]];
+    if (options.body && !(options.body instanceof FormData) && !options.headers['Content-Type']) {
+        options.headers['Content-Type'] = 'application/json';
+        if (typeof options.body === 'object') {
+            options.body = JSON.stringify(options.body);
         }
     }
 
-    // Make the request
-    var response = await fetch(CONFIG.API_BASE_URL + endpoint, {
-        method: options.method || 'GET',
-        headers: headers,
-        body: options.body || undefined
-    });
+    var response = await fetch(CONFIG.API_BASE_URL + endpoint, options);
 
-    // If unauthorized, log the user out
     if (response.status === 401) {
-        handleLogout();
-        throw new Error('Session expired');
+        // Only logout if not already on the login page
+        if (!window.location.pathname.includes('login.html')) {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('authToken');
+            window.location.href = 'login.html';
+        }
     }
 
     return response;
 }
+
+// Make it globally available for all other scripts
+window.apiFetch = apiFetch;
 
 
 // ---- Populate Profile Info Across Pages ----
@@ -466,3 +467,5 @@ async function populateGlobalProfile() {
         console.error("Failed to load profile for global snippet", e);
     }
 }
+
+

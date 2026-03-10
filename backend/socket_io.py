@@ -12,11 +12,7 @@ logger = logging.getLogger("socketio")
 # Create the Socket.io server
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=[
-        'http://127.0.0.1:5505', 'http://localhost:5505',
-        'http://127.0.0.1:5500', 'http://localhost:5500',
-        'http://127.0.0.1:8080', 'http://localhost:8080'
-    ]
+    cors_allowed_origins='*'  # Allow all for development to ensure connectivity
 )
 
 # Dictionary to track which users are connected
@@ -62,10 +58,12 @@ async def connect(sid, environ, auth):
         user_sessions[user_id].add(sid)
 
         logger.info("User " + str(user_id) + " connected (SID: " + str(sid) + ")")
+        print(f"--- Socket.io: User {user_id} connected (SID: {sid}) ---")
         return True
 
     except Exception as e:
         logger.error("Socket.io Auth error: " + str(e))
+        print(f"--- Socket.io Auth Error: {e} ---")
         return False
     finally:
         db.close()
@@ -83,6 +81,7 @@ async def disconnect(sid):
             if len(user_sessions[user_id]) == 0:
                 del user_sessions[user_id]
         logger.info("User " + str(user_id) + " disconnected (SID: " + str(sid) + ")")
+        print(f"--- Socket.io: User {user_id} disconnected (SID: {sid}) ---")
 
 
 @sio.event
@@ -131,5 +130,6 @@ async def broadcast_new_message(message_obj):
     if message_obj.timestamp:
         payload["timestamp"] = message_obj.timestamp.isoformat()
 
+    print(f"--- Socket.io: Broadcasting message from {message_obj.sender_id} to {message_obj.recipient_id} ---")
     await sio.emit('receive_message', payload, room=str(message_obj.recipient_id))
     await sio.emit('receive_message', payload, room=str(message_obj.sender_id))

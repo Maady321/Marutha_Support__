@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
 async function loadDoctorDashboard() {
     await loadDoctorProfile();
     await loadPendingRequests();
-    initOnlineToggle();
 }
 
 
@@ -22,27 +21,19 @@ async function loadDoctorProfile() {
         var doc = await res.json();
 
         // Fill in doctor info on dashboard
-        var nameEl = document.getElementById('doctorName');
-        var specEl = document.getElementById('doctorSpecialty');
-        var statusEl = document.getElementById('onlineStatus');
-        var toggleEl = document.getElementById('onlineToggle');
-
-        if (nameEl) nameEl.textContent = doc.name || 'Doctor';
-        if (specEl) specEl.textContent = doc.specialty || 'General';
-
-        if (statusEl) {
-            if (doc.is_online) {
-                statusEl.textContent = 'Online';
-                statusEl.style.color = '#10b981';
-            } else {
-                statusEl.textContent = 'Offline';
-                statusEl.style.color = '#ef4444';
-            }
+        var greetingName = document.getElementById('doctor-greeting-name');
+        var profileName = document.getElementById('user-name-display');
+        
+        if (greetingName) {
+            var fullName = doc.name || 'Doctor';
+            var firstName = fullName.split(' ')[0];
+            greetingName.textContent = firstName;
         }
+        
+        if (profileName) profileName.textContent = doc.name || 'Doctor';
 
-        if (toggleEl) {
-            toggleEl.checked = doc.is_online;
-        }
+        // Update online status UI
+        updateOnlineStatusUI(doc.is_online);
 
     } catch (e) {
         console.error('Error loading doctor profile:', e);
@@ -50,114 +41,171 @@ async function loadDoctorProfile() {
 }
 
 
-// ---- Online/Offline Toggle ----
-function initOnlineToggle() {
-    var toggleEl = document.getElementById('onlineToggle');
-    if (!toggleEl) return;
+// ---- Update Online Status UI ----
+function updateOnlineStatusUI(isOnline) {
+    var statusDot = document.getElementById('status-dot');
+    var statusText = document.getElementById('status-text');
+    var toggleBtn = document.getElementById('toggle-status-btn');
 
-    toggleEl.addEventListener('change', async function() {
-        var newStatus = toggleEl.checked;
-        var statusEl = document.getElementById('onlineStatus');
-
-        try {
-            var res = await apiFetch('/doctors/me/status?status=' + newStatus, {
-                method: 'POST'
-            });
-
-            if (res.ok && statusEl) {
-                if (newStatus) {
-                    statusEl.textContent = 'Online';
-                    statusEl.style.color = '#10b981';
-                } else {
-                    statusEl.textContent = 'Offline';
-                    statusEl.style.color = '#ef4444';
-                }
-            }
-        } catch(e) {
-            console.error('Error toggling status:', e);
+    if (statusDot) {
+        if (isOnline) {
+            statusDot.classList.add('online');
+            statusDot.style.background = '#10b981';
+            statusDot.style.boxShadow = '0 0 8px #10b981';
+        } else {
+            statusDot.classList.remove('online');
+            statusDot.style.background = '#94a3b8';
+            statusDot.style.boxShadow = 'none';
         }
-    });
+    }
+
+    if (statusText) {
+        statusText.textContent = isOnline ? 'Online' : 'Offline';
+    }
+
+    if (toggleBtn) {
+        toggleBtn.textContent = isOnline ? 'Go Offline' : 'Go Online';
+        if (isOnline) {
+            toggleBtn.classList.add('btn-primary');
+            toggleBtn.classList.remove('btn-outline-lavender');
+            toggleBtn.style.background = '#10b981';
+            toggleBtn.style.color = 'white';
+            toggleBtn.style.borderColor = '#10b981';
+        } else {
+            toggleBtn.classList.remove('btn-primary');
+            toggleBtn.classList.add('btn-outline-lavender');
+            toggleBtn.style.background = '';
+            toggleBtn.style.color = '';
+            toggleBtn.style.borderColor = '';
+        }
+    }
+}
+
+
+// ---- Toggle Online Status ----
+async function toggleOnlineStatus() {
+    var statusText = document.getElementById('status-text');
+    var currentStatus = (statusText && statusText.textContent === 'Online');
+    var newStatus = !currentStatus;
+
+    try {
+        var res = await apiFetch('/doctors/me/status?status=' + newStatus, {
+            method: 'POST'
+        });
+
+        if (res.ok) {
+            updateOnlineStatusUI(newStatus);
+        } else {
+            console.error('Failed to update online status');
+        }
+    } catch(e) {
+        console.error('Error toggling status:', e);
+    }
 }
 
 
 // ---- Load Pending Requests ----
 async function loadPendingRequests() {
-    var container = document.getElementById('pendingRequestsContainer');
-    var countEl = document.getElementById('pendingCount');
-    if (!container) return;
+    var tableBody = document.getElementById('appointments-table-body');
+    var statAppointments = document.getElementById('stat-appointments');
+    var statPatients = document.getElementById('stat-patients');
 
-    container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted)">Loading requests...</div>';
+    if (!tableBody) return;
 
     try {
         var res = await apiFetch('/doctors/requests/pending');
         if (!res.ok) {
-            container.innerHTML = '<div style="text-align: center; padding: 20px; color: red">Failed to load</div>';
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red">Failed to load</td></tr>';
             return;
         }
 
         var requests = await res.json();
 
-        if (countEl) {
-            countEl.textContent = requests.length;
-        }
+        // Update stats
+        if (statAppointments) statAppointments.textContent = requests.length;
 
         if (requests.length === 0) {
-            container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted)"><i class="fas fa-check-circle" style="font-size: 2rem; color: #10b981; display: block; margin-bottom: 12px"></i>No pending requests right now.</div>';
+            tableBody.innerHTML = '<tr><td colspan="5" class="dash-empty">No pending requests</td></tr>';
             return;
         }
 
-        container.innerHTML = '';
+        tableBody.innerHTML = '';
 
         for (var i = 0; i < requests.length; i++) {
             var req = requests[i];
-            var card = document.createElement('div');
-            card.className = 'card fade-in';
-            card.style.padding = '20px';
-            card.style.marginBottom = '12px';
-            card.id = 'req-' + req.id;
-
+            var tr = document.createElement('tr');
+            
             var patientName = req.patient_name || ('Patient #' + req.patient_id);
-            var dateText = '';
-            if (req.created_at) {
-                dateText = new Date(req.created_at).toLocaleDateString();
-            } else {
-                dateText = 'Today';
-            }
+            var dateText = req.created_at ? new Date(req.created_at).toLocaleDateString() : 'Today';
 
-            card.innerHTML =
-                '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">' +
-                    '<h4 style="color: var(--medical-blue); margin: 0">' + patientName + '</h4>' +
-                    '<span style="font-size: 0.85rem; color: var(--text-muted)">' + dateText + '</span>' +
-                '</div>' +
-                '<p style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.9rem">' + (req.notes || 'General Consultation') + '</p>' +
-                '<div style="display: flex; gap: 8px">' +
-                    '<button class="btn btn-sm btn-primary" onclick="acceptDashRequest(' + req.id + ')" style="background: #10b981; border-color: #10b981">' +
-                        '<i class="fas fa-check" style="margin-right: 4px"></i> Accept' +
-                    '</button>' +
-                    '<button class="btn btn-sm btn-outline-lavender" onclick="declineDashRequest(' + req.id + ')" style="color: #ef4444; border-color: #fca5a5">' +
-                        '<i class="fas fa-times"></i>' +
-                    '</button>' +
-                '</div>';
+            tr.innerHTML =
+                '<td>' +
+                    '<div style="font-weight: 600; color: var(--medical-blue)">' + patientName + '</div>' +
+                    '<div style="font-size: 0.75rem; color: var(--text-muted)">ID: ' + req.patient_id + '</div>' +
+                '</td>' +
+                '<td>' + dateText + '</td>' +
+                '<td>Consultation</td>' +
+                '<td><span class="status-badge warning">Pending</span></td>' +
+                '<td>' +
+                    '<div style="display: flex; gap: 8px">' +
+                        '<button class="btn btn-sm" onclick="acceptDashRequest(' + req.id + ')" style="background: #10b981; color: white">' +
+                            '<i class="fas fa-check"></i>' +
+                        '</button>' +
+                        '<button class="btn btn-sm btn-outline-lavender" onclick="declineDashRequest(' + req.id + ')" style="color: #ef4444; border-color: #fca5a5">' +
+                            '<i class="fas fa-times"></i>' +
+                        '</button>' +
+                    '</div>' +
+                '</td>';
 
-            container.appendChild(card);
+            tableBody.appendChild(tr);
         }
 
     } catch (e) {
         console.error('Error loading requests:', e);
-        container.innerHTML = '<div style="text-align: center; padding: 20px; color: red">Error connecting to server</div>';
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red">Error connecting to server</td></tr>';
     }
 }
 
 
-// ---- Accept Request (Dashboard) ----
+// ---- Accept Request ----
 async function acceptDashRequest(requestId) {
-    var timeInput = prompt('Enter appointment date/time (YYYY-MM-DDTHH:MM):');
-    if (!timeInput) return;
+    var dateVal = document.getElementById('acceptDate');
+    var timeVal = document.getElementById('acceptTime');
+    
+    // For simplicity, we'll use a prompt if the modal isn't ready, 
+    // but the modal in HTML is better. Let's try the modal first.
+    var modal = document.getElementById('acceptRequestModal');
+    if (modal) {
+        modal.classList.add('active');
+        // We'll need a way to pass the request ID to the confirmation button
+        window.currentAcceptRequestId = requestId;
+    } else {
+        var timeInput = prompt('Enter appointment date/time (YYYY-MM-DDTHH:MM):');
+        if (!timeInput) return;
+        confirmAcceptRequestWithTime(requestId, timeInput + ':00');
+    }
+}
 
+async function confirmAcceptRequest() {
+    var requestId = window.currentAcceptRequestId;
+    var dateStr = document.getElementById('acceptDate').value;
+    var timeStr = document.getElementById('acceptTime').value;
+
+    if (!dateStr || !timeStr) {
+        alert('Please select both date and time');
+        return;
+    }
+
+    var fullTime = dateStr + 'T' + timeStr + ':00';
+    await confirmAcceptRequestWithTime(requestId, fullTime);
+    closeAcceptModal();
+}
+
+async function confirmAcceptRequestWithTime(requestId, timeStr) {
     try {
         var res = await apiFetch('/doctors/requests/' + requestId + '/accept', {
             method: 'POST',
-            body: JSON.stringify({ appointment_time: timeInput + ':00' })
+            body: JSON.stringify({ appointment_time: timeStr })
         });
 
         if (res.ok) {
@@ -172,8 +220,13 @@ async function acceptDashRequest(requestId) {
     }
 }
 
+function closeAcceptModal() {
+    var modal = document.getElementById('acceptRequestModal');
+    if (modal) modal.classList.remove('active');
+}
 
-// ---- Decline Request (Dashboard) ----
+
+// ---- Decline Request ----
 async function declineDashRequest(requestId) {
     if (!confirm('Decline this request?')) return;
 
@@ -195,5 +248,8 @@ async function declineDashRequest(requestId) {
 
 
 // Make functions available globally for inline onclick handlers
+window.toggleOnlineStatus = toggleOnlineStatus;
 window.acceptDashRequest = acceptDashRequest;
+window.confirmAcceptRequest = confirmAcceptRequest;
+window.closeAcceptModal = closeAcceptModal;
 window.declineDashRequest = declineDashRequest;

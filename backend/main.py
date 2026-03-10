@@ -19,36 +19,6 @@ models.Base.metadata.create_all(bind=database.engine)
 # Create the FastAPI app
 app = FastAPI(title="Marutha Support API")
 
-# ---- CORS Setup ----
-# CORS allows the frontend (running on a different port) to talk to the backend
-if os.getenv("VERCEL"):
-    # On Vercel, frontend and API are on the same website
-    ALLOWED_ORIGINS = ["*"]
-else:
-    # Locally, only allow these specific addresses
-    ALLOWED_ORIGINS = [
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:5505",
-        "http://localhost:5505",
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-    ]
-
-# Decide whether to allow credentials
-allow_creds = True
-if os.getenv("VERCEL"):
-    allow_creds = False  # Can't use credentials with wildcard origin
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=allow_creds,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 # ---- Error Handling ----
 # These catch any crashes and log them instead of crashing the whole server
 
@@ -63,6 +33,25 @@ async def catch_exceptions_middleware(request: Request, call_next):
             f.write("\nCRASH at " + str(request.url) + "\n")
             f.write(traceback.format_exc())
         return JSONResponse(status_code=500, content={"detail": str(e)})
+
+# ---- CORS Setup ----
+# CORS allows the frontend (running on a different port) to talk to the backend
+# We add it LAST (or outermost) so it adds headers to even our 500 error responses above.
+if os.getenv("VERCEL"):
+    ALLOWED_ORIGINS = ["*"]
+    allow_creds = False
+else:
+    # Locally, allow all origins to prevent issues with different Live Server ports
+    ALLOWED_ORIGINS = ["*"]
+    allow_creds = False # Use False when using wildcard origin
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=allow_creds,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(Exception)
@@ -105,6 +94,11 @@ if os.path.isdir(STATIC_DIR):
 if os.path.isdir(TEMPLATES_DIR):
     app.mount("/templates", StaticFiles(directory=TEMPLATES_DIR, html=True), name="templates")
 
+
+from routers import users, clinical, chats
+from socket_io import sio
+
+# ... (Previous code remains the same)
 
 # ---- Register All Routers ----
 # Each router handles a group of related API endpoints

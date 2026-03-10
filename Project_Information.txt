@@ -1,0 +1,59 @@
+MARUTHA SUPPORT - PROJECT INFORMATION & STATUS
+==============================================
+
+1. CURRENT STATUS OF THE PROJECT
+--------------------------------
+*   COMPLETED: The core infrastructure for Marutha Support is fully implemented.
+*   COMPLETED: Codebase has been REFACTORED for students. Advanced JavaScript (like arrow functions or template literals) has been simplified to standard functions and string concatenation for better learning.
+*   COMPLETED: Responsive UI is fixed. The website now works properly on Mobile, Tablet, and Desktop.
+*   STABLE: Backend API is running on FastAPI (Port 8009), and the database is ready for users, doctors, and volunteers.
+*   INTEGRATED: Real-time chat is functional using Socket.io.
+
+2. HOW THIS PROJECT WORKS
+-------------------------
+The project uses a modern "Client-Server" architecture but is written in a simple way for students to understand.
+
+*   BACKEND (The Brain): 
+    - Built using FastAPI (Python).
+    - It handles database connections, security (creating tokens for login), and real-time messaging.
+    - Files in the 'backend' folder control the logic (Auth, Users, Clinical records).
+
+*   FRONTEND (The Face): 
+    - Built using Vanilla HTML, CSS, and JavaScript.
+    - No complex frameworks (like React) are used, making it easier to study.
+    - JavaScript files in 'frontend/static/js' talk to the Backend via "Fetch" calls to get and send data.
+
+*   DATABASE: 
+    - Uses PostgreSQL (can also use SQLite).
+    - Stores information about Users, Patient Records, Vitals, and Chat Messages.
+
+3. FEATURES OF THE WEBSITE
+--------------------------
+The website is a support platform for palliative care, divided into three main roles:
+
+A. PATIENT DASHBOARD
+   - Dashboard Overview: View current health status and recent updates.
+   - Vitals Tracking: Log and monitor health stats like blood pressure, heart rate, etc.
+   - Communication: Chat directly with assigned Doctors and Volunteers.
+   - Medical History: Access past records and prescriptions.
+
+B. DOCTOR DASHBOARD
+   - Patient Management: View all assigned patients and their health history.
+   - Clinical Records: Create and manage health records, notes, and prescriptions.
+   - Appointment Requests: Approve or manage patient consultations.
+   - Volunteer Coordination: Assign volunteers to specific patients.
+
+C. VOLUNTEER DASHBOARD
+   - Supportive Care: Manage a list of assigned patients to provide non-medical support.
+   - Activity Logging: Track daily or weekly volunteer activities performed for patients.
+   - Quick Communication: Talk to both the patient and the doctor.
+
+D. GENERAL FEATURES
+   - Advanced Auth: Secure Registration and Login with role-based access.
+   - Responsive Design: Works on any screen size with a mobile-friendly navigation "hamburger" menu.
+   - Real-time Chat: Instant messaging between users.
+   - Report Management: Upload and view medical reports.
+
+==============================================
+Prepared for: Marutha Support Team
+Last Updated: March 2026

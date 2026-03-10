@@ -723,6 +723,8 @@
             var d = new Date(vital.timestamp);
             var mood = vital.mood || "–";
             var notes = vital.notes || "No notes";
+            var bp = vital.bp || "–";
+            var hr = vital.heart_rate ? vital.heart_rate + " bpm" : "–";
             vitalsHtml =
               vitalsHtml +
               '<div class="vital-item">' +
@@ -734,6 +736,10 @@
               '<div class="vital-info">' +
               '<div class="vital-mood"><i class="fas fa-smile" style="margin-right:4px;opacity:0.6"></i>' +
               mood +
+              " | <i class='fas fa-heartbeat' style='margin-right:2px;opacity:0.6'></i>" +
+              bp +
+              " | " +
+              hr +
               "</div>" +
               '<div class="vital-notes">' +
               notes +

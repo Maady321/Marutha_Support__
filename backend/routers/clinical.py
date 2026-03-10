@@ -115,6 +115,8 @@ def add_health_log(
         patient_id=patient.id,
         pain_level=log_data.pain_level,
         mood=log_data.mood,
+        bp=log_data.bp,
+        heart_rate=log_data.heart_rate,
         notes=log_data.notes
     )
     db.add(new_log)
@@ -141,6 +143,46 @@ def get_my_logs(
     ).all()
 
     return logs
+
+
+@vitals_router.get("/patient/{patient_id}", response_model=List[schemas.HealthLogDetails])
+def get_patient_vitals(
+    patient_id: int,
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    """Allow doctors and volunteers to view a patient's vitals."""
+
+    # Search if current user has permission (Doctor of patient OR assigned volunteer)
+    # 1. Is user a doctor?
+    if user.role == "doctor":
+        doc = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
+        # They can see vitals if they have an accepted request
+        is_assigned = db.query(models.DoctorRequest).filter_by(
+            doctor_id=doc.id, patient_id=patient_id, status="accepted"
+        ).first()
+        if not is_assigned:
+             raise HTTPException(status_code=403, detail="You are not authorized to view this patient's vitals.")
+
+    # 2. Is user a volunteer?
+    elif user.role == "volunteer":
+        vol = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
+        is_assigned = db.query(models.PatientProfile).filter_by(
+            id=patient_id, volunteer_id=vol.id
+        ).first()
+        if not is_assigned:
+             raise HTTPException(status_code=403, detail="You are not assigned to this patient.")
+    
+    else:
+        # Patients should use /my
+        raise HTTPException(status_code=403, detail="Unauthorized role.")
+
+    # Fetch logs
+    return db.query(models.HealthLog).filter_by(
+        patient_id=patient_id
+    ).order_by(
+        models.HealthLog.timestamp.desc()
+    ).all()
 
 
 # =============================================

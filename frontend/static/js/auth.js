@@ -63,9 +63,8 @@ function initLogin(form) {
         submitBtn.disabled = true;
 
         try {
-            var response = await fetch(CONFIG.API_BASE_URL + '/login', {
+            var response = await apiFetch('/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email, password: password })
             });
 
@@ -137,9 +136,8 @@ function initRegistration(form) {
         submitBtn.disabled = true;
 
         try {
-            var response = await fetch(CONFIG.API_BASE_URL + '/register', {
+            var response = await apiFetch('/register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     email: email,
                     password: password,

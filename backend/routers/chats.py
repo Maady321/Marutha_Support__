@@ -81,58 +81,59 @@ def get_chat_contacts(
 
     # ---- Patient contacts ----
     if user.role == "patient":
-        patient = db.query(models.PatientProfile).filter(
-            models.PatientProfile.user_id == user.id
-        ).first()
-
+        patient = db.query(models.PatientProfile).filter_by(user_id=user.id).first()
         if patient:
-            # Add assigned volunteer as contact
-            if patient.volunteer_id:
-                vol = db.query(models.VolunteerProfile).filter(
-                    models.VolunteerProfile.id == patient.volunteer_id
-                ).first()
-                if vol:
-                    add_contact(vol.user_id, vol.name, "volunteer")
-
-            # Add doctors who accepted consultation requests
+            # 1. Add doctor(s) from accepted consultations
             consults = db.query(models.DoctorRequest).filter(
                 models.DoctorRequest.patient_id == patient.id,
                 models.DoctorRequest.status == "accepted"
             ).all()
-
             for c in consults:
                 if c.doctor:
                     add_contact(c.doctor.user_id, c.doctor.name, "doctor")
+            
+            # 2. Add assigned volunteer
+            if patient.volunteer:
+                add_contact(patient.volunteer.user_id, patient.volunteer.name, "volunteer")
 
     # ---- Doctor contacts ----
     elif user.role == "doctor":
-        doc = db.query(models.DoctorProfile).filter(
-            models.DoctorProfile.user_id == user.id
-        ).first()
-
+        doc = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
         if doc:
-            # Add patients who have accepted consultations
+            # 1. Add all other doctors (professional network)
+            all_other_docs = db.query(models.DoctorProfile).filter(models.DoctorProfile.id != doc.id).all()
+            for d in all_other_docs:
+                add_contact(d.user_id, d.name, "doctor")
+            
+            # 2. Add all patients with accepted consultations
             consults = db.query(models.DoctorRequest).filter(
                 models.DoctorRequest.doctor_id == doc.id,
                 models.DoctorRequest.status == "accepted"
             ).all()
-
             for c in consults:
                 if c.patient:
                     add_contact(c.patient.user_id, c.patient.name, "patient")
+                    
+                    # 3. Add the volunteer assigned to that patient
+                    if c.patient.volunteer:
+                        add_contact(c.patient.volunteer.user_id, c.patient.volunteer.name, "volunteer")
+            
+            # 4. Also add all volunteers who are in the system (Helpful for doctor coordination)
+            all_vols = db.query(models.VolunteerProfile).all()
+            for v in all_vols:
+                add_contact(v.user_id, v.name, "volunteer")
 
     # ---- Volunteer contacts ----
     elif user.role == "volunteer":
-        vol = db.query(models.VolunteerProfile).filter(
-            models.VolunteerProfile.user_id == user.id
-        ).first()
-
+        vol = db.query(models.VolunteerProfile).filter_by(user_id=user.id).first()
         if vol:
-            # Add all assigned patients as contacts
-            patients = db.query(models.PatientProfile).filter(
-                models.PatientProfile.volunteer_id == vol.id
-            ).all()
-
+            # 1. Add all Doctors in the system (So they can reach out for help)
+            all_docs = db.query(models.DoctorProfile).all()
+            for d in all_docs:
+                add_contact(d.user_id, d.name, "doctor")
+            
+            # 2. Add all assigned patients
+            patients = db.query(models.PatientProfile).filter_by(volunteer_id=vol.id).all()
             for p in patients:
                 add_contact(p.user_id, p.name, "patient")
 

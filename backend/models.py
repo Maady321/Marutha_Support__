@@ -113,6 +113,8 @@ class HealthLog(Base):
     patient_id = Column(Integer, ForeignKey("patients.id"))
     pain_level = Column(Integer)
     mood = Column(String)
+    bp = Column(String, nullable=True) # Blood Pressure (e.g. 120/80)
+    heart_rate = Column(Integer, nullable=True) # Heart Rate (bpm)
     notes = Column(String, nullable=True)
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 

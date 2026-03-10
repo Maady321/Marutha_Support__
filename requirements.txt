@@ -11,3 +11,4 @@ python-dotenv
 python-jose[cryptography]
 jinja2
 python-socketio
+google-generativeai

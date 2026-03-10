@@ -142,6 +142,8 @@ class DoctorRequestDetails(DoctorRequestSetup):
 class HealthLogEntry(BaseModel):
     pain_level: int
     mood: str
+    bp: Optional[str] = None
+    heart_rate: Optional[int] = None
     notes: Optional[str] = None
 
 
@@ -259,3 +261,6 @@ class VolunteerTimeLogDetails(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+

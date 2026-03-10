@@ -278,6 +278,42 @@
                         <option>Tired</option>
                       </select>
                     </div>
+                    <div
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 16px;
+                      "
+                    >
+                      <div class="form-group">
+                        <label>Blood Pressure</label>
+                        <input
+                          type="text"
+                          id="bp_input"
+                          placeholder="e.g. 120/80"
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border-radius: 8px;
+                            border: 1px solid var(--border-color);
+                          "
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label>Heart Rate (bpm)</label>
+                        <input
+                          type="number"
+                          id="hr_input"
+                          placeholder="e.g. 72"
+                          style="
+                            width: 100%;
+                            padding: 12px;
+                            border-radius: 8px;
+                            border: 1px solid var(--border-color);
+                          "
+                        />
+                      </div>
+                    </div>
                     <div class="form-group">
                       <label>Notes</label>
                       <textarea
@@ -318,6 +354,7 @@
                           <th>Date</th>
                           <th>Mood</th>
                           <th>Pain</th>
+                          <th>Vitals (BP/HR)</th>
                           <th>Notes</th>
                         </tr>
                       </thead>

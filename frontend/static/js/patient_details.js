@@ -12,6 +12,55 @@ async function initPatientDetails() {
 
     if (patientId) {
         await fetchPatientData(patientId);
+        await fetchHealthLogs(patientId);
+    }
+}
+
+
+// ---- Fetch Patient Health Logs ----
+async function fetchHealthLogs(id) {
+    try {
+        var response = await apiFetch('/vitals/patient/' + id);
+        if (response.ok) {
+            var logs = await response.json();
+            renderHealthLogs(logs);
+        }
+    } catch (error) {
+        console.error('Error fetching patient health logs:', error);
+    }
+}
+
+
+function renderHealthLogs(logs) {
+    var tbody = document.getElementById('logs-history-body');
+    if (!tbody) return;
+
+    if (logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted)">No logs available</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = '';
+    for (var i = 0; i < logs.length; i++) {
+        var log = logs[i];
+        var date = new Date(log.timestamp).toLocaleString();
+        var bp = log.bp || '-';
+        var hr = log.heart_rate ? log.heart_rate + ' bpm' : '-';
+
+        var row = document.createElement('tr');
+        row.innerHTML = 
+            '<td>' + date + '</td>' +
+            '<td><span class="badge" style="background:var(--lavender-soft); color:var(--medical-blue)">' + log.mood + '</span></td>' +
+            '<td>' + log.pain_level + '/10</td>' +
+            '<td>' + bp + ' / ' + hr + '</td>' +
+            '<td>' + (log.notes || '-') + '</td>';
+        tbody.appendChild(row);
+        
+        // Update stats if this is the newest
+        if (i === 0) {
+            var statPain = document.getElementById('stat-pain');
+            if (statPain) statPain.innerHTML = log.pain_level + '<span style="font-size:1.2rem; color:var(--text-muted)">/10</span>';
+        }
     }
 }
 
