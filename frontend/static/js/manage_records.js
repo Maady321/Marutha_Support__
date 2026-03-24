@@ -272,7 +272,7 @@ async function saveNote() {
     var content = document.getElementById('noteContent').value;
 
     if (!pId || !content.trim()) {
-        alert("Please select a patient and enter note content.");
+        showNotification("Please select a patient and enter note content.", 'error');
         return;
     }
 
@@ -282,14 +282,14 @@ async function saveNote() {
             body: JSON.stringify({ patient_id: parseInt(pId), note_content: content })
         });
         if (res.ok) {
-            alert("Note saved!");
+            showNotification("Note saved!", 'success');
             closeModals();
             await fetchNotes();
         } else {
-            alert("Failed to save note.");
+            showNotification("Failed to save note.", 'error');
         }
     } catch (e) {
-        alert("Network error.");
+        showNotification("Network error.", 'error');
     }
 }
 
@@ -301,7 +301,7 @@ async function saveScript() {
     var ins = document.getElementById('scriptInstructions').value;
 
     if (!pId || !med.trim() || !dose.trim()) {
-        alert("Please fill required fields (Patient, Medication, Dosage).");
+        showNotification("Please fill required fields (Patient, Medication, Dosage).", 'error');
         return;
     }
 
@@ -311,14 +311,14 @@ async function saveScript() {
             body: JSON.stringify({ patient_id: parseInt(pId), medication: med, dosage: dose, instructions: ins })
         });
         if (res.ok) {
-            alert("Prescription saved!");
+            showNotification("Prescription saved!", 'success');
             closeModals();
             await fetchPrescriptions();
         } else {
-            alert("Failed to save script.");
+            showNotification("Failed to save script.", 'error');
         }
     } catch (e) {
-        alert("Network error.");
+        showNotification("Network error.", 'error');
     }
 }
 
@@ -384,7 +384,7 @@ async function openViewActionModal(patientId, patientName) {
 function printPrescription(patientName, medication, dosage, instructions, dateStr) {
     var rxWindow = window.open('', '_blank', 'width=800,height=600');
     if (!rxWindow) {
-        alert("Please allow popups to print prescriptions.");
+        showNotification("Please allow popups to print prescriptions.", 'error');
         return;
     }
 

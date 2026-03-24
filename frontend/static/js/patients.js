@@ -161,7 +161,7 @@ async function handleAssignVolunteer(event) {
     var btn = event.target.querySelector('button[type="submit"]');
 
     if (!patientId || !volunteerId) {
-        alert("Please select a volunteer.");
+        showNotification("Please select a volunteer.", 'error');
         return;
     }
 
@@ -175,16 +175,16 @@ async function handleAssignVolunteer(event) {
         });
 
         if (response.ok) {
-            alert("Volunteer assigned successfully!");
+            showNotification("Volunteer assigned successfully!", 'success');
             closeAssignModal();
             initPatientList(); // Reload table
         } else {
             var data = await response.json();
-            alert('Failed: ' + (data.detail || 'Unknown error'));
+            showNotification('Failed: ' + (data.detail || 'Unknown error'), 'error');
         }
     } catch (error) {
         console.error(error);
-        alert("Error connecting to server.");
+        showNotification("Error connecting to server.", 'error');
     } finally {
         btn.innerText = originalText;
         btn.disabled = false;
