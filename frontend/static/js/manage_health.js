@@ -99,6 +99,7 @@ async function submitLog(e) {
         mood: moodValue,
         bp: document.getElementById("bp_input") ? document.getElementById("bp_input").value : null,
         heart_rate: document.getElementById("hr_input") ? parseInt(document.getElementById("hr_input").value) || null : null,
+        sleep_hours: document.getElementById("sleep_input") ? parseInt(document.getElementById("sleep_input").value) || null : null,
         notes: notesValue
     };
 
@@ -173,12 +174,13 @@ function renderLogs(logs, tbody) {
         var notesText = log.notes || '-';
         var bpText = log.bp || '-';
         var hrText = log.heart_rate ? log.heart_rate + ' bpm' : '-';
+        var sleepText = log.sleep_hours ? log.sleep_hours + ' hrs' : '-';
 
         var row = '<tr>' +
             '<td>' + dateStr + '</td>' +
             '<td><span class="' + badgeClass + '">' + log.mood + '</span></td>' +
             '<td>' + log.pain_level + '/10</td>' +
-            '<td>' + bpText + ' / ' + hrText + '</td>' +
+            '<td>BP: ' + bpText + '<br>HR: ' + hrText + '<br>Sleep: ' + sleepText + '</td>' +
             '<td>' + notesText + '</td>' +
         '</tr>';
 

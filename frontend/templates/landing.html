@@ -1,20 +1,29 @@
 <!doctype html>
+<!-- 1. WHAT: HTML Document Declaration.
+     EXPLAIN: Tells the browser this is a modern HTML5 document. -->
 <html lang="en">
   <head>
+    <!-- 2. WHAT: Meta Tags.
+         EXPLAIN: "charset" handles special characters; "viewport" makes the site mobile-friendly.
+         QUESTION: Why use viewport?
+         ANSWER: Without it, mobile phones will display the tiny desktop version of the site instead of the zoomed-in mobile layout. -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Marutha Palliative | Compassionate Care and Support</title>
-    <!-- Fonts & Icons -->
+
+    <!-- 3. WHAT: External Assets.
+         EXPLAIN: Loads FontAwesome (icons) and our custom design system files.
+         QUESTION: Why load three CSS files?
+         ANSWER: base.css handles global colors, components.css handles buttons, and landing.css handles the specific hero section layout. -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <!-- Modular CSS -->
     <link rel="stylesheet" href="../static/css/base.css" />
     <link rel="stylesheet" href="../static/css/components.css" />
     <link rel="stylesheet" href="../static/css/landing.css" />
     <style>
-      /* Landing page specific styles - these only apply to this page */
+      /* 4. WHAT: Sticky Navigation styling. */
 
       /* Navigation bar at the top */
       .landing-nav {

@@ -1,183 +1,145 @@
 /* base.css - Global Styles
-   This file sets up fonts, colors, and basic styling for the entire website */
+   This file sets up the "Look and Feel" (Colors, Fonts, Spacing) for the whole app. */
 
-/* Import Google Fonts */
+/* 1. WHAT: Font Imports.
+   EXPLAIN: Loads "Inter" for UI text and "Poppins" for headings from Google's servers.
+   QUESTION: Why these fonts?
+   ANSWER: Inter is very readable for small text, while Poppins feels modern and professional for titles. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
 
-/* CSS Variables - These are like "constants" that store values we reuse */
+/* 2. WHAT: Global Design Tokens (Variables).
+   EXPLAIN: We store colors and sizes here so if we want to change "Medical Blue," we only edit it once.
+   QUESTION: What is :root?
+   ANSWER: It represents the top level of the HTML, making these variables available everywhere. */
 :root {
-    /* Background Colors */
-    --bg-white: #FFFFFF;
-    --bg-warm: #FAF8FD;           /* very light purple-ish white */
-    --bg-page: #F5F1FA;           /* light lavender page background */
-
-    /* Lavender (Purple) Shades */
-    --lavender-soft: #E8E0F0;     /* light lavender for cards */
-    --lavender-warm: #C9B8DB;     /* medium lavender for borders */
-    --lavender-muted: #9B8BB4;    /* darker lavender for accents */
-
-    /* Blue Shades */
-    --medical-blue: #1E3A5F;      /* dark blue for headings */
-    --medical-blue-mid: #2563EB;  /* medium blue for buttons */
-    --medical-blue-light: #EFF6FF;/* very light blue background */
-    --medical-blue-hover: #1D4ED8;/* button hover color */
-    --reassuring-blue: #DBEAFE;   /* soft blue for highlights */
-
-    /* Green Shades */
-    --hope-green: #059669;        /* success / positive color */
-    --hope-green-hover: #047857;
-    --hope-green-light: #D1FAE5;  /* light green background */
-    --hope-green-muted: #ECFDF5;  /* very light green */
-
-    /* Sidebar Colors */
-    --sidebar-bg: #0F172A;        /* dark navy for sidebar */
-    --sidebar-text: rgba(255, 255, 255, 0.7);
-    --sidebar-active: rgba(255, 255, 255, 0.1);
-
-    /* Border & Status Colors */
-    --border-color: #E2E8F0;      /* standard border gray */
-    --border-light: #F1F5F9;      /* lighter border */
-    --danger: #DC2626;            /* red for errors/warnings */
-    --danger-light: #FEE2E2;      /* light red background */
-    --amber-soft: #FEF3C7;        /* soft yellow/amber */
-
-    /* Text Colors - dark to light */
-    --text-main: #0F172A;         /* primary text (near black) */
-    --text-secondary: #334155;    /* secondary text */
-    --text-muted: #64748B;        /* muted/gray text */
-    --text-light: #94A3B8;        /* very light text */
-
-    /* Sizes & Effects */
-    --radius-sm: 8px;             /* small border radius */
-    --radius-md: 12px;            /* medium border radius */
-    --radius-lg: 16px;            /* large border radius */
-    --radius-xl: 20px;            /* extra large border radius */
-
-    /* Box Shadows - from subtle to strong */
-    --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02);
-    --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.04), 0 4px 6px rgba(0, 0, 0, 0.02);
-    --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.05), 0 8px 10px rgba(0, 0, 0, 0.02);
-
-    /* Animation speed */
-    --transition: all 0.2s ease;
-
-    /* Sidebar width */
+    /* 1. Layout & Sizing */
     --sidebar-width: 260px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    
+    /* 2. Primary Color Palette (Blue/Medical) */
+    --medical-blue: #1E293B;       /* Deep professional navy */
+    --medical-blue-mid: #2563EB;   /* Main action blue */
+    --medical-blue-hover: #1D4ED8; /* Hover state for buttons */
+    --medical-blue-light: #EFF6FF; /* Very light background blue */
+    --reassuring-blue: #93C5FD;    /* Border and accent blue */
+    
+    /* 3. Success Color Palette (Green/Hope) */
+    --hope-green: #059669;         /* Success/Confirmation green */
+    --hope-green-hover: #047857;   /* Hover state for green buttons */
+    --hope-green-light: #F0FDF4;   /* Light green background */
+    --hope-green-muted: #D1FAE5;   /* Soft green for status badges */
+    
+    /* 4. Secondary Color Palette (Lavender) */
+    --lavender-warm: #C9B8DB;      /* Medium lavender for accents */
+    --lavender-soft: #F5F1FA;      /* Page background / sidebar hover */
+    --lavender-muted: #6B5B95;     /* Darker lavender for text/icons */
+    
+    /* 5. Feedback Palette (Red/Amber) */
+    --danger: #DC2626;             /* Error/Danger red */
+    --danger-light: #FEE2E2;       /* Light red background */
+    --amber-soft: #FEF3C7;         /* Pale orange for warnings */
+    
+    /* 6. Neutrals & Text */
+    --text-main: #0F172A;          /* Darkest text for headings */
+    --text-secondary: #334155;     /* Mid-dark text for body */
+    --text-muted: #64748B;         /* Muted text for labels */
+    --text-light: #94A3B8;         /* Lightest text / placeholders */
+    --bg-white: #FFFFFF;
+    --bg-page: #F5F1FA;            /* Secondary page background */
+    --bg-warm: #F8FAFC;            /* Subtle off-white for sections */
+    
+    /* 7. Borders & Shadows */
+    --border-color: #E2E8F0;       /* Standard border color */
+    --border-light: #F1F5F9;       /* Delicate border color */
+    --shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+    
+    /* 8. Transitions */
+    --transition: all 0.2s ease;
 }
 
-
-/* === RESET ===
-   Remove default browser margins/padding so everything starts clean */
-
+/* 3. WHAT: CSS Reset.
+   EXPLAIN: Removes default browser margins/bullets so every browser looks identical. */
 *, *::before, *::after {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;    /* makes sizing easier to calculate */
+    box-sizing: border-box; 
 }
 
-html {
-    scroll-behavior: smooth;   /* smooth scrolling when clicking links */
-    font-size: 16px;           /* base font size */
-}
-
+/* 4. WHAT: Body Styling.
+   EXPLAIN: Sets the default font, text color, and background for every page.
+   QUESTION: Why line-height 1.6?
+   ANSWER: It adds "breathability" between lines, making long medical logs easier to read. */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: var(--bg-white);
     color: var(--text-main);
-    line-height: 1.6;          /* space between lines of text */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.01em;
+    line-height: 1.6;
 }
 
-
-/* === HEADINGS === */
-
-h1, h2, h3, h4, h5 {
-    font-family: 'Poppins', sans-serif;
-    color: var(--medical-blue);
-    font-weight: 700;
-    line-height: 1.3;
-    letter-spacing: -0.02em;
-}
-
-h1 { font-size: 2.25rem; }
-h2 { font-size: 1.75rem; }
-h3 { font-size: 1.25rem; }
-h4 { font-size: 1.1rem; }
-
-p {
-    color: var(--text-secondary);
-    line-height: 1.7;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-
-/* === LINKS === */
-
-a {
-    transition: var(--transition);
-    color: var(--medical-blue-mid);
-}
-
-a:hover {
-    color: var(--medical-blue-hover);
-}
-
-
-/* === LAYOUT CONTAINER === */
-
+/* 5. WHAT: Layout Container.
+   EXPLAIN: Centers the content on large screens and adds padding on mobile. */
 .container {
-    max-width: 1200px;
-    margin: 0 auto;           /* center the container */
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
     padding: 0 24px;
 }
 
+/* 5. WHAT: Heading Styling.
+   EXPLAIN: Uses the Poppins font and the dark medical blue to make titles stand out. */
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--medical-blue);
+    font-weight: 700;
+}
 
-/* === ANIMATIONS ===
-   These create smooth fade-in effects when elements appear */
+/* 6. WHAT: Global Link Styling.
+   EXPLAIN: Changes color when you hover over a link for a "reactive" feel. */
+a {
+    text-decoration: none;
+    color: var(--medical-blue-mid);
+    transition: var(--transition);
+}
+a:hover {
+    color: #1D4ED8;
+}
 
+/* 7. WHAT: Animation Keyframes.
+   EXPLAIN: Defines a "fade up" motion used when page elements first load.
+   QUESTION: How does this work?
+   ANSWER: It starts invisible and 16 pixels down, then slides up into place. */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-16px); }
-    to   { opacity: 1; transform: translateX(0); }
-}
-
-/* Add these classes to any element to animate it */
-.fade-in {
-    animation: fadeIn 0.4s ease forwards;
-}
-
+/* 8. WHAT: Utility Classes.
+   EXPLAIN: Apply these classes to HTML tags to trigger specific behaviors. */
 .fade-in-up {
     animation: fadeInUp 0.5s ease forwards;
 }
 
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+}
 
-/* === SCROLLBAR STYLING === */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
-
-
-/* === MOBILE SCREENS (less than 768px wide) === */
-
+/* 9. WHAT: Responsive Layout.
+   EXPLAIN: Adjusts sizes on mobile phones (less than 768 pixels).
+   QUESTION: Why shrink the font?
+   ANSWER: Smaller screens have less room; shrinking the base font prevents text from overlapping. */
 @media (max-width: 768px) {
     html { font-size: 15px; }
-    .container { padding: 0 16px; }
 }

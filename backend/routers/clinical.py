@@ -117,6 +117,7 @@ def add_health_log(
         mood=log_data.mood,
         bp=log_data.bp,
         heart_rate=log_data.heart_rate,
+        sleep_hours=log_data.sleep_hours,
         notes=log_data.notes
     )
     db.add(new_log)

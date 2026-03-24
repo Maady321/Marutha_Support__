@@ -63,6 +63,7 @@ async function loadHealthStats() {
 
             // Render chart if canvas exists
             renderHealthChart(logs);
+            renderSleepChart(logs);
         }
 
     } catch (e) {
@@ -109,6 +110,59 @@ function renderHealthChart(logs) {
                 y: {
                     beginAtZero: true,
                     max: 10
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+// ---- Render Sleep Trend Chart ----
+function renderSleepChart(logs) {
+    var canvas = document.getElementById('sleepChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    // Get last 7 logs with sleep_hours
+    var sleepLogs = [];
+    for(var i=0; i<logs.length; i++){
+        if(logs[i].sleep_hours != null){
+            sleepLogs.push(logs[i]);
+            if(sleepLogs.length === 7) break;
+        }
+    }
+    sleepLogs = sleepLogs.reverse();
+
+    var labels = [];
+    var sleepData = [];
+
+    for (var i = 0; i < sleepLogs.length; i++) {
+        var date = new Date(sleepLogs[i].timestamp);
+        labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+        sleepData.push(sleepLogs[i].sleep_hours);
+    }
+
+    new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sleep (hrs)',
+                data: sleepData,
+                backgroundColor: '#8b5cf6',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 16
                 }
             },
             plugins: {

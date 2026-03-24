@@ -381,12 +381,9 @@ function appendChatMessage(data) {
         row.className = 'msg-row received';
     }
 
-    var timeStr = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
     row.innerHTML =
         '<div class="msg-bubble">' +
             '<div class="msg-text">' + escapeHtml(data.message) + '</div>' +
-            '<span class="msg-time">' + timeStr + '</span>' +
         '</div>';
 
     messagesArea.appendChild(row);

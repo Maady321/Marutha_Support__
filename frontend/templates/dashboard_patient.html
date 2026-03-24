@@ -193,12 +193,33 @@
 
                 <!-- Chart -->
                 <div class="chart-container">
-                  <!-- Fetched via JS -->
+                  <canvas id="healthChart"></canvas>
                 </div>
                 <div class="chart-legend">
                   <span>Mon</span><span>Tue</span><span>Wed</span
                   ><span>Thu</span><span>Fri</span><span>Sat</span
                   ><span class="today">Today</span>
+                </div>
+              </div>
+
+              <!-- Sleep Trends -->
+              <div class="dash-card">
+                <div class="dash-card-header">
+                  <div>
+                    <div class="dash-card-title">
+                      <i class="fas fa-bed"></i>
+                      Sleep Cycle
+                    </div>
+                    <div class="dash-card-subtitle">
+                      Your daily sleep hours recorded
+                    </div>
+                  </div>
+                </div>
+                <!-- Chart -->
+                <div class="chart-container" style="min-height: 150px; padding-top: 20px;">
+                  <canvas id="sleepChart"></canvas>
+                </div>
+                <div class="chart-legend" id="sleep-chart-legend">
                 </div>
               </div>
 
@@ -283,6 +304,7 @@
       </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../static/js/app.js"></script>
     <script src="../static/js/dashboard_patient.js"></script>
   </body>

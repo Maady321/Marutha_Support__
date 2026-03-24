@@ -46,13 +46,14 @@ function renderHealthLogs(logs) {
         var date = new Date(log.timestamp).toLocaleString();
         var bp = log.bp || '-';
         var hr = log.heart_rate ? log.heart_rate + ' bpm' : '-';
+        var sleep = log.sleep_hours ? log.sleep_hours + ' hrs' : '-';
 
         var row = document.createElement('tr');
         row.innerHTML = 
             '<td>' + date + '</td>' +
             '<td><span class="badge" style="background:var(--lavender-soft); color:var(--medical-blue)">' + log.mood + '</span></td>' +
             '<td>' + log.pain_level + '/10</td>' +
-            '<td>' + bp + ' / ' + hr + '</td>' +
+            '<td>BP: ' + bp + '<br>HR: ' + hr + '<br>Sleep: ' + sleep + '</td>' +
             '<td>' + (log.notes || '-') + '</td>';
         tbody.appendChild(row);
         
@@ -62,6 +63,61 @@ function renderHealthLogs(logs) {
             if (statPain) statPain.innerHTML = log.pain_level + '<span style="font-size:1.2rem; color:var(--text-muted)">/10</span>';
         }
     }
+    
+    // Render sleep chart
+    renderSleepChart(logs);
+}
+
+
+function renderSleepChart(logs) {
+    var canvas = document.getElementById('sleepChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    var sleepLogs = [];
+    for(var i=0; i<logs.length; i++){
+        if(logs[i].sleep_hours != null){
+            sleepLogs.push(logs[i]);
+            if(sleepLogs.length === 7) break;
+        }
+    }
+    sleepLogs = sleepLogs.reverse();
+
+    var labels = [];
+    var sleepData = [];
+
+    for (var i = 0; i < sleepLogs.length; i++) {
+        var date = new Date(sleepLogs[i].timestamp);
+        labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+        sleepData.push(sleepLogs[i].sleep_hours);
+    }
+
+    new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sleep (hrs)',
+                data: sleepData,
+                backgroundColor: '#8b5cf6',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 16
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
 }
 
 

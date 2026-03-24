@@ -1,0 +1,130 @@
+Here is the code related to the Sleep Cycle Graph feature.
+
+================================================================================
+1. HTML Structure for the Chart Container
+(Found in frontend/templates/dashboard_patient.html and 
+frontend/templates/patient_details.html)
+================================================================================
+
+<!-- Main container for the Sleep Cycle dashboard card -->
+<div class="dash-card">
+  <!-- Header section containing the title and subtitle -->
+  <div class="dash-card-header">
+    <div>
+      <!-- The title of the card with a bed icon -->
+      <div class="dash-card-title">
+        <i class="fas fa-bed"></i> <!-- FontAwesome bed icon -->
+        Sleep Cycle <!-- Text for the title -->
+      </div>
+      <!-- Subtitle to provide more context about the card's purpose -->
+      <div class="dash-card-subtitle">
+        Your daily sleep hours recorded
+      </div>
+    </div>
+  </div>
+  
+  <!-- Container specifying minimum height and padding for the chart to ensure it renders correctly -->
+  <div class="chart-container" style="min-height: 150px; padding-top: 20px;">
+    <!-- The actual canvas element where Chart.js will draw the sleep chart -->
+    <canvas id="sleepChart"></canvas>
+  </div>
+  
+  <!-- Container for a custom legend if we decide to render one instead of the built-in Chart.js legend -->
+  <div class="chart-legend" id="sleep-chart-legend">
+  </div>
+</div>
+
+<!-- Includes the external Chart.js library required for rendering the chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+================================================================================
+2. JavaScript Logic for Rendering the Sleep Chart
+(Found in frontend/static/js/dashboard_patient.js and 
+frontend/static/js/patient_details.js)
+================================================================================
+
+// ---- Render Sleep Trend Chart ----
+// Function to render the sleep chart, taking 'logs' (array of health log objects) as an argument
+function renderSleepChart(logs) {
+    // Attempt to find the canvas HTML element with the ID 'sleepChart' in the DOM
+    var canvas = document.getElementById('sleepChart');
+    // If the canvas doesn't exist on this page, or Chart.js hasn't loaded properly, exit the function early
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    // Initialize an empty array to store the filtered logs that contain sleep data
+    var sleepLogs = [];
+    // Loop through the provided logs array sequentially
+    for(var i=0; i<logs.length; i++){
+        // Check if the current log entry has a valid 'sleep_hours' value (not null or undefined)
+        if(logs[i].sleep_hours != null){
+            // If valid, add this log entry to our sleepLogs array
+            sleepLogs.push(logs[i]);
+            // Stop looping once we have collected 7 valid sleep logs (representing a week)
+            if(sleepLogs.length === 7) break;
+        }
+    }
+    
+    // Reverse the array so the chronological order is correct (oldest on the left, newest on the right)
+    sleepLogs = sleepLogs.reverse();
+
+    // Initialize an empty array to store the labels (x-axis, e.g., "Mon", "Tue") for the chart
+    var labels = [];
+    // Initialize an empty array to store the actual sleep hour values (y-axis) for the chart
+    var sleepData = [];
+
+    // Loop through our filtered and sorted sleepLogs array
+    for (var i = 0; i < sleepLogs.length; i++) {
+        // Convert the timestamp string or number from the log into a JavaScript Date object
+        var date = new Date(sleepLogs[i].timestamp);
+        // Format the Date object to get just the short weekday name in English (e.g. "Mon") and add it to labels
+        labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+        // Extract the sleep_hours value and add it to our data array
+        sleepData.push(sleepLogs[i].sleep_hours);
+    }
+
+    // Initialize and create a new Chart.js instance on the canvas element we found earlier
+    new Chart(canvas, {
+        // Set the type of chart to a vertical bar chart
+        type: 'bar', 
+        data: {
+            // Provide the array of weekday labels for the x-axis
+            labels: labels,
+            // Define the datasets (we only have one dataset: sleep hours)
+            datasets: [{
+                // The label for this specific dataset (shown in tooltips)
+                label: 'Sleep (hrs)',
+                // The array of sleep hour values corresponding to the labels
+                data: sleepData,
+                // The fill color for the bars in the chart (a shade of purple)
+                backgroundColor: '#8b5cf6',
+                // How rounded the corners of the bars should be (4 pixels)
+                borderRadius: 4
+            }]
+        },
+        options: {
+            // Allow the chart to resize when the window or container size changes
+            responsive: true,
+            // Allow the chart to fill the container's height instead of forcing a specific aspect ratio
+            maintainAspectRatio: false,
+            scales: {
+                // Configuration for the y-axis
+                y: {
+                    // Ensure the y-axis always starts exactly at 0
+                    beginAtZero: true,
+                    // Set the maximum value of the y-axis to 16 hours
+                    max: 16 
+                }
+            },
+            plugins: {
+                // Configuration for the chart legend
+                legend: {
+                    // Disable the default Chart.js legend for a cleaner interface
+                    display: false 
+                }
+            }
+        }
+    });
+}
+
+// NOTE: Ensure renderSleepChart(logs) is called right after you fetch 'logs' from the database!

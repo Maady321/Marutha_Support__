@@ -438,15 +438,15 @@
                 </div>
               </div>
 
-              <!-- Placeholder content for other tabs -->
               <div
                 id="vitals"
                 class="tab-content"
                 style="display: none; padding: 24px"
               >
-                <p style="text-align: center; color: var(--text-muted)">
-                  Vitals signs chart would appear here.
-                </p>
+                <h3 style="margin-bottom: 20px;">Sleep Cycle</h3>
+                <div class="chart-container" style="min-height: 250px;">
+                  <canvas id="sleepChart"></canvas>
+                </div>
               </div>
               <div
                 id="meds"
@@ -541,6 +541,7 @@
       </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../static/js/app.js"></script>
     <script src="../static/js/patient_details.js"></script>
   </body>

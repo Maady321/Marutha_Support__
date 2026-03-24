@@ -1,20 +1,28 @@
 // app.js - Main Application Script
-// This file runs on every page and handles shared features like
-// navigation, authentication checks, notifications, and profile display.
+// This file runs on every page and handles shared features like navigation and auth.
 
-// API URL configuration
+// 1. WHAT: Configuration object for the API.
+// EXPLAIN: Centralizes the URL so we only have to change it in one place.
+// QUESTION: Why do we use an object?
+// ANSWER: Objects allow us to expand settings later (like adding timeout or version) easily.
 var CONFIG = {
     API_BASE_URL: ''
 };
 
-// Set the API URL based on whether we're running locally or on Vercel
+// 2. WHAT: Environment detection logic.
+// EXPLAIN: If on localhost, use the local port 8009; otherwise use the Vercel proxy.
+// QUESTION: Why not use 8009 everywhere?
+// ANSWER: In production, the backend is hosted differently, and we want to avoid CORS issues by using relative paths.
 if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
     CONFIG.API_BASE_URL = 'http://127.0.0.1:8009';
 } else {
     CONFIG.API_BASE_URL = '/api';
 }
 
-// Run when the page finishes loading
+// 3. WHAT: Page Load Event Listener.
+// EXPLAIN: Ensures the code only runs after the HTML is fully downloaded.
+// QUESTION: What happens if we don't wait?
+// ANSWER: The script might try to change a button that hasn't been created yet, causing an error.
 document.addEventListener('DOMContentLoaded', function() {
     initNavigation();
     initMobileSidebar();
@@ -26,22 +34,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // ---- Navigation ----
-// Highlights the current page in the sidebar and handles logout clicks
 
+// 4. WHAT: Sidebar Link Highlighter.
+// EXPLAIN: Looks at the URL and adds the "active" style to the matching sidebar button.
 function initNavigation() {
     var sidebarLinks = document.querySelectorAll('.sidebar-link');
     var currentPath = window.location.pathname;
 
     for (var i = 0; i < sidebarLinks.length; i++) {
         var link = sidebarLinks[i];
-
-        // Highlight the link if it matches the current page
         var href = link.getAttribute('href');
+        
+        // Check if current page matches the link
         if (href && currentPath.includes(href)) {
             link.classList.add('active');
         }
 
-        // Add logout click handler
+        // Handle Logout clicks specifically
         if (link.innerText.includes('Logout')) {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -53,13 +62,14 @@ function initNavigation() {
 
 
 // ---- Mobile Sidebar Toggle ----
-// Creates a hamburger menu button for mobile dashboard pages
 
+// 5. WHAT: Mobile Dashboard Menu.
+// EXPLAIN: Adds a hamburger icon on mobile so dashbaord users can open their menu.
 function initMobileSidebar() {
     var sidebar = document.querySelector('.sidebar');
-    if (!sidebar) return;
+    if (!sidebar) return; // Exit if not a dashboard page
 
-    // Create overlay (dark background when sidebar is open)
+    // Dark background shown when menu is open
     var overlay = document.querySelector('.sidebar-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -67,23 +77,23 @@ function initMobileSidebar() {
         document.body.appendChild(overlay);
     }
 
-    // Create toggle button
     var toggle = document.querySelector('.sidebar-toggle');
     if (!toggle) {
         toggle = document.createElement('button');
         toggle.className = 'sidebar-toggle';
         toggle.innerHTML = '<i class="fas fa-bars"></i>';
-        toggle.setAttribute('aria-label', 'Toggle menu');
         document.body.appendChild(toggle);
     }
 
+    // Opens the sidebar
     function openSidebar() {
         sidebar.classList.add('open');
         overlay.classList.add('active');
         toggle.innerHTML = '<i class="fas fa-times"></i>';
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'; // Stop background scrolling
     }
 
+    // Closes the sidebar
     function closeSidebar() {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
@@ -92,146 +102,49 @@ function initMobileSidebar() {
     }
 
     toggle.addEventListener('click', function() {
-        if (sidebar.classList.contains('open')) {
-            closeSidebar();
-        } else {
-            openSidebar();
-        }
+        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
     });
 
     overlay.addEventListener('click', closeSidebar);
-
-    // Close sidebar when a link is clicked on mobile
-    var links = sidebar.querySelectorAll('.sidebar-link');
-    for (var i = 0; i < links.length; i++) {
-        links[i].addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                closeSidebar();
-            }
-        });
-    }
-}
-
-
-// ---- Mobile Navigation Toggle ----
-// Creates a hamburger menu for the landing/public pages
-
-function initMobileNav() {
-    var nav = document.querySelector('nav');
-    if (!nav) return;
-
-    // Create toggle button
-    var toggle = nav.querySelector('.nav-toggle');
-    if (!toggle) {
-        toggle = document.createElement('button');
-        toggle.className = 'nav-toggle';
-        toggle.innerHTML = '<i class="fas fa-bars"></i>';
-        toggle.setAttribute('aria-label', 'Toggle navigation');
-        nav.appendChild(toggle);
-    }
-
-    // Create mobile navigation menu
-    var mobileNav = document.querySelector('.nav-mobile');
-    if (!mobileNav) {
-        var links = nav.querySelector('.nav-links');
-        if (!links) return;
-
-        mobileNav = document.createElement('div');
-        mobileNav.className = 'nav-mobile';
-
-        // Copy all links into mobile nav
-        var allLinks = links.querySelectorAll('a');
-        for (var i = 0; i < allLinks.length; i++) {
-            var clone = allLinks[i].cloneNode(true);
-            mobileNav.appendChild(clone);
-        }
-
-        var container = nav.closest('.container');
-        if (container) {
-            container.after(mobileNav);
-        } else {
-            nav.after(mobileNav);
-        }
-    }
-
-    toggle.addEventListener('click', function() {
-        mobileNav.classList.toggle('open');
-        var isOpen = mobileNav.classList.contains('open');
-        if (isOpen) {
-            toggle.innerHTML = '<i class="fas fa-times"></i>';
-        } else {
-            toggle.innerHTML = '<i class="fas fa-bars"></i>';
-        }
-    });
 }
 
 
 // ---- Authentication Check ----
-// Makes sure users are logged in and on the right pages for their role
 
+// 6. WHAT: Route Guard.
+// EXPLAIN: Redirects logged-out users to login, and ensures roles match the page.
+// QUESTION: Why do we have this?
+// ANSWER: To prevent patients from accessing doctor dashboards and vice versa.
 function checkAuth() {
     var currentPath = window.location.pathname.toLowerCase();
-    var publicPages = ['login.html', 'register.html', 'create_account.html', 'landing.html', 'index.html', 'forgot_password.html', 'reset_password.html', 'login', 'register', 'index', 'landing', '/'];
+    var publicPages = ['login.html', 'register.html', 'create_account.html', 'landing.html', 'index.html', '/', 'forgot_password.html'];
 
-    // Check if current page is a public page
     var isPublicPage = false;
     for (var i = 0; i < publicPages.length; i++) {
         var page = publicPages[i].toLowerCase();
-        if (currentPath === page || currentPath.endsWith('/' + page) || (page === '/' && currentPath.endsWith('/'))) {
+        if (currentPath === page || currentPath.endsWith('/' + page)) {
             isPublicPage = true;
             break;
         }
     }
 
     var userRole = localStorage.getItem('userRole');
-    console.log('Current Session - Role: ' + (userRole || 'Guest') + ' | Path: ' + currentPath);
 
-    // CRITICAL: Prevent refresh loop if already on login page
-    var isOnLoginPage = currentPath.includes('login.html') || currentPath.endsWith('/login');
-
-    // If not on a public page and not logged in, redirect to login
+    // If logged out and trying to access private page
     if (!isPublicPage && !userRole) {
-        if (!isOnLoginPage) {
+        if (!currentPath.includes('login.html')) {
             window.location.href = 'login.html';
         }
         return;
     }
 
-    // If logged in and on a protected page, check role permissions
+    // Role-based protection: redirect if user tries to enter the wrong dashboard
     if (userRole && !isPublicPage) {
-        var doctorPages = ['dashboard_doctor.html', 'patients.html', 'requests.html', 'manage_records_doctor.html', 'manage_profile_doctor.html', 'chat_doctor.html', 'patient_details.html'];
-        var patientPages = ['dashboard_patient.html', 'manage_health_patient.html', 'chat.html', 'manage_profile_patient.html', 'doctor_profile.html'];
-        var volunteerPages = ['dashboard_volunteer.html', 'chat_volunteer.html', 'manage_profile_volunteer.html', 'assigned_patients.html', 'volunteer_activities.html', 'setup_profile_volunteer.html'];
-
-        var isDoctorPage = false;
-        var isPatientPage = false;
-        var isVolunteerPage = false;
-
-        for (var j = 0; j < doctorPages.length; j++) {
-            if (currentPath.endsWith(doctorPages[j])) {
-                isDoctorPage = true;
-                break;
-            }
-        }
-        for (var k = 0; k < patientPages.length; k++) {
-            if (currentPath.endsWith(patientPages[k])) {
-                isPatientPage = true;
-                break;
-            }
-        }
-        for (var l = 0; l < volunteerPages.length; l++) {
-            if (currentPath.endsWith(volunteerPages[l])) {
-                isVolunteerPage = true;
-                break;
-            }
-        }
-
-        // Redirect if user is on a page they shouldn't be on
-        if (userRole === 'patient' && (isDoctorPage || isVolunteerPage)) {
+        if (userRole === 'patient' && (currentPath.includes('doctor') || currentPath.includes('volunteer'))) {
             window.location.href = 'dashboard_patient.html';
-        } else if (userRole === 'doctor' && (isPatientPage || isVolunteerPage)) {
+        } else if (userRole === 'doctor' && (currentPath.includes('patient') || currentPath.includes('volunteer'))) {
             window.location.href = 'dashboard_doctor.html';
-        } else if (userRole === 'volunteer' && (isPatientPage || isDoctorPage)) {
+        } else if (userRole === 'volunteer' && (currentPath.includes('patient') || currentPath.includes('doctor'))) {
             window.location.href = 'dashboard_volunteer.html';
         }
     }
@@ -239,96 +152,88 @@ function checkAuth() {
 
 
 // ---- Logout ----
+
+// 7. WHAT: session cleaner.
+// EXPLAIN: Removes all stored user data and returns to login.
 function handleLogout() {
     if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('userRole');
-        localStorage.removeItem('userData');
-        localStorage.removeItem('authToken');
+        localStorage.clear(); // Wipe all login info
         window.location.href = 'login.html';
     }
 }
 
 
-// ---- Notifications ----
-function initNotifications() {
-    console.log('Notification system initialized');
-}
-
-
-// ---- Utility: Format Date ----
-function formatDate(date) {
-    return new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-    }).format(date);
-}
-
-
-// ---- Utility: Get URL Parameter ----
-function getQueryParam(param) {
-    var urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
-
-
 // ---- Utility: Show Toast Notification ----
+
+// 8. WHAT: Visual Pop-up Message.
+// EXPLAIN: Shows a small banner at the bottom for errors or success messages.
+// QUESTION: How long does it stay?
+// ANSWER: 4 seconds, then it slides out automatically.
 function showNotification(message, type) {
-    // Default type to 'info'
-    if (!type) type = 'info';
-
-    // Remove existing notification
-    var existing = document.getElementById('global-notification');
-    if (existing) existing.remove();
-
-    // Set colors based on type
-    var bg, color, border, icon;
-
-    if (type === 'success') {
-        bg = '#d1fae5';
-        color = '#065f46';
-        border = '#a7f3d0';
-        icon = 'fa-check-circle';
-    } else if (type === 'error') {
-        bg = '#fee2e2';
-        color = '#991b1b';
-        border = '#fca5a5';
-        icon = 'fa-exclamation-circle';
-    } else {
-        bg = '#dbeafe';
-        color = '#1e40af';
-        border = '#93c5fd';
-        icon = 'fa-info-circle';
+    if (typeof message !== 'string') {
+        try {
+            message = JSON.stringify(message);
+        } catch(e) {
+            message = 'Action completed';
+        }
     }
 
-    // Create the toast element
     var toast = document.createElement('div');
-    toast.id = 'global-notification';
-    toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 10000; padding: 14px 24px; border-radius: 12px; font-weight: 500; background: ' + bg + '; color: ' + color + '; border: 1px solid ' + border + '; box-shadow: 0 4px 16px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; animation: slideInRight 0.3s ease; max-width: 400px; font-size: 0.95rem;';
-    toast.innerHTML = '<i class="fas ' + icon + '"></i> ' + message;
+    toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 10000; padding: 14px 24px; border-radius: 12px; background: white; box-shadow: 0 4px 16px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; animation: slideInRight 0.3s ease;';
+    
+    // Set color based on success/error
+    if (type === 'error') {
+        toast.style.color = '#991b1b';
+        toast.style.borderLeft = '4px solid #ef4444';
+        toast.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + message;
+    } else {
+        toast.style.color = '#065f46';
+        toast.style.borderLeft = '4px solid #10b981';
+        toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+    }
+    
     document.body.appendChild(toast);
-
-    // Auto-dismiss after 4 seconds
-    setTimeout(function() {
-        toast.style.animation = 'slideOutRight 0.3s ease forwards';
-        setTimeout(function() {
-            toast.remove();
-        }, 300);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
     }, 4000);
+}
 
-    // Add animation keyframes (only once)
-    if (!document.getElementById('notification-keyframes')) {
-        var style = document.createElement('style');
-        style.id = 'notification-keyframes';
-        style.textContent = '@keyframes slideInRight { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } } @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100px); opacity: 0; } }';
-        document.head.appendChild(style);
+// 8.1 WHAT: Notification System Initializer.
+function initNotifications() {
+    // Check if we have any pending message in localStorage to show after redirect
+    var pendingMsg = localStorage.getItem('pendingNotification');
+    if (pendingMsg) {
+        try {
+            var data = JSON.parse(pendingMsg);
+            showNotification(data.message, data.type);
+            localStorage.removeItem('pendingNotification');
+        } catch(e) {
+            localStorage.removeItem('pendingNotification');
+        }
+    }
+}
+
+// 8.2 WHAT: Landing Page Mobile Nav.
+function initMobileNav() {
+    var nav = document.querySelector('.main-nav');
+    if (!nav) return;
+
+    var toggle = document.querySelector('.mobile-nav-toggle');
+    if (toggle) {
+        toggle.addEventListener('click', function() {
+            nav.classList.toggle('nav-open');
+        });
     }
 }
 
 
 // ---- Utility: API Fetch Wrapper ----
-// This function adds the auth token to every API request automatically
 
+// 9. WHAT: Shared API logic.
+// EXPLAIN: Adds the "Authorization" token automatically so individual pages don't have to.
+// QUESTION: What happens if the token expires (401 error)?
+// ANSWER: The function detects it and redirects the user to the login page immediately.
 async function apiFetch(endpoint, options) {
     options = options || {};
     options.headers = options.headers || {};
@@ -338,133 +243,50 @@ async function apiFetch(endpoint, options) {
         options.headers['Authorization'] = 'Bearer ' + token;
     }
 
-    if (options.body && !(options.body instanceof FormData) && !options.headers['Content-Type']) {
+    if (options.body && !options.headers['Content-Type']) {
         options.headers['Content-Type'] = 'application/json';
-        if (typeof options.body === 'object') {
-            options.body = JSON.stringify(options.body);
-        }
     }
 
     var response = await fetch(CONFIG.API_BASE_URL + endpoint, options);
 
     if (response.status === 401) {
-        // Only logout if not already on the login page
-        if (!window.location.pathname.includes('login.html')) {
-            localStorage.removeItem('userRole');
-            localStorage.removeItem('authToken');
-            window.location.href = 'login.html';
-        }
+        localStorage.clear();
+        window.location.href = 'login.html';
     }
 
     return response;
 }
-
-// Make it globally available for all other scripts
 window.apiFetch = apiFetch;
 
 
 // ---- Populate Profile Info Across Pages ----
-// Fills in the user's name and initials in the sidebar profile snippet
 
+// 10. WHAT: Global Name Display.
+// EXPLAIN: Fetches the user's real name from the database and puts it in the sidebar.
+// QUESTION: Why not store name in localStorage?
+// ANSWER: Fetching from DB ensures the name is always up-to-date if changed.
 async function populateGlobalProfile() {
     var role = localStorage.getItem('userRole');
     if (!role) return;
 
-    // Choose the right endpoint based on role
-    var endpoint = '';
-    if (role === 'patient') {
-        endpoint = '/patients/me';
-    } else if (role === 'doctor') {
-        endpoint = '/doctors/me';
-    } else if (role === 'volunteer') {
-        endpoint = '/volunteers/me';
-    } else {
-        return;
-    }
+    var endpoint = (role === 'doctor') ? '/doctors/me' : (role === 'volunteer') ? '/volunteers/me' : '/patients/me';
 
     try {
         var res = await apiFetch(endpoint);
         if (!res.ok) return;
 
         var data = await res.json();
-        var rawName = data.name || 'User';
+        var displayName = (role === 'doctor' && !data.name.startsWith('Dr.')) ? 'Dr. ' + data.name : data.name;
 
-        // Add "Dr." prefix for doctors
-        var displayName = rawName;
-        if (role === 'doctor' && displayName.toLowerCase().indexOf('dr.') === -1) {
-            displayName = 'Dr. ' + displayName;
-        }
-
-        // Generate initials from name
-        var nameForInitials = displayName.replace('Dr. ', '').trim();
-        var words = nameForInitials.split(' ');
-        var initials = words[0].charAt(0).toUpperCase();
-        if (words.length > 1) {
-            initials = initials + words[words.length - 1].charAt(0).toUpperCase();
-        } else if (words[0].length > 1) {
-            initials = initials + words[0].charAt(1).toUpperCase();
-        }
-
-        // Generate subtitle based on role
-        var subtitle = role.charAt(0).toUpperCase() + role.slice(1);
-        if (role === 'patient' && data.stage) {
-            subtitle = 'Stage: ' + data.stage;
-        } else if (role === 'doctor') {
-            subtitle = data.specialty || 'General Practitioner';
-        } else if (role === 'volunteer') {
-            subtitle = 'Volunteer Team';
-        }
-
-        // Update profile snippets in the sidebar
+        // Update name in sidebar snippets
         var snippets = document.querySelectorAll('.profile-snippet');
-        for (var i = 0; i < snippets.length; i++) {
-            var snippet = snippets[i];
-            var textContainer = snippet.querySelector('div[style*="text-align: right"]');
-            var picDiv = snippet.querySelector('.profile-pic');
-
-            if (textContainer) {
-                var divs = textContainer.querySelectorAll('div');
-                if (divs.length >= 2) {
-                    divs[0].textContent = displayName;
-                    divs[1].textContent = subtitle;
-                }
-            }
-
-            if (picDiv) {
-                picDiv.textContent = initials;
-            }
-        }
-
-        // Update welcome heading
-        var h2Tags = document.querySelectorAll('h2');
-        for (var j = 0; j < h2Tags.length; j++) {
-            var h2 = h2Tags[j];
-            if (h2.innerHTML.includes('Welcome back')) {
-                var childNodes = h2.childNodes;
-                for (var k = 0; k < childNodes.length; k++) {
-                    var node = childNodes[k];
-                    if (node.nodeType === 3 && node.nodeValue.includes('Welcome back')) {
-                        var firstName = rawName.split(' ')[0];
-                        if (role === 'volunteer') {
-                            node.nodeValue = ' Welcome back, ' + firstName + '. Thank you for your service today.';
-                        } else if (role === 'patient') {
-                            node.nodeValue = ' Welcome back, ' + firstName;
-                        } else {
-                            node.nodeValue = ' Welcome back, ' + displayName;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Update any element with id "user-name-display"
-        var explicitName = document.getElementById('user-name-display');
-        if (explicitName) {
-            explicitName.textContent = displayName;
-        }
+        snippets.forEach(snippet => {
+            var divs = snippet.querySelectorAll('div');
+            if (divs.length >= 2) { divs[0].textContent = displayName; }
+        });
 
     } catch (e) {
-        console.error("Failed to load profile for global snippet", e);
+        console.error("Profile load failed", e);
     }
 }
 

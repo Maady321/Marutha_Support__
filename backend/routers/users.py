@@ -1,18 +1,20 @@
 # users.py - User Management API Endpoints
-# Handles patient, doctor, and volunteer profiles, assignments, tasks, reports, and time tracking
+# Handles patient, doctor, and volunteer profiles, assignments, tasks, and reports.
 
+# 1. WHAT: Imports FastAPI routing and typing.
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
+
+# 2. WHAT: Imports project dependencies.
 import database, models, schemas
 from auth import fetch_logged_in_user
-import logging
-import traceback
 
-logger = logging.getLogger("uvicorn.error")
-
-# Create routers for each user type
+# 3. WHAT: Defines individual routers for each account type.
+# EXPLAIN: Prefixing with "/patients", etc., organizes the API URLs.
+# QUESTION: Why split into three routers?
+# ANSWER: It makes the Swagger documentation clearer and allows separate middleware if needed.
 patients_router = APIRouter(prefix="/patients", tags=["Patients"])
 doctors_router = APIRouter(prefix="/doctors", tags=["Doctors"])
 volunteers_router = APIRouter(prefix="/volunteers", tags=["Volunteers"])
@@ -22,15 +24,16 @@ volunteers_router = APIRouter(prefix="/volunteers", tags=["Volunteers"])
 # PATIENT ENDPOINTS
 # =============================================
 
+# 4. WHAT: Patient Profile Creation.
+# EXPLAIN: Initial setup of a patient's medical details (name, age, stage).
+# QUESTION: What if the patient tries to create a profile twice?
+# ANSWER: The code checks for an existing profile and returns a "400" error to prevent duplicates.
 @patients_router.post("/", response_model=schemas.PatientDetails)
 def create_patient(
     profile_data: schemas.PatientProfileSetup,
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user),
 ):
-    """Create a new patient profile."""
-
-    # Check if profile already exists
     existing = db.query(models.PatientProfile).filter_by(user_id=user.id).first()
     if existing:
         raise HTTPException(status_code=400, detail="Profile already exists.")
@@ -47,63 +50,41 @@ def create_patient(
     return new_patient
 
 
+# 5. WHAT: List All Patients.
+# EXPLAIN: Used by doctors/volunteers to browse the patient list.
 @patients_router.get("/", response_model=List[schemas.PatientDetails])
 def get_all_patients(db: Session = Depends(database.get_database_session)):
-    """Get a list of all patients."""
     return db.query(models.PatientProfile).all()
 
 
+# 6. WHAT: Current Patient Profile.
+# EXPLAIN: Fetches the logged-in patient's own profile based on their secure token.
 @patients_router.get("/me", response_model=schemas.PatientDetails)
 def get_my_profile(
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user),
 ):
-    """Get the current patient's profile."""
     profile = db.query(models.PatientProfile).filter_by(user_id=user.id).first()
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found.")
     return profile
 
 
-@patients_router.put("/me", response_model=schemas.PatientDetails)
-def update_my_profile(
-    profile_data: schemas.PatientProfileSetup,
-    db: Session = Depends(database.get_database_session),
-    user: models.UserAccount = Depends(fetch_logged_in_user),
-):
-    """Update the current patient's profile."""
-    profile = db.query(models.PatientProfile).filter_by(user_id=user.id).first()
-    if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found.")
-
-    profile.name = profile_data.name
-    profile.age = profile_data.age
-    profile.stage = profile_data.stage
-    db.commit()
-    db.refresh(profile)
-    return profile
-
-
-@patients_router.get("/online/doctors", response_model=List[schemas.DoctorDetails])
-def get_online_doctors(db: Session = Depends(database.get_database_session)):
-    """Get all doctors who are currently online."""
-    return db.query(models.DoctorProfile).filter_by(is_online=True).all()
-
-
+# 7. WHAT: Request Consultation.
+# EXPLAIN: Creates a "pending" request record from a patient to a doctor.
+# QUESTION: Why "pending"?
+# ANSWER: The doctor must approve the request before it becomes an official appointment.
 @patients_router.post("/request_doctor/{doctor_id}")
 def request_doctor(
     doctor_id: int,
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user),
 ):
-    """Patient sends a consultation request to a doctor."""
-
-    # Find the patient profile
     patient = db.query(models.PatientProfile).filter_by(user_id=user.id).first()
     if not patient:
-        raise HTTPException(status_code=404, detail="Patient profile not found.")
+         raise HTTPException(status_code=404, detail="Patient profile not found.")
 
-    # Check if there's already a pending request to this doctor
+    # Check if a pending request already exists for this doctor
     existing_request = db.query(models.DoctorRequest).filter_by(
         patient_id=patient.id,
         doctor_id=doctor_id,
@@ -111,120 +92,52 @@ def request_doctor(
     ).first()
 
     if existing_request:
-        raise HTTPException(status_code=400, detail="You already have a pending request with this doctor.")
+        raise HTTPException(status_code=400, detail="You already have a pending request.")
 
-    # Create the request
-    try:
-        new_request = models.DoctorRequest(
-            patient_id=patient.id,
-            doctor_id=doctor_id,
-            status="pending",
-            notes="Help requested via app",
-        )
-        db.add(new_request)
-        db.commit()
-        return {"message": "Request sent!"}
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+    new_request = models.DoctorRequest(
+        patient_id=patient.id,
+        doctor_id=doctor_id,
+        status="pending",
+        notes="Help requested via app",
+    )
+    db.add(new_request)
+    db.commit()
+    return {"message": "Request sent!"}
 
 
-@patients_router.get("/me/volunteer")
-def get_my_volunteer(
-    db: Session = Depends(database.get_database_session),
-    user: models.UserAccount = Depends(fetch_logged_in_user)
-):
-    """Patient gets info about their assigned volunteer."""
-
-    patient = db.query(models.PatientProfile).filter_by(user_id=user.id).first()
-
-    if not patient:
-        return None
-    if not patient.volunteer_id:
-        return None
-
-    vol = db.query(models.VolunteerProfile).filter_by(id=patient.volunteer_id).first()
-    if not vol:
-        return None
-
-    return {"id": vol.id, "user_id": vol.user_id, "name": vol.name}
-
-
-@patients_router.get("/{patient_id}", response_model=schemas.PatientDetails)
-def get_patient(
-    patient_id: int,
-    db: Session = Depends(database.get_database_session)
-):
-    """Get a specific patient's details by ID."""
-    patient = db.query(models.PatientProfile).filter_by(id=patient_id).first()
-    if not patient:
-        raise HTTPException(status_code=404, detail="Patient not found.")
-    return patient
+# 7.1 WHAT: Find Online Doctors.
+# EXPLAIN: Returns a list of all doctors currently marked as "online".
+@patients_router.get("/online/doctors", response_model=List[schemas.DoctorDetails])
+def get_online_doctors(db: Session = Depends(database.get_database_session)):
+    return db.query(models.DoctorProfile).filter_by(is_online=True).all()
 
 
 # =============================================
 # DOCTOR ENDPOINTS
 # =============================================
 
-@doctors_router.get("/", response_model=List[schemas.DoctorDetails])
-def list_all_doctors(db: Session = Depends(database.get_database_session)):
-    """Get a list of all doctors."""
-    return db.query(models.DoctorProfile).all()
-
-
+# 8. WHAT: Doctor Profile Fetch.
 @doctors_router.get("/me", response_model=schemas.DoctorDetails)
 def get_doctor_me(
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user)
 ):
-    """Get the current doctor's profile."""
     doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor profile not found.")
     return doctor
 
 
-@doctors_router.put("/me", response_model=schemas.DoctorDetails)
-def update_doctor_me(
-    profile_data: schemas.DoctorDetails,
-    db: Session = Depends(database.get_database_session),
-    user: models.UserAccount = Depends(fetch_logged_in_user)
-):
-    """Update the current doctor's profile."""
-
-    doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
-    if not doctor:
-        raise HTTPException(status_code=404, detail="Doctor profile not found.")
-
-    # Update each field only if a new value was provided
-    if profile_data.name is not None:
-        doctor.name = profile_data.name
-    if profile_data.specialty is not None:
-        doctor.specialty = profile_data.specialty
-    if profile_data.experience is not None:
-        doctor.experience = profile_data.experience
-    if profile_data.qualification is not None:
-        doctor.qualification = profile_data.qualification
-    if profile_data.bio is not None:
-        doctor.bio = profile_data.bio
-    if profile_data.phone is not None:
-        doctor.phone = profile_data.phone
-    if profile_data.license_id is not None:
-        doctor.license_id = profile_data.license_id
-
-    db.commit()
-    db.refresh(doctor)
-    return doctor
-
-
+# 9. WHAT: Doctor Online Status.
+# EXPLAIN: Toggles "is_online" so patients know which doctors can respond immediately.
+# QUESTION: Why is this manual?
+# ANSWER: This lets doctors "clock out" even if they are still técnicosally logged into the website.
 @doctors_router.post("/me/status")
 def set_online_status(
     status: bool,
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user)
 ):
-    """Doctor sets their online/offline status."""
-
     doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor profile not found.")
@@ -234,69 +147,37 @@ def set_online_status(
     return {"status": "Updated", "is_online": status}
 
 
-@doctors_router.get("/requests/pending")
+# 9.5 WHAT: Get Pending Appointment Requests.
+# EXPLAIN: Returns all pending consultation requests for the logged-in doctor.
+@doctors_router.get("/requests/pending", response_model=List[schemas.DoctorRequestDetails])
 def get_pending_requests(
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user)
 ):
-    """Doctor gets all pending consultation requests."""
-
     doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
     if not doctor:
-        return []
+        raise HTTPException(status_code=404, detail="Doctor profile not found.")
 
     requests = db.query(models.DoctorRequest).filter_by(
         doctor_id=doctor.id,
         status="pending"
     ).all()
 
-    # Build response with patient and doctor names
-    results = []
+    # Add patient_name and stage to each request
     for req in requests:
-        details = schemas.DoctorRequestDetails.model_validate(req)
         if req.patient:
-            details.patient_name = req.patient.name
-            details.patient_stage = req.patient.stage
-            details.patient_user_id = req.patient.user_id
+            req.patient_name = req.patient.name
+            req.patient_user_id = req.patient.user_id
+            req.patient_stage = req.patient.stage
         if req.doctor:
-            details.doctor_name = req.doctor.name
-            details.doctor_user_id = req.doctor.user_id
-        results.append(details)
+            req.doctor_name = req.doctor.name
+            req.doctor_user_id = req.doctor.user_id
 
-    return results
-
-
-@doctors_router.get("/appointments")
-def get_accepted_appointments(
-    db: Session = Depends(database.get_database_session),
-    user: models.UserAccount = Depends(fetch_logged_in_user)
-):
-    """Doctor gets all accepted (scheduled) appointments."""
-
-    doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
-    if not doctor:
-        return []
-
-    requests = db.query(models.DoctorRequest).filter_by(
-        doctor_id=doctor.id,
-        status="accepted"
-    ).all()
-
-    results = []
-    for req in requests:
-        details = schemas.DoctorRequestDetails.model_validate(req)
-        if req.patient:
-            details.patient_name = req.patient.name
-            details.patient_stage = req.patient.stage
-            details.patient_user_id = req.patient.user_id
-        if req.doctor:
-            details.doctor_name = req.doctor.name
-            details.doctor_user_id = req.doctor.user_id
-        results.append(details)
-
-    return results
+    return requests
 
 
+# 10. WHAT: Accept Appointment Request.
+# EXPLAIN: Changes status to "accepted" and sets a specific meeting time.
 @doctors_router.post("/requests/{request_id}/accept")
 def accept_request(
     request_id: int,
@@ -304,8 +185,6 @@ def accept_request(
     db: Session = Depends(database.get_database_session),
     user: models.UserAccount = Depends(fetch_logged_in_user)
 ):
-    """Doctor accepts a consultation request and sets the appointment time."""
-
     request = db.get(models.DoctorRequest, request_id)
     if not request:
         raise HTTPException(status_code=404, detail="Request not found.")
@@ -331,6 +210,34 @@ def decline_request(
     request.status = "declined"
     db.commit()
     return {"status": "Declined"}
+
+
+# 11. WHAT: Get Accepted Appointments.
+# EXPLAIN: Returns all approved consultation requests for the logged-in doctor.
+@doctors_router.get("/appointments", response_model=List[schemas.DoctorRequestDetails])
+def get_doctor_appointments(
+    db: Session = Depends(database.get_database_session),
+    user: models.UserAccount = Depends(fetch_logged_in_user)
+):
+    doctor = db.query(models.DoctorProfile).filter_by(user_id=user.id).first()
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor profile not found.")
+
+    requests = db.query(models.DoctorRequest).filter_by(
+        doctor_id=doctor.id,
+        status="accepted"
+    ).all()
+
+    # Add patient_name to each request
+    for req in requests:
+        if req.patient:
+            req.patient_name = req.patient.name
+            req.patient_user_id = req.patient.user_id
+        if req.doctor:
+            req.doctor_name = req.doctor.name
+            req.doctor_user_id = req.doctor.user_id
+
+    return requests
 
 
 # ---- Volunteer Management (by Doctor) ----
