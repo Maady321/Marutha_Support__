@@ -249,7 +249,8 @@ async function apiFetch(endpoint, options) {
 
     var response = await fetch(CONFIG.API_BASE_URL + endpoint, options);
 
-    if (response.status === 401) {
+    // If unauthorized, redirect to login, EXCEPT when we are actually trying to login or register
+    if (response.status === 401 && !endpoint.includes('/login') && !endpoint.includes('/register')) {
         localStorage.clear();
         window.location.href = 'login.html';
     }

@@ -2,7 +2,7 @@
 // Handles user login, account creation, and role selection
 
 document.addEventListener('DOMContentLoaded', function() {
-    var loginForm = document.querySelector('.login-box form');
+    var loginForm = document.getElementById('loginForm');
     var registerForm = document.getElementById('registerForm');
 
     if (loginForm) {
