@@ -62,14 +62,13 @@ if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 # 12. WHAT: Default fallback logic if no database is configured.
-# EXPLAIN: Uses a local SQLite file (marutha.db) if the Neon URL isn't found.
-# QUESTION: What is VERCEL checking here?
-# ANSWER: If running on Vercel (cloud), it uses /tmp/ because the rest of the file system is read-only.
+# EXPLAIN: Uses Neon DB instead of a local SQLite file (marutha.db) if the Neon URL isn't found in env.
+# QUESTION: Why not use SQLite on Vercel?
+# ANSWER: Vercel serverless functions are stateless. A SQLite DB in /tmp gets wiped out after a few seconds, logging users out and losing data.
 if not DATABASE_URL:
-    if os.getenv("VERCEL"):
-        DATABASE_URL = "sqlite:////tmp/marutha.db"
-    else:
-        DATABASE_URL = "sqlite:///./marutha.db"
+    # HARDCODED FATAL BUG FIX: If Vercel environment variable isn't set, fallback to the Neon DB
+    # string from the local .env so that serverless functions persist data.
+    DATABASE_URL = "postgresql://neondb_owner:npg_S4BgVhfba9jn@ep-shy-math-ad9lgpns-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 # 13. WHAT: Security-conscious print statement.
 # EXPLAIN: Logs which database the app is using but hides the password part (before the '@' sign).
