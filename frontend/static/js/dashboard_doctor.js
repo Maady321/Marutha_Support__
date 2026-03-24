@@ -192,7 +192,7 @@ async function confirmAcceptRequest() {
     var timeStr = document.getElementById('acceptTime').value;
 
     if (!dateStr || !timeStr) {
-        alert('Please select both date and time');
+        showNotification('Please select both date and time', 'error');
         return;
     }
 
@@ -209,14 +209,14 @@ async function confirmAcceptRequestWithTime(requestId, timeStr) {
         });
 
         if (res.ok) {
-            alert('Request accepted!');
+            showNotification('Request accepted!', 'success');
             loadPendingRequests();
         } else {
             var data = await res.json();
-            alert('Error: ' + (data.detail || 'Failed'));
+            showNotification('Error: ' + (data.detail || 'Failed'), 'error');
         }
     } catch (e) {
-        alert('Error connecting to server.');
+        showNotification('Error connecting to server.', 'error');
     }
 }
 
@@ -236,13 +236,13 @@ async function declineDashRequest(requestId) {
         });
 
         if (res.ok) {
-            alert('Request declined');
+            showNotification('Request declined', 'success');
             loadPendingRequests();
         } else {
-            alert('Failed to decline request');
+            showNotification('Failed to decline request', 'error');
         }
     } catch (e) {
-        alert('Error connecting to server.');
+        showNotification('Error connecting to server.', 'error');
     }
 }
 

@@ -110,18 +110,18 @@ async function submitLog(e) {
         });
 
         if (response.ok) {
-            alert("Health log submitted successfully!");
+            showNotification("Health log submitted successfully!", 'success');
             e.target.reset();
             var display = document.getElementById("pain_val");
             if (display) display.innerText = "5";
             loadHealthLogs(); // Refresh list
         } else {
             var data = await response.json();
-            alert('Error: ' + data.detail);
+            showNotification('Error: ' + data.detail, 'error');
         }
     } catch (error) {
         console.error('Submit log error:', error);
-        alert("Failed to submit log. Please try again.");
+        showNotification("Failed to submit log. Please try again.", 'error');
     }
 }
 
@@ -344,13 +344,13 @@ async function requestDoctor(doctorId) {
         });
 
         if (response.ok) {
-            alert('Request sent successfully! The doctor will notify you shortly.');
+            showNotification('Request sent successfully! The doctor will notify you shortly.', 'success');
         } else {
             var data = await response.json();
-            alert('Error: ' + (data.detail || 'Could not send request'));
+            showNotification('Error: ' + (data.detail || 'Could not send request'), 'error');
         }
     } catch (error) {
-        alert('Failed to send request.');
+        showNotification('Failed to send request.', 'error');
     }
 }
 

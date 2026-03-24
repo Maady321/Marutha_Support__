@@ -198,10 +198,10 @@ async function completeTask(checkbox, taskId) {
         var res = await apiFetch('/volunteers/tasks/' + taskId + '/complete', { method: 'PUT' });
         if (res.ok) {
             card.style.textDecoration = 'line-through';
-            alert('Task marked as complete!');
+            showNotification('Task marked as complete!', 'success');
             loadTasks(); // refresh
         } else {
-            alert('Failed to update task.');
+            showNotification('Failed to update task.', 'error');
             checkbox.checked = false;
             card.style.opacity = '1';
         }
@@ -238,16 +238,16 @@ async function submitReport(e) {
         });
 
         if (res.ok) {
-            alert('Activity report submitted successfully!');
+            showNotification('Activity report submitted successfully!', 'success');
             form.reset();
             loadReports();
         } else {
             var data = await res.json();
-            alert('Error: ' + (data.detail || 'Failed to submit.'));
+            showNotification('Error: ' + (data.detail || 'Failed to submit.'), 'error');
         }
     } catch (err) {
         console.error("Submit error", err);
-        alert("Action failed.");
+        showNotification("Action failed.", 'error');
     } finally {
         btn.innerText = originalText;
         btn.disabled = false;
@@ -301,16 +301,14 @@ async function submitNewTask(e) {
 
         if (res.ok) {
             closeAddTaskModal();
-            if (window.showNotification) showNotification('Task added successfully!', 'success');
+            showNotification('Task added successfully!', 'success');
             loadTasks();
         } else {
-            if (window.showNotification) showNotification('Failed to add new task.', 'error');
-            else alert('Failed to add new task.');
+            showNotification('Failed to add new task.', 'error');
         }
     } catch (e) {
         console.error(e);
-        if (window.showNotification) showNotification('An error occurred.', 'error');
-        else alert('An error occurred.');
+        showNotification('An error occurred.', 'error');
     } finally {
         if (btn) {
             btn.innerText = 'Add Task';

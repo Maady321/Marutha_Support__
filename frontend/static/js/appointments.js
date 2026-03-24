@@ -214,18 +214,17 @@ async function handleRequest(action, requestId, btn) {
             } else {
                 loadPendingRequests();
             }
-            if (typeof showToast === "function") showToast("Request Declined");
-            else alert("Request Declined");
+            showNotification("Request Declined", "success");
         } else {
             var data = {};
             try { data = await response.json(); } catch(e) {}
-            alert('Error: ' + (data.detail || 'Failed to decline request'));
+            showNotification('Error: ' + (data.detail || 'Failed to decline request'), 'error');
             btn.innerHTML = originalContent;
             btn.disabled = false;
         }
     } catch (error) {
         console.error("Error declining request:", error);
-        alert("Action failed.");
+        showNotification("Action failed.", 'error');
         btn.innerHTML = originalContent;
         btn.disabled = false;
     }
@@ -246,7 +245,7 @@ async function confirmAcceptRequest() {
     var inputTime = document.getElementById('acceptTime').value;
 
     if (!inputDate || !inputTime) {
-        alert("Please set a date and time for the consultation.");
+        showNotification("Please set a date and time for the consultation.", 'error');
         return;
     }
 
@@ -280,10 +279,10 @@ async function confirmAcceptRequest() {
                 loadPendingRequests();
                 loadUpcomingSchedule();
             }
-            showToast("Appointment Confirmed!");
+            showNotification("Appointment Confirmed!", "success");
         } else {
             var data = await response.json();
-            alert('Error: ' + (data.detail || 'Failed'));
+            showNotification('Error: ' + (data.detail || 'Failed'), 'error');
             if (currentAcceptBtn) {
                 currentAcceptBtn.innerHTML = originalContent;
                 currentAcceptBtn.disabled = false;
@@ -291,7 +290,7 @@ async function confirmAcceptRequest() {
         }
     } catch (error) {
         console.error("Error handling request:", error);
-        alert("Action failed.");
+        showNotification("Action failed.", 'error');
         if (currentAcceptBtn) {
             currentAcceptBtn.innerHTML = originalContent;
             currentAcceptBtn.disabled = false;
@@ -300,23 +299,7 @@ async function confirmAcceptRequest() {
 }
 
 
-// ---- Toast Notification ----
-function showToast(message) {
-    var toast = document.getElementById("toast");
-    if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        toast.className = "toast";
-        document.body.appendChild(toast);
-    }
 
-    toast.innerText = message;
-    toast.className = "toast show";
-
-    setTimeout(function() {
-        toast.className = toast.className.replace("show", "");
-    }, 3000);
-}
 
 
 // ---- Calendar Logic ----
@@ -466,6 +449,5 @@ function showDateDetails(date, events) {
 
 // Make functions available globally
 window.handleRequest = handleRequest;
-window.showToast = showToast;
 window.closeAcceptModal = closeAcceptModal;
 window.confirmAcceptRequest = confirmAcceptRequest;

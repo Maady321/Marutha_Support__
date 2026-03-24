@@ -53,7 +53,7 @@ function initLogin(form) {
         var password = document.getElementById('password').value;
 
         if (!email || !password) {
-            alert('Please fill in all fields');
+            showNotification('Please fill in all fields', 'error');
             return;
         }
 
@@ -87,11 +87,11 @@ function initLogin(form) {
 
                 window.location.href = target;
             } else {
-                alert(data.detail || 'Login failed. Please check your credentials.');
+                showNotification(data.detail || 'Login failed. Please check your credentials.', 'error');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('An error occurred during login. Please ensure the backend is running.');
+            showNotification('An error occurred during login. Please ensure the backend is running.', 'error');
         } finally {
             submitBtn.innerText = originalText;
             submitBtn.disabled = false;
@@ -126,7 +126,7 @@ function initRegistration(form) {
         var confirmPassword = document.getElementById('confirmPassword').value;
 
         if (password !== confirmPassword) {
-            alert('Passwords do not match!');
+            showNotification('Passwords do not match!', 'error');
             return;
         }
 
@@ -149,14 +149,14 @@ function initRegistration(form) {
             var data = await response.json();
 
             if (response.ok) {
-                alert('Account created successfully! Please sign in.');
+                localStorage.setItem('pendingNotification', JSON.stringify({message: 'Account created successfully! Please sign in.', type: 'success'}));
                 window.location.href = 'login.html';
             } else {
-                alert(data.detail || 'Registration failed.');
+                showNotification(data.detail || 'Registration failed.', 'error');
             }
         } catch (error) {
             console.error('Registration error:', error);
-            alert('An error occurred during registration.');
+            showNotification('An error occurred during registration.', 'error');
         } finally {
             submitBtn.innerText = originalText;
             submitBtn.disabled = false;
