@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile - Ashwasa</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="brand-logo">A</div>
+      <span class="brand-name">Ashwasa</span>
+    </a>
+    <div class="nav-links">
+      <a href="/profile" class="btn-link">View Profile</a>
+      <a href="#" class="btn-primary" id="logout-btn">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Edit Profile Container -->
+  <main class="dashboard-container" style="max-width: 48rem;">
+    <div class="widget-card" style="padding: 2.5rem;">
+      <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.85rem;">Edit Profile Details</h2>
+      <p class="text-secondary" style="font-size: 0.9rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 1rem;">
+        Modify your personal details and role-specific settings below.
+      </p>
+
+      <!-- Submit error alert -->
+      <div id="submit-error-alert" class="alert alert-danger hidden"></div>
+
+      <form id="edit-profile-form">
+        
+        <!-- Base Profile Fields -->
+        <div style="display: grid; grid-template-cols: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" id="phone" class="form-input" placeholder="e.g. +1234567890">
+        </div>
+
+        <div style="display: grid; grid-template-cols: 2fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" class="form-input" placeholder="e.g. New York">
+          </div>
+          <div class="form-group">
+            <label for="zipCode">Zip Code</label>
+            <input type="text" id="zipCode" class="form-input" placeholder="e.g. 10001">
+          </div>
+        </div>
+
+        <!-- Role-Specific Dynamic Fields -->
+        <div id="role-extra-edit-fields">
+          <!-- Populated dynamically via profile.js -->
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1.5rem;">
+          <a href="/profile" class="btn-secondary">Cancel</a>
+          <button type="submit" class="btn-accent" id="submit-btn">Save Profile</button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Ashwasa Healthcare. All rights reserved.
+  </footer>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/profile.js"></script>
+</body>
+</html>

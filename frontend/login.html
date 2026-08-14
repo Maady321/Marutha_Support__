@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - Ashwasa</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="brand-logo">A</div>
+      <span class="brand-name">Ashwasa</span>
+    </a>
+  </nav>
+
+  <!-- Auth Card Container -->
+  <main class="auth-container">
+    <div class="auth-card">
+      <h2>Sign in to Ashwasa</h2>
+      <p class="auth-subtitle">
+        Or <a href="/register">create a new account</a>
+      </p>
+
+      <!-- Alert for error messages -->
+      <div id="error-alert" class="alert alert-danger hidden"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-input" required>
+        </div>
+
+        <div class="form-helper">
+          <a href="/forgot-password">Forgot your password?</a>
+        </div>
+
+        <button type="submit" class="btn-accent w-full" id="submit-btn">Sign in</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Ashwasa Healthcare. All rights reserved.
+  </footer>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script>
+    // Redirect if already authenticated
+    requireGuest();
+
+    const form = document.getElementById('login-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorAlert = document.getElementById('error-alert');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorAlert.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Signing in...';
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        await fetchApi('/api/v1/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
+        
+        // Successful login: redirect to dashboard
+        window.location.href = '/dashboard';
+      } catch (err) {
+        errorAlert.innerText = err.message || 'Login failed. Please try again.';
+        errorAlert.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Sign in';
+      }
+    });
+  </script>
+</body>
+</html>

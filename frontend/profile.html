@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Ashwasa</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="brand-logo">A</div>
+      <span class="brand-name">Ashwasa</span>
+    </a>
+    <div class="nav-links">
+      <a href="/dashboard" class="btn-link">Dashboard</a>
+      <a href="#" class="btn-primary" id="logout-btn">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Profile Content Container -->
+  <main class="dashboard-container" style="max-width: 48rem;">
+    <div class="widget-card" style="padding: 2.5rem;">
+      
+      <!-- Profile Header -->
+      <div class="flex-between" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+        <div>
+          <h2 id="profile-name" style="font-size: 2rem; color: white;">User Name</h2>
+          <p id="profile-role" class="text-secondary" style="font-weight: 500; font-size: 0.95rem; margin-top: 0.25rem; text-transform: uppercase; letter-spacing:0.02em;">Role</p>
+        </div>
+        <div id="badge-container">
+          <!-- Verification badge is dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Core user details -->
+      <div class="profile-details-list">
+        <div class="profile-detail-row">
+          <div class="detail-label">Email Address</div>
+          <div id="profile-email" class="detail-value">email@example.com</div>
+        </div>
+        <div class="profile-detail-row">
+          <div class="detail-label">Phone Number</div>
+          <div id="profile-phone" class="detail-value">Not provided</div>
+        </div>
+        <div class="profile-detail-row">
+          <div class="detail-label">Location</div>
+          <div id="profile-location" class="detail-value">Not provided</div>
+        </div>
+      </div>
+
+      <!-- Role-specific extra profile fields -->
+      <div id="extra-profile-details" class="profile-details-list" style="margin-top: 1rem;">
+        <!-- Dynamically rendered fields -->
+      </div>
+
+      <!-- Actions -->
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1.5rem;">
+        <a href="/dashboard" class="btn-secondary">Back to Dashboard</a>
+        <a href="/profile/edit" class="btn-accent">Edit Profile</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Ashwasa Healthcare. All rights reserved.
+  </footer>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/profile.js"></script>
+  <script>
+    function renderVerificationBadge(status) {
+      const container = document.getElementById('badge-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      const span = document.createElement('span');
+      span.className = 'badge';
+      
+      if (status === 'APPROVED') {
+        span.classList.add('badge-approved');
+        span.innerText = 'Verified';
+        container.appendChild(span);
+      } else if (status === 'PENDING') {
+        span.classList.add('badge-pending');
+        span.innerText = 'Pending Review';
+        container.appendChild(span);
+      } else if (status === 'REJECTED') {
+        span.classList.add('badge-rejected');
+        span.innerText = 'Verification Rejected';
+        container.appendChild(span);
+      }
+    }
+  </script>
+</body>
+</html>

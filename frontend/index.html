@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ashwasa - Healthcare Reimagined</title>
+  <meta name="description" content="Secure, private, and seamlessly connected healthcare platform. Ashwasa bridges the gap between patients, doctors, and volunteers.">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="brand-logo">A</div>
+      <span class="brand-name">Ashwasa</span>
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="/login" class="btn-link" id="nav-signin">Sign In</a>
+      <a href="/register" class="btn-primary" id="nav-signup">Get Started</a>
+      <a href="/dashboard" class="btn-primary hidden" id="nav-dashboard">Dashboard</a>
+      <a href="#" class="btn-link hidden" id="logout-btn">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main class="hero">
+    <div class="badge-live">
+      <span class="dot-pulse"></span>
+      Platform is Live
+    </div>
+    
+    <h1>Healthcare <span>Reimagined</span> for Everyone</h1>
+    
+    <p class="hero-subtitle">
+      Secure, private, and seamlessly connected. Ashwasa bridges the gap between patients, doctors, and volunteers with an intuitive healthcare ecosystem.
+    </p>
+
+    <div class="hero-actions">
+      <a href="/register" class="btn-accent" id="hero-create-btn">
+        Create an Account
+        <svg style="width: 1rem; height: 1rem; margin-left: 0.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+      <a href="/dashboard" class="btn-secondary">Go to Dashboard</a>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon-wrapper icon-blue">
+          <svg style="width: 1.5rem; height: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <h3>Patient Centric</h3>
+        <p>Your medical identity stays private and secure with fine-grained access controls for family and doctors.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="icon-wrapper icon-indigo">
+          <svg style="width: 1.5rem; height: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <h3>Doctor Verification</h3>
+        <p>Rigorous licensing checks ensure you only connect with authenticated, trusted healthcare professionals.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-wrapper icon-purple">
+          <svg style="width: 1.5rem; height: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+        <h3>Family Integration</h3>
+        <p>Seamlessly link family members to your profile for collaborative care and emergency contacts.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Ashwasa Healthcare. All rights reserved.
+  </footer>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script>
+    // Adjust navbar links based on auth state
+    async function updateNavbar() {
+      const user = await checkAuthStatus();
+      if (user) {
+        document.getElementById('nav-signin').classList.add('hidden');
+        document.getElementById('nav-signup').classList.add('hidden');
+        document.getElementById('hero-create-btn').classList.add('hidden');
+        
+        document.getElementById('nav-dashboard').classList.remove('hidden');
+        document.getElementById('logout-btn').classList.remove('hidden');
+      }
+    }
+    updateNavbar();
+  </script>
+</body>
+</html>

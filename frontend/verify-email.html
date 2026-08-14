@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Email - Ashwasa</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="brand-logo">A</div>
+      <span class="brand-name">Ashwasa</span>
+    </a>
+  </nav>
+
+  <!-- Auth Card Container -->
+  <main class="auth-container">
+    <div class="auth-card" style="text-align: center;">
+      <h2 id="verify-title">Verifying Email...</h2>
+      <div id="loader" class="loader"></div>
+      
+      <div id="error-alert" class="alert alert-danger hidden" style="margin-top: 1.5rem;"></div>
+      <div id="success-alert" class="alert alert-success hidden" style="margin-top: 1.5rem;"></div>
+      
+      <div id="action-btn-container" class="hidden" style="margin-top: 2rem;">
+        <a href="/login" class="btn-accent">Proceed to Sign In</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Ashwasa Healthcare. All rights reserved.
+  </footer>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script>
+    async function performVerification() {
+      const loader = document.getElementById('loader');
+      const verifyTitle = document.getElementById('verify-title');
+      const errorAlert = document.getElementById('error-alert');
+      const successAlert = document.getElementById('success-alert');
+      const actionBtnContainer = document.getElementById('action-btn-container');
+
+      // Get token from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (!token) {
+        loader.classList.add('hidden');
+        verifyTitle.innerText = 'Verification Failed';
+        errorAlert.innerText = 'No verification token was found in the link. Please check your verification link.';
+        errorAlert.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        await fetchApi('/api/v1/auth/verify-email', {
+          method: 'POST',
+          body: JSON.stringify({ token })
+        });
+
+        // Verification Success
+        loader.classList.add('hidden');
+        verifyTitle.innerText = 'Email Verified!';
+        successAlert.innerText = 'Your email address has been verified successfully. You can now log in to your account.';
+        successAlert.classList.remove('hidden');
+        actionBtnContainer.classList.remove('hidden');
+      } catch (err) {
+        // Verification Failure
+        loader.classList.add('hidden');
+        verifyTitle.innerText = 'Verification Failed';
+        errorAlert.innerText = err.message || 'Verification token is invalid or has expired.';
+        errorAlert.classList.remove('hidden');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', performVerification);
+  </script>
+</body>
+</html>
